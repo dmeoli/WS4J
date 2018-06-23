@@ -67,7 +67,6 @@ public class Lesk extends RelatednessCalculator {
 			}
 			score += functionsScore;
 		}
-
 		return new Relatedness(score, tracer.toString(), null);
 	}
 

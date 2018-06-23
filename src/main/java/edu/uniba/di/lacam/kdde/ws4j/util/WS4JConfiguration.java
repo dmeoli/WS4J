@@ -17,7 +17,7 @@ final public class WS4JConfiguration {
 	private boolean stem;
 	private String stopList;
 	private boolean leskNormalize;
-	private boolean MFS;
+	private boolean mfs;
 
     private static final WS4JConfiguration instance = new WS4JConfiguration();
 
@@ -33,9 +33,8 @@ final public class WS4JConfiguration {
 			infoContent = readString("infoContent","ic-semcor.dat");
 			stem = readInt("stem",0) == 1;
 			stopList = readString("stopList", "stopList.txt");
-			// leskRelation = readString("lesk-relation", "lesk-relation.dat");
 			leskNormalize = readInt("leskNormalize", 0) == 1;
-			MFS = readInt("MFS", 0) == 1;
+			mfs = readInt("MFS", 0) == 1;
 			stream.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -49,11 +48,10 @@ final public class WS4JConfiguration {
 	private String readString(String key, String defaultValue) {
 		String value = properties.getProperty(key);
 		if (value == null) {
-			System.err.println("Configuration \"" + key + "\" not found in " + CONFIGURATION);
+		    Log.error("Configuration \"%d\" not found in ", CONFIGURATION);
 			return defaultValue;
 		}
-		value = value.replaceAll("#.+", "");
-		value = value.trim();
+		value = value.replaceAll("#.+", "").trim();
 		return value;
 	}
 
@@ -110,11 +108,11 @@ final public class WS4JConfiguration {
 	}
 
 	boolean useMFS() {
-		return MFS;
+		return mfs;
 	}
 
 	public void setMFS(boolean mfs) {
-		this.MFS = mfs;
+		this.mfs = mfs;
 	}
 
 	public void setStem(boolean stem) {

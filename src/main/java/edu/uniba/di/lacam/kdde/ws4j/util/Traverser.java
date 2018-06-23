@@ -28,18 +28,13 @@ public class Traverser {
 
 	public static boolean contained(Concept synset1, Concept synset2) {
 		if (synset1 == null || synset2 == null) return false;
-
 		List<String> wordsH = db.findWordsBySynset(synset1.getSynsetID());
 		List<String> wordsN = db.findWordsBySynset(synset2.getSynsetID());
-
 		for (String wordH : wordsH) {
 			for (String wordN : wordsN) {
-				if (wordH.contains(wordN) || wordN.contains(wordH)) {
-				    return true;
-				}
+				if (wordH.contains(wordN) || wordN.contains(wordH)) return true;
 			}
 		}
-
 		return false;
 	}
 
@@ -48,16 +43,12 @@ public class Traverser {
 			Set<String> cachedObj = horizonCache.get(synset);
 			if (cachedObj != null) return cachedObj;
 		}
-
 		List<Link> links = new ArrayList<>();
 		links.add(Link.ants);
 		links.add(Link.attr);
 		links.add(Link.sim);
-
 		Set<String> result = getGroupedSynsets(synset, links);
-		if (WS4JConfiguration.getInstance().useCache()) {
-		    if (result != null) horizonCache.put(synset, result);
-		}
+		if (WS4JConfiguration.getInstance().useCache()) if (result != null) horizonCache.put(synset, result);
 		return result;
 	}
 
@@ -66,18 +57,14 @@ public class Traverser {
 			Set<String> cachedObj = upwardCache.get(synset);
 			if (cachedObj != null) return cachedObj;
 		}
-
 		List<Link> links = new ArrayList<>();
 		links.add(Link.hype);
 		links.add(Link.mero);
 		links.add(Link.mmem);
 		links.add(Link.mprt);
 		links.add(Link.msub);
-
 		Set<String> result = getGroupedSynsets(synset, links);
-		if (WS4JConfiguration.getInstance().useCache()) {
-			if (result != null) upwardCache.put(synset, result);
-		}
+		if (WS4JConfiguration.getInstance().useCache()) if (result != null) upwardCache.put(synset, result);
 		return result;
 	}
 
@@ -86,7 +73,6 @@ public class Traverser {
 			Set<String> cachedObj = downwardCache.get(synset);
 			if (cachedObj != null) return cachedObj;
 		}
-
 		List<Link> links = new ArrayList<>();
 		links.add(Link.caus);
 		links.add(Link.enta);
@@ -95,11 +81,8 @@ public class Traverser {
 		links.add(Link.hsub);
 		links.add(Link.hprt);
 		links.add(Link.hypo);
-
 		Set<String> result = getGroupedSynsets(synset, links);
-		if (WS4JConfiguration.getInstance().useCache()) {
-		    if (result != null) downwardCache.put(synset, result);
-		}
+		if (WS4JConfiguration.getInstance().useCache()) if (result != null) downwardCache.put(synset, result);
 		return result;
 	}
 

@@ -42,18 +42,14 @@ public class Lin extends RelatednessCalculator {
 	@Override
 	protected Relatedness calcRelatedness(Concept synset1, Concept synset2) {
 		StringBuilder tracer = new StringBuilder();
-
 		if (synset1 == null || synset2 == null) return new Relatedness(min, null, illegalSynset);
 		if (synset1.getSynsetID().equals(synset2.getSynsetID())) return new Relatedness(max, identicalSynset, null);
-		
 		StringBuilder subTracer = new StringBuilder();
 		List<PathFinder.Subsumer> lcsList = ICFinder.getIC().getLCSbyIC(pathFinder, synset1, synset2, subTracer);
 		if (Objects.requireNonNull(lcsList).size() == 0) return new Relatedness(min, tracer.toString(), null);
-		
-		double ic1 = ICFinder.getIC().ic(pathFinder, synset1);
-		double ic2 = ICFinder.getIC().ic(pathFinder, synset2);
+		double ic1 = ICFinder.getIC().IC(pathFinder, synset1);
+		double ic2 = ICFinder.getIC().IC(pathFinder, synset2);
 		double score = (ic1 > 0 && ic2 > 0) ? (2D * lcsList.get(0).ic / (ic1 + ic2)) : 0D;
-
 		tracer.append(Objects.requireNonNull(subTracer).toString());
 		for (PathFinder.Subsumer lcs : lcsList) {
 			tracer.append("Lowest Common Subsumer(s): ");
@@ -61,7 +57,6 @@ public class Lin extends RelatednessCalculator {
 		}
 		tracer.append("Concept1: ").append(synset1.getSynsetID()).append(" (IC = ").append(ic1).append(")\n");
 		tracer.append("Concept2: ").append(synset2.getSynsetID()).append(" (IC = ").append(ic2).append(")\n");
-				
 		return new Relatedness(score, tracer.toString(), null);
 	}
 	

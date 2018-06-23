@@ -14,10 +14,8 @@ public class DepthFinder {
 	}
 	
 	public List<Depth> getRelatedness(Concept synset1, Concept synset2, StringBuilder tracer) {
-		
 		List<PathFinder.Subsumer> paths = pathFinder.getAllPaths(synset1, synset2, tracer);
 		if (paths == null || paths.size() == 0) return null;
-		
 		List<Depth> depthList = new ArrayList<>(paths.size());
 		for (PathFinder.Subsumer s : paths) {
 			List<Depth> depths = getSynsetDepths(s.subsumer.getSynsetID());
@@ -25,20 +23,17 @@ public class DepthFinder {
 			Depth depth = depths.get(0);
 			depthList.add(depth);
 		}
-
 		List<Depth> toBeDeleted = new ArrayList<>(depthList.size());
 		for (Depth d : depthList) {
 			if (depthList.get(0).depth != d.depth) toBeDeleted.add(d);
 		}
 		depthList.removeAll(toBeDeleted);
-
 		Map<Integer, Depth> map = new LinkedHashMap<>(depthList.size());
 		for (Depth d : depthList) {
 			int key = d.toString().hashCode();
 			map.put(key, d);
 		}
 		depthList = new ArrayList<>(map.values());
-		
 		return depthList;
 	}
 	
@@ -46,7 +41,6 @@ public class DepthFinder {
 		Set<String> history = new HashSet<>();
 		List<List<String>> hyperTrees = pathFinder.getHypernymTrees(synset, history);
 		if (hyperTrees == null) return null;
-		
 		List<Depth> depths = new ArrayList<>(hyperTrees.size());
 		for (List<String> tree : hyperTrees) {
 			Depth d = new Depth();
@@ -55,9 +49,7 @@ public class DepthFinder {
 			d.leaf = synset;
 			depths.add(d);
 		}
-
 		depths.sort(Comparator.comparingInt(d -> d.depth));
-		
 		return depths;
 	}
 	

@@ -13,9 +13,7 @@ public class WordSimilarityCalculator {
     private ConcurrentMap<String, Double> cache;
 	
 	public WordSimilarityCalculator() {
-		if (WS4JConfiguration.getInstance().useCache()) {
-			cache = new ConcurrentHashMap<>();
-		}
+		if (WS4JConfiguration.getInstance().useCache()) cache = new ConcurrentHashMap<>();
 	}
 	
 	public double calcRelatednessOfWords(String word1, String word2, RelatednessCalculator rc) {
@@ -30,7 +28,7 @@ public class WordSimilarityCalculator {
             } catch (IllegalArgumentException e) {
                 return rc.getMin();
             }
-            word1 = word1.substring(0,offset1);
+            word1 = word1.substring(0, offset1);
 		}
 		POS pos2 = null;
 		int offset2 = word2.indexOf("#");

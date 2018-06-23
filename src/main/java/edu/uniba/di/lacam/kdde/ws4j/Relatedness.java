@@ -22,13 +22,9 @@ public class Relatedness {
 		this.trace = new StringBuffer(trace == null ? "" : trace);
 		this.error = new StringBuffer(error == null ? "" : error);
 		if (WS4JConfiguration.getInstance().useTrace() && !this.trace.toString().equals("")) {
-            for (String str : Objects.requireNonNull(trace).split("\\R")) {
-                Log.info(str);
-            }
+            for (String str : Objects.requireNonNull(trace).split("\\R")) Log.info(str);
         }
-        if (WS4JConfiguration.getInstance().useTrace() && !this.error.toString().equals("")) {
-		    Log.error(error);
-        }
+        if (WS4JConfiguration.getInstance().useTrace() && !this.error.toString().equals("")) Log.error(error);
 	}
 
 	public String getTrace() {

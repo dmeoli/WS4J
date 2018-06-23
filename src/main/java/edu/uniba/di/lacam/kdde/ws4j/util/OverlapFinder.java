@@ -9,23 +9,16 @@ public class OverlapFinder {
 	private final static String MARKER = "###";
 
 	public static Overlaps getOverlaps(String gloss1, String gloss2) {
-
 		Overlaps overlaps = new Overlaps();
-
 		String[] words0 = gloss1.split("\\s+");
 		String[] words1 = gloss2.split("\\s+");
-
 		words0 = StopWordRemover.getInstance().removeStopWords(words0);
 		words1 = StopWordRemover.getInstance().removeStopWords(words1);
-
 		overlaps.length1 = words0.length;
 		overlaps.length2 = words1.length;
-
 		Map<Integer,Integer> overlapsLengths = new HashMap<>();
-
 		int matchStartIndex = 0;
 		int currIndex = -1;
-
 		while (currIndex < words0.length-1) {
 			currIndex++;
 			if (!contains(words1, words0, matchStartIndex, currIndex)) {
@@ -34,21 +27,17 @@ public class OverlapFinder {
 				matchStartIndex++;
 			}
 		}
-		for (int i = matchStartIndex; i <= currIndex; i++) {
-			overlapsLengths.put(i, currIndex - i+1);
-		}
+		for (int i = matchStartIndex; i <= currIndex; i++) overlapsLengths.put(i, currIndex - i+1);
 
 		int longestOverlap = -1;
 		for (int length : overlapsLengths.values()) {
 			if (longestOverlap < length) longestOverlap = length;
 		}
 		overlaps.setOverlapsHash(new ConcurrentHashMap<>(overlapsLengths.size()));
-
 		while (longestOverlap > 0) {
 			for (int i = 0; i <= overlapsLengths.size()-1; i++) {
 				if (overlapsLengths.get(i) < longestOverlap) continue;
 				int stringEnd = i + longestOverlap-1;
-
 				if (containsReplace(words1, words0, i, stringEnd)) {
 					List<String> words0Sub = new ArrayList<>(stringEnd - i+1);
                     words0Sub.addAll(Arrays.asList(words0).subList(i, stringEnd+1));
@@ -66,18 +55,14 @@ public class OverlapFinder {
 					int k = longestOverlap-1;
 					while (k > 0) {
 						int stringEndNew = i + k-1;
-						if (contains(words1, words0, i, stringEndNew)) {
-							break;
-						}
+						if (contains(words1, words0, i, stringEndNew)) break;
 						k--;
 					}
 					overlapsLengths.put(i, k);
 				}
 			}
 			longestOverlap = -1;
-			for (int length : overlapsLengths.values()) {
-				if (longestOverlap < length) longestOverlap = length;
-			}
+			for (int length : overlapsLengths.values()) if (longestOverlap < length) longestOverlap = length;
 		}
 		return overlaps;
 	}

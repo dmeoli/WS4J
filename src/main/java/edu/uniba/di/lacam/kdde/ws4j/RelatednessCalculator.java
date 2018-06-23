@@ -12,10 +12,21 @@ public abstract class RelatednessCalculator {
 	protected final static String illegalSynset = "Synset is null.";
 	protected final static String identicalSynset = "Synsets are identical.";
 
+	public final static boolean useRootNode;
+
 	protected ILexicalDatabase db;
 	protected PathFinder pathFinder;
 	protected DepthFinder depthFinder;
-	
+
+	private WordSimilarityCalculator wordSimilarity = new WordSimilarityCalculator();
+
+	protected final double min;
+	protected final double max;
+
+	static {
+		useRootNode = true;
+	}
+
 	public RelatednessCalculator(ILexicalDatabase db, double min, double max) {
 		this.db = db;
 		this.min = min;
@@ -23,17 +34,6 @@ public abstract class RelatednessCalculator {
 		pathFinder = new PathFinder(db);
 		depthFinder = new DepthFinder(db);
 	}
-	
-	public final static boolean useRootNode; 
-	
-	static {
-		useRootNode = true;
-	}
-	
-	private WordSimilarityCalculator wordSimilarity = new WordSimilarityCalculator();
-
-	protected final double min;
-	protected final double max;
 
 	protected abstract Relatedness calcRelatedness(Concept synset1, Concept synset2);
 

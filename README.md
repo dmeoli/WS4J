@@ -5,7 +5,7 @@ WordNet instance. You can immediately use WS4J on Princeton's English WordNet 3.
 [MIT Java WordNet Interface](https://projects.csail.mit.edu/jwi/) 2.4.0, which is the fastest Java library for 
 interfacing to WordNet.
 
-The codebase is mostly a Java re-implementation of [WordNet-Similarity-2.05](http://wn-similarity.sourceforge.net/) 
+The codebase is mostly a Java re-implementation of [WordNet-Similarity](http://wn-similarity.sourceforge.net/) 
 written in Perl, using the same data files as seen in src/main/resources, with some test cases for verifying the same 
 logic. WS4J designed to be thread safe.
 

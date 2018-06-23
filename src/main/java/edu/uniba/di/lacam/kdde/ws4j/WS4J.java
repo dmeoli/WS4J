@@ -32,7 +32,6 @@ public class WS4J {
 		path = new Path(db);
 		res = new Resnik(db);
 	}
-	
 
 	public static double runHSO(String word1, String word2) {
 		return hso.calcRelatednessOfWords(word1, word2);

@@ -188,7 +188,7 @@ public class PathFinder {
 			return "Subsumer{" +
 					"subsumer=" + subsumer +
 					", length=" + length +
-					", ic=" + ic +
+					", IC=" + ic +
 					", lPath=" + lPath +
 					", rPath=" + rPath +
 					'}';
@@ -209,13 +209,11 @@ public class PathFinder {
 	public List<Subsumer> getLCSByPath(Concept synset1, Concept synset2, StringBuilder tracer) {
 		List<Subsumer> paths = getAllPaths(synset1, synset2, tracer);
 		List<Subsumer> returnList = new ArrayList<>(paths.size());
-
         for (Subsumer path : paths) {
 			if (path.length <= paths.get(0).length) {
 				returnList.add(path);
 			}
 		}
-
 		return returnList;
 	}
 

@@ -51,34 +51,16 @@ public class LeacockChodorow extends RelatednessCalculator {
 	@Override
 	protected Relatedness calcRelatedness(Concept synset1, Concept synset2) {
 		StringBuilder tracer = new StringBuilder();
-
 		if (synset1 == null || synset2 == null) return new Relatedness(min, null, illegalSynset);
 		if (synset1.getSynsetID().equals(synset2.getSynsetID())) return new Relatedness(max, identicalSynset, null);
-		
 		StringBuilder subTracer = WS4JConfiguration.getInstance().useTrace() ? new StringBuilder() : null;
 		List<PathFinder.Subsumer> lcsList = pathFinder.getLCSByPath(synset1, synset2, subTracer);
 		if (lcsList.size() == 0) return new Relatedness(min);
-
 		int maxDepth = 1;
-		if (synset1.getPOS().equals(POS.n)) {
-			maxDepth = 20;
-		} else if (synset1.getPOS().equals(POS.v)) {
-			maxDepth = 14;
-		}
-
+		if (synset1.getPOS().equals(POS.n)) maxDepth = 20;
+		else if (synset1.getPOS().equals(POS.v)) maxDepth = 14;
 		int length = lcsList.get(0).length;
-		
-	 	/* int maxDepth = -1;
-		for (Depth lcs : lcsList) {
-		    List<String> roots = getTaxonomies(lcs);
-			for (String root : roots) {
-				int depth = getTaxonomyDepth(root);
-				if (depth > maxDepth) maxDepth = depth;
-			}
-		} */
-		
 		double score = -Math.log((double) length / (double) (2 * maxDepth));
-		
 		if (WS4JConfiguration.getInstance().useTrace()) {
 			tracer.append(Objects.requireNonNull(subTracer).toString());
 			for (PathFinder.Subsumer lcs : lcsList) {
@@ -86,7 +68,6 @@ public class LeacockChodorow extends RelatednessCalculator {
 				tracer.append(lcs.subsumer.getSynsetID()).append(" (Length = ").append(lcs.length).append(")\n");
 			}
 		}
-
 		return new Relatedness(score, tracer.toString(), null);
 	}
 	

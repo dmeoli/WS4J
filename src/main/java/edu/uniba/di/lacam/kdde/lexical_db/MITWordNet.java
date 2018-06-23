@@ -37,11 +37,11 @@ public class MITWordNet implements ILexicalDatabase {
         try {
             if (WS4JConfiguration.getInstance().useMemoryDB()) {
                 Log.info("Loading WordNet into memory...");
-                long t1 = System.currentTimeMillis();
+                long t0 = System.currentTimeMillis();
                 dict = new RAMDictionary(WORDNET_DICT, ILoadPolicy.IMMEDIATE_LOAD);
                 dict.open();
-                long t2 = System.currentTimeMillis();
-                Log.info("WordNet loaded into memory in %d msec.", (t1-t2));
+                long t1 = System.currentTimeMillis();
+                Log.info("WordNet loaded into memory in %d msec.", (t1-t0));
             } else {
                 dict = new Dictionary(WORDNET_DICT);
                 dict.open();

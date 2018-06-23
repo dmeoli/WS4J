@@ -55,38 +55,28 @@ public class HirstStOnge extends RelatednessCalculator {
 	@Override
 	protected Relatedness calcRelatedness(Concept synset1, Concept synset2) {
 		StringBuilder tracer = new StringBuilder();
-
 		if (synset1 == null || synset2 == null) return new Relatedness(min, null, illegalSynset);
 		if (synset1.getSynsetID().equals(synset2.getSynsetID())) return new Relatedness(max, identicalSynset, null);
-
 		Set<String> horizontal1 = Traverser.getHorizontalSynsets(synset1.getSynsetID());
 		Set<String> horizontal2 = Traverser.getHorizontalSynsets(synset2.getSynsetID());
-
 		boolean inHorizon = horizontal2.contains(synset1.getSynsetID()) || horizontal1.contains(synset2.getSynsetID());
-
 		if (inHorizon) return new Relatedness(max);
-
 		Set<String> upward2 = Traverser.getUpwardSynsets(synset2.getSynsetID());
 		Set<String> downward2 = Traverser.getDownwardSynsets(synset2.getSynsetID());
-
 		if (WS4JConfiguration.getInstance().useTrace()) {
 			tracer.append("Horizontal Links of ").append(synset1.getSynsetID()).append(": ").append(horizontal1).append("\n");
 			tracer.append("Horizontal Links of ").append(synset2.getSynsetID()).append(": ").append(horizontal1).append("\n");
 			tracer.append("Upward Links of ").append(synset2.getSynsetID()).append(": ").append(upward2).append("\n");
 			tracer.append("Downward Links of ").append(synset2.getSynsetID()).append(": ").append(downward2).append("\n");
 		}
-
 		boolean contained = Traverser.contained(synset1, synset2);
 		boolean inUpOrDown = upward2.contains(synset1.getSynsetID()) || downward2.contains(synset1.getSynsetID());
-
 		if (contained && inUpOrDown) {
 			tracer.append("Strong Rel (Compound Word Match).\n");
 			return new Relatedness(max, tracer.toString(), null);
 		}
-
 		MedStrong medStrong = new MedStrong();
 		int score = medStrong.medStrong(0, 0, 0, synset1.getSynsetID(), synset1.getSynsetID(), synset2.getSynsetID());
-
 		return new Relatedness(score, tracer.toString(), null);
 	}
 
@@ -98,17 +88,11 @@ public class HirstStOnge extends RelatednessCalculator {
 	private static class MedStrong {
 
 		int medStrong(int state, int distance, int chdir, String from, String path, String endSynset) {
-			if (from.equals(endSynset) && distance > 1) {
-				return 8 - distance - chdir;
-			}
-			if (distance >= 5) {
-				return 0;
-			}
-
+			if (from.equals(endSynset) && distance > 1) return 8 - distance - chdir;
+			if (distance >= 5) return 0;
 			Set<String> horizontal = Traverser.getHorizontalSynsets(from);
 			Set<String> upward = (state == 0 || state == 1) ? Traverser.getUpwardSynsets(from) : null;
 			Set<String> downward = (state != 6) ? Traverser.getDownwardSynsets(from) : null;
-
 			if (state == 0) {
 				int retU = findU(upward, 1, distance, 0, path, endSynset);
 				int retD = findD(downward, 2, distance, 0, path, endSynset);
@@ -163,9 +147,7 @@ public class HirstStOnge extends RelatednessCalculator {
 			for (String synset : synsetGroup) {
 				int retT = medStrong(state, distance+1, chdir, synset, path + " [" + abbreviation + "] " +
 						synset, endSynset);
-				if (retT > ret) {
-					ret = retT;
-				}
+				if (retT > ret) ret = retT;
 			}
 			return ret;
 		}

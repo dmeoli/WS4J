@@ -34,29 +34,21 @@ public class Path extends RelatednessCalculator {
 
 	protected Relatedness calcRelatedness(Concept synset1, Concept synset2) {
 		StringBuilder tracer = new StringBuilder();
-
 		if (synset1 == null || synset2 == null) return new Relatedness(min, null, illegalSynset);
 		if (synset1.getSynsetID().equals(synset2.getSynsetID())) return new Relatedness(max, identicalSynset, null);
-		
 		StringBuilder subTracer = WS4JConfiguration.getInstance().useTrace() ? new StringBuilder() : null;
 		List<PathFinder.Subsumer> shortestPaths = pathFinder.getShortestPaths(synset1, synset2, subTracer);
-		if (shortestPaths.size() == 0) return new Relatedness(min)
-                ;
+		if (shortestPaths.size() == 0) return new Relatedness(min);
 		PathFinder.Subsumer path = shortestPaths.get(0);
 		int dist = path.length;
 		double score;
-		if (dist > 0) {
-			score = 1.0D / (double) dist;
-		} else {
-			score = -1.0D;
-		}
-
+		if (dist > 0) score = 1.0D / (double) dist;
+		else score = -1.0D;
 		if (WS4JConfiguration.getInstance().useTrace()) {
 			tracer.append(Objects.requireNonNull(subTracer).toString());
 			tracer.append("Shortest path: ").append(path).append("\n");
 			tracer.append("Path length = ").append(dist).append("\n");
 		}
-				
 		return new Relatedness(score, tracer.toString(), null);
 	}
 	

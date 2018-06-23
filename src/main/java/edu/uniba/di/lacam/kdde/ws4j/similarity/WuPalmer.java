@@ -37,20 +37,14 @@ public class WuPalmer extends RelatednessCalculator {
 		StringBuilder tracer = new StringBuilder();
 		if (synset1 == null || synset2 == null) return new Relatedness(min, null, illegalSynset);
 		if (synset1.getSynsetID().equals(synset2.getSynsetID())) return new Relatedness(max, identicalSynset, null);
-		
 		StringBuilder subTracer = WS4JConfiguration.getInstance().useTrace() ? new StringBuilder() : null;
-		
 		List<DepthFinder.Depth> lcsList = depthFinder.getRelatedness(synset1, synset2, subTracer);
 		if (lcsList.size() == 0) return new Relatedness(min);
-		
 		int depth = lcsList.get(0).depth;
 		int depth1 = depthFinder.getShortestDepth(synset1);
 		int depth2 = depthFinder.getShortestDepth(synset2);
 		double score = 0;
-		if (depth1 > 0 && depth2 > 0) {
-			score = (double) (2 * depth) / (double) (depth1 + depth2);
-		}
-		
+		if (depth1 > 0 && depth2 > 0) score = (double) (2 * depth) / (double) (depth1 + depth2);
 		if (WS4JConfiguration.getInstance().useTrace()) {
 			tracer.append(Objects.requireNonNull(subTracer).toString());
 			for (DepthFinder.Depth lcs : lcsList) {
@@ -60,7 +54,6 @@ public class WuPalmer extends RelatednessCalculator {
 			tracer.append("Depth1(").append(synset1.getSynsetID()).append(") = ").append(depth1).append("\n");
 			tracer.append("Depth2(").append(synset2.getSynsetID()).append(") = ").append(depth2).append("\n");
 		}
-		
 		return new Relatedness(score, tracer.toString(), null);
 	}
 	

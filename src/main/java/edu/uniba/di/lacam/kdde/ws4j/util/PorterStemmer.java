@@ -4,14 +4,6 @@ import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Ported from Perl version of Porter Stemmer.
- * 
- * Perl implementation of the porter stemming algorithm described in the paper:
- * "An algorithm for suffix stripping, M. F. Porter"
- *
- * @author Daniel Van Balen
- */
 public class PorterStemmer {
 
     static class StringWrapper {
@@ -199,13 +191,13 @@ public class PorterStemmer {
     private StringWrapper step3(StringWrapper w) {
         String letter = w.word.substring(w.word.length()-1);
         if (letter.equals("e")) {
-            if (sub(w, p_icate, m_gt_0, "ic")) {} else
+            if (sub(w, p_icate, m_gt_0, "IC")) {} else
             if (sub(w, p_ative, m_gt_0, "")) {} else
             if (sub(w, p_alize, m_gt_0, "al")) {}
         } else if (letter.equals("i")) {
-            sub(w, p_iciti, m_gt_0, "ic");
+            sub(w, p_iciti, m_gt_0, "IC");
         } else if (letter.equals("l")) {
-            if (sub(w, p_ical, m_gt_0, "ic")) {} else
+            if (sub(w, p_ical, m_gt_0, "IC")) {} else
             if (sub(w, p_ful, m_gt_0, "")) {}
         } else if (letter.equals("s")) {
             sub(w, p_ness, m_gt_0, "");

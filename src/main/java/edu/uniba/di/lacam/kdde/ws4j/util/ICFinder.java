@@ -13,11 +13,6 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-/**
- * IC: information content
- * 
- * @author Hideki
- */
 final public class ICFinder {
 
 	private static final ICFinder IC = new ICFinder();
@@ -25,12 +20,9 @@ final public class ICFinder {
 	private ConcurrentMap<Integer, Integer> freqV;
 	private ConcurrentMap<Integer, Integer> freqN;
 
-	private final static int rootFreqN = 128767; // sum of all root freq of n in 
-	private final static int rootFreqV = 95935;  // sum of all root freq of v in ic-semcor.dat
-	
-	/**
-	 * Private constructor 
-	 */
+	private final static int rootFreqN = 128767; // sum of all root freq of n in IC-semcor.dat
+	private final static int rootFreqV = 95935;  // sum of all root freq of v in IC-semcor.dat
+
 	private ICFinder(){
 		try {
 			loadIC();
@@ -38,11 +30,7 @@ final public class ICFinder {
 			e.printStackTrace();
 		}
 	}
-	
-	/**
-	 * Singleton pattern
-	 * @return singleton object
-	 */
+
 	public static ICFinder getIC(){
 		return ICFinder.IC;
 	}
@@ -62,11 +50,8 @@ final public class ICFinder {
 				POS pos = POS.valueOf(e.substring(e.length()-1));
 				int id = Integer.parseInt(e.substring(0, e.length()-1));
 				int freq = Integer.parseInt(elements[1]);
-				if (pos.equals(POS.n)) {
-					freqN.put(id, freq);
-				} else if (pos.equals(POS.v)) {
-					freqV.put(id, freq);
-				}
+				if (pos.equals(POS.n)) freqN.put(id, freq);
+				else if (pos.equals(POS.v)) freqV.put(id, freq);
 			}
 		}
 		br.close();
@@ -76,61 +61,39 @@ final public class ICFinder {
 	public List<PathFinder.Subsumer> getLCSbyIC(PathFinder pathFinder, Concept synset1, Concept synset2, StringBuilder tracer) {
 		List<PathFinder.Subsumer> paths = pathFinder.getAllPaths(synset1, synset2, tracer);
 		if (paths == null || paths.size() == 0) return null;
-		
-		for (PathFinder.Subsumer path : paths) {
-			path.ic = ic(pathFinder, path.subsumer);
-		}
-
+		for (PathFinder.Subsumer path : paths) path.ic = IC(pathFinder, path.subsumer);
 		paths.sort((s1, s2) -> Double.compare(s2.ic, s1.ic));
-		
 		List<PathFinder.Subsumer> results = new ArrayList<>(paths.size());
-
 		for (PathFinder.Subsumer path : paths) {
-			if (path.ic == paths.get(0).ic) {
-				results.add(path);
-			}
+			if (path.ic == paths.get(0).ic) results.add(path);
 		}
-		
 		return results;
 	}
 
-	public double ic(PathFinder pathFinder, Concept synset) {
+	public double IC(PathFinder pathFinder, Concept synset) {
 		POS pos = synset.getPOS();
-		
 		if (pos.equals(POS.n) || pos.equals(POS.v)) {
 			double prob = probability(pathFinder, synset);
 			return prob > 0.0D ? - Math.log(prob) : 0.0D;
-		} else {
-			return 0.0D;
-		}
+		} else return 0.0D;
 	}
 
 	private double probability(PathFinder pathFinder, Concept synset) {
 		Concept rootSynset = pathFinder.getRoot(synset.getSynsetID());
 		int rootFreq = 0;
 		if (RelatednessCalculator.useRootNode) {
-			if (synset.getPOS().equals(POS.n)) {
-				rootFreq = rootFreqN; // sum of all root freq of n in ic-semcor.dat
-			} else if (synset.getPOS().equals(POS.v)) {
-				rootFreq = rootFreqV; // sum of all root freq of v in ic-semcor.dat
-			}
-		} else {
-			rootFreq = getFrequency(rootSynset);
-		}
+			if (synset.getPOS().equals(POS.n)) rootFreq = rootFreqN;
+			else if (synset.getPOS().equals(POS.v)) rootFreq = rootFreqV;
+		} else rootFreq = getFrequency(rootSynset);
 		int offFreq = getFrequency(synset);
-		if (offFreq <= rootFreq) {
-			return (double) offFreq / (double) rootFreq;
-		}
+		if (offFreq <= rootFreq) return (double) offFreq / (double) rootFreq;
 		return 0.0D;
 	}
 	
 	public int getFrequency(Concept synset) {
 		if (synset.getSynsetID().equals("0")) {
-			if (synset.getPOS().equals(POS.n)) {
-				return rootFreqN; 
-			} else if (synset.getPOS().equals(POS.v)) {
-				return rootFreqV;
-			}
+			if (synset.getPOS().equals(POS.n)) return rootFreqN;
+			else if (synset.getPOS().equals(POS.v)) return rootFreqV;
 		}
 		int synsetID = Integer.parseInt(synset.getSynsetID().replaceAll("[^\\d]", ""));
 		int freq = 0;

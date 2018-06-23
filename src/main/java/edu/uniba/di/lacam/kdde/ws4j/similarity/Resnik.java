@@ -49,12 +49,9 @@ public class Resnik extends RelatednessCalculator {
 	@Override
 	protected Relatedness calcRelatedness(Concept synset1, Concept synset2) {
 		StringBuilder tracer = new StringBuilder();
-
 		if (synset1 == null || synset2 == null) return new Relatedness(min, null, illegalSynset);
 		if (synset1.getSynsetID().equals(synset2.getSynsetID())) return new Relatedness(max, identicalSynset, null);
-		
 		StringBuilder subTracer = WS4JConfiguration.getInstance().useTrace() ? new StringBuilder() : null;
-		
 		List<PathFinder.Subsumer> lcsList = ICFinder.getIC().getLCSbyIC(pathFinder, synset1, synset2, subTracer);
 		if (Objects.requireNonNull(lcsList).size() == 0) return new Relatedness(min, tracer.toString(), null);
 		if (WS4JConfiguration.getInstance().useTrace()) {
@@ -64,10 +61,8 @@ public class Resnik extends RelatednessCalculator {
 				tracer.append(lcs.subsumer.getSynsetID()).append(" (IC = ").append(lcs.ic).append(")\n");
 			}
 		}
-		
 		PathFinder.Subsumer subsumer = lcsList.get(0);
 		double score = subsumer.ic;
-		
 		return new Relatedness(score, tracer.toString(), null);
 	}
 	

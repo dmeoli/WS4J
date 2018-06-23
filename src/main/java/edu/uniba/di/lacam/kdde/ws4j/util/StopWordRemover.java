@@ -26,7 +26,6 @@ final public class StopWordRemover {
 
 	private synchronized void loadStopList() throws IOException {
 		String stopListFileName = WS4JConfiguration.getInstance().getStopList();
-
 		stopList = new HashSet<>();
 		InputStream stream = StopWordRemover.class.getResourceAsStream("/" + stopListFileName);
 		InputStreamReader isr = new InputStreamReader(stream);
@@ -34,9 +33,7 @@ final public class StopWordRemover {
 		String line;
 		while ((line = br.readLine()) != null) {
 			String stopWord = line.trim();
-			if (stopWord.length() > 0) {
-				stopList.add(stopWord);
-			}
+			if (stopWord.length() > 0) stopList.add(stopWord);
 		}
 		br.close();
 		isr.close();
@@ -45,9 +42,7 @@ final public class StopWordRemover {
 	String[] removeStopWords(String[] words) {
 		List<String> contents = new ArrayList<>(words.length);
 		for (String word : words) {
-			if (!stopList.contains(word)) {
-				contents.add(word);
-			}
+			if (!stopList.contains(word)) contents.add(word);
 		}
 		return contents.toArray(new String[0]);
 	}
