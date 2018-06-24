@@ -116,9 +116,8 @@ public class MITWordNet implements ILexicalDatabase {
         List<String> glosses = new ArrayList<>(linkedSynsets.size());
         for (String linkedSynset : linkedSynsets) {
             String gloss;
-            if (Link.SYNSET.equals(link)) {
-                gloss = synset.getName();
-            } else gloss = dict.getSynset(SynsetID.parseSynsetID(linkedSynset)).getGloss()
+            if (Link.SYNSET.equals(link)) gloss = synset.getName();
+            else gloss = dict.getSynset(SynsetID.parseSynsetID(linkedSynset)).getGloss()
                     .replaceFirst("; \".+", "");
             if (gloss == null) continue;
             gloss = gloss.replaceAll("[.;:,?!(){}\"`$%@<>]", " ")

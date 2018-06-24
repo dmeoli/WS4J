@@ -13,15 +13,15 @@ public enum Link {
     HYPERNYM("Hypernym"),
     HYPONYM("Hyponym"),
     HOLONYM("Holonym"),
-    HOLONYM_MEMBER("Member holonym"),
-    HOLONYM_SUBSTANCE("Substance holonym"),
-    HOLONYM_PART("Part holonym"),
+    HOLONYM_MEMBER("Member Holonym"),
+    HOLONYM_SUBSTANCE("Substance Holonym"),
+    HOLONYM_PART("Part Holonym"),
     MERONYM("Meronym"),
-    MERONYM_MEMBER("Member meronym"),
-    MERONYM_SUBSTANCE("Substance meronym"),
-    MERONYM_PART("Part meronym"),
+    MERONYM_MEMBER("Member Meronym"),
+    MERONYM_SUBSTANCE("Substance Meronym"),
+    MERONYM_PART("Part Meronym"),
     SIMILAR_TO("Similar To"),
-    SYNSET("Synset words");
+    SYNSET("Synset Words");
 
     private final String name;
 

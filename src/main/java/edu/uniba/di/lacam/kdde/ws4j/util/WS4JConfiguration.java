@@ -32,7 +32,7 @@ final public class WS4JConfiguration {
 			memoryDB = readInt("memoryDB", 1) == 1;
 			infoContent = readString("infoContent","ic-semcor.dat");
 			stem = readInt("stem",0) == 1;
-			stopList = readString("stopList", "stopList.txt");
+			stopList = readString("stopList", "stopList");
 			leskNormalize = readInt("leskNormalize", 0) == 1;
 			mfs = readInt("MFS", 0) == 1;
 			stream.close();
