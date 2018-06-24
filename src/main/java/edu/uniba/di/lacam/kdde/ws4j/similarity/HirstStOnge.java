@@ -2,7 +2,7 @@ package edu.uniba.di.lacam.kdde.ws4j.similarity;
 
 import edu.uniba.di.lacam.kdde.lexical_db.ILexicalDatabase;
 import edu.uniba.di.lacam.kdde.lexical_db.data.Concept;
-import edu.uniba.di.lacam.kdde.lexical_db.data.POS;
+import edu.uniba.di.lacam.kdde.lexical_db.item.POS;
 import edu.uniba.di.lacam.kdde.ws4j.util.Traverser;
 import edu.uniba.di.lacam.kdde.ws4j.Relatedness;
 import edu.uniba.di.lacam.kdde.ws4j.RelatednessCalculator;
@@ -42,10 +42,10 @@ public class HirstStOnge extends RelatednessCalculator {
 	protected static double max = 16.0D;
 
 	private static List<POS[]> POSPairs = new ArrayList<POS[]>(){{
-		add(new POS[]{POS.n, POS.n});
-		add(new POS[]{POS.v, POS.v});
-		add(new POS[]{POS.a, POS.a});
-		add(new POS[]{POS.r, POS.r});
+		add(new POS[]{POS.NOUN, POS.NOUN});
+		add(new POS[]{POS.VERB, POS.VERB});
+		add(new POS[]{POS.ADJECTIVE, POS.ADJECTIVE});
+		add(new POS[]{POS.ADVERB, POS.ADVERB});
 	}};
 	
 	public HirstStOnge(ILexicalDatabase db) {

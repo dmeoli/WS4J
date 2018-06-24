@@ -6,8 +6,8 @@ import edu.mit.jwi.RAMDictionary;
 import edu.mit.jwi.data.ILoadPolicy;
 import edu.mit.jwi.item.*;
 import edu.uniba.di.lacam.kdde.lexical_db.data.Concept;
-import edu.uniba.di.lacam.kdde.lexical_db.data.Link;
-import edu.uniba.di.lacam.kdde.lexical_db.data.POS;
+import edu.uniba.di.lacam.kdde.lexical_db.item.Link;
+import edu.uniba.di.lacam.kdde.lexical_db.item.POS;
 import edu.uniba.di.lacam.kdde.ws4j.util.Log;
 import edu.uniba.di.lacam.kdde.ws4j.util.PorterStemmer;
 import edu.uniba.di.lacam.kdde.ws4j.util.WS4JConfiguration;
@@ -52,37 +52,37 @@ public class MITWordNet implements ILexicalDatabase {
         if (WS4JConfiguration.getInstance().useCache()) cache = new ConcurrentHashMap<>();
         if (WS4JConfiguration.getInstance().useStem()) stemmer = new PorterStemmer();
         mapLinkToPointer = new HashMap<>();
-        mapLinkToPointer.put(Link.hype, Pointer.HYPERNYM);
-        mapLinkToPointer.put(Link.hypo, Pointer.HYPONYM);
-        mapLinkToPointer.put(Link.hmem, Pointer.HOLONYM_MEMBER);
-        mapLinkToPointer.put(Link.hsub, Pointer.HOLONYM_SUBSTANCE);
-        mapLinkToPointer.put(Link.hprt, Pointer.HOLONYM_PART);
-        mapLinkToPointer.put(Link.mmem, Pointer.MERONYM_MEMBER);
-        mapLinkToPointer.put(Link.msub, Pointer.MERONYM_SUBSTANCE);
-        mapLinkToPointer.put(Link.mprt, Pointer.MERONYM_PART);
-        mapLinkToPointer.put(Link.caus, Pointer.CAUSE);
-        mapLinkToPointer.put(Link.enta, Pointer.ENTAILMENT);
-        mapLinkToPointer.put(Link.ants, Pointer.ANTONYM);
-        mapLinkToPointer.put(Link.attr, Pointer.ATTRIBUTE);
-        mapLinkToPointer.put(Link.sim, Pointer.SIMILAR_TO);
+        mapLinkToPointer.put(Link.HYPERNYM, Pointer.HYPERNYM);
+        mapLinkToPointer.put(Link.HYPONYM, Pointer.HYPONYM);
+        mapLinkToPointer.put(Link.HOLONYM_MEMBER, Pointer.HOLONYM_MEMBER);
+        mapLinkToPointer.put(Link.HOLONYM_SUBSTANCE, Pointer.HOLONYM_SUBSTANCE);
+        mapLinkToPointer.put(Link.HOLONYM_PART, Pointer.HOLONYM_PART);
+        mapLinkToPointer.put(Link.MERONYM_MEMBER, Pointer.MERONYM_MEMBER);
+        mapLinkToPointer.put(Link.MERONYM_SUBSTANCE, Pointer.MERONYM_SUBSTANCE);
+        mapLinkToPointer.put(Link.MERONYM_PART, Pointer.MERONYM_PART);
+        mapLinkToPointer.put(Link.CAUSE, Pointer.CAUSE);
+        mapLinkToPointer.put(Link.ENTAILMENT, Pointer.ENTAILMENT);
+        mapLinkToPointer.put(Link.ANTONYM, Pointer.ANTONYM);
+        mapLinkToPointer.put(Link.ATTRIBUTE, Pointer.ATTRIBUTE);
+        mapLinkToPointer.put(Link.SIMILAR_TO, Pointer.SIMILAR_TO);
     }
 
     @Override
     public Concept getMostFrequentConcept(String lemma, POS pos) {
-        IIndexWord iIndexWord = dict.getIndexWord(lemma, edu.mit.jwi.item.POS.getPartOfSpeech(pos.name().charAt(0)));
+        IIndexWord iIndexWord = dict.getIndexWord(lemma, edu.mit.jwi.item.POS.getPartOfSpeech(pos.getTag()));
         return iIndexWord != null ? new Concept(iIndexWord.getWordIDs().get(0).getSynsetID().toString(), pos, lemma) : null;
     }
 
     @Override
     public List<Concept> getAllConcepts(String lemma, POS pos) {
-        IIndexWord iIndexWord = dict.getIndexWord(lemma, edu.mit.jwi.item.POS.getPartOfSpeech(pos.name().charAt(0)));
+        IIndexWord iIndexWord = dict.getIndexWord(lemma, edu.mit.jwi.item.POS.getPartOfSpeech(pos.getTag()));
         return iIndexWord != null ? iIndexWord.getWordIDs().stream().map(iWordID -> new Concept(
                 iWordID.getSynsetID().toString(), pos, lemma)).collect(Collectors.toList()) : Collections.emptyList();
     }
 
     @Override
-    public List<String> linkToSynsets(String synset, Link link) {
-       return dict.getSynset(SynsetID.parseSynsetID(synset)).getRelatedSynsets(mapLinkToPointer.get(link))
+    public List<String> linkToSynsets(String synset, Link point) {
+       return dict.getSynset(SynsetID.parseSynsetID(synset)).getRelatedSynsets(mapLinkToPointer.get(point))
                .stream().map(Object::toString).collect(Collectors.toList());
     }
 
@@ -93,36 +93,30 @@ public class MITWordNet implements ILexicalDatabase {
     }
 
     @Override
-    public List<String> getGloss(Concept synset, String linkString) {
-        String key = synset + " " + linkString;
+    public List<String> getGloss(Concept synset, Link link) {
+        String key = synset + " " + link;
         if (WS4JConfiguration.getInstance().useCache()) {
             List<String> cachedObj = cache.get(key);
             if (cachedObj != null) return new ArrayList<>(cachedObj);
         }
         List<String> linkedSynsets = new ArrayList<>();
-        Link link = null;
-        try {
-            link = Link.valueOf(linkString);
-            if (link.equals(Link.mero)) {
-                linkedSynsets.addAll(linkToSynsets(synset.getSynsetID(), Link.mmem));
-                linkedSynsets.addAll(linkToSynsets(synset.getSynsetID(), Link.msub));
-                linkedSynsets.addAll(linkToSynsets(synset.getSynsetID(), Link.mprt));
-            } else if (link.equals(Link.holo)) {
-                linkedSynsets.addAll(linkToSynsets(synset.getSynsetID(), Link.hmem));
-                linkedSynsets.addAll(linkToSynsets(synset.getSynsetID(), Link.hsub));
-                linkedSynsets.addAll(linkToSynsets(synset.getSynsetID(), Link.hprt));
-            } else if (link.equals(Link.syns)) {
-                linkedSynsets.add(synset.getSynsetID());
-            } else {
-                linkedSynsets.addAll(linkToSynsets(synset.getSynsetID(), link));
-            }
-        } catch (IllegalArgumentException e) {
+        if (link == null || link.equals(Link.SYNSET)) {
             linkedSynsets.add(synset.getSynsetID());
+        } else if (link.equals(Link.MERONYM)) {
+            linkedSynsets.addAll(linkToSynsets(synset.getSynsetID(), Link.MERONYM_MEMBER));
+            linkedSynsets.addAll(linkToSynsets(synset.getSynsetID(), Link.MERONYM_SUBSTANCE));
+            linkedSynsets.addAll(linkToSynsets(synset.getSynsetID(), Link.MERONYM_PART));
+        } else if (link.equals(Link.HOLONYM)) {
+            linkedSynsets.addAll(linkToSynsets(synset.getSynsetID(), Link.HOLONYM_MEMBER));
+            linkedSynsets.addAll(linkToSynsets(synset.getSynsetID(), Link.HOLONYM_SUBSTANCE));
+            linkedSynsets.addAll(linkToSynsets(synset.getSynsetID(), Link.HOLONYM_PART));
+        } else {
+            linkedSynsets.addAll(linkToSynsets(synset.getSynsetID(), link));
         }
         List<String> glosses = new ArrayList<>(linkedSynsets.size());
         for (String linkedSynset : linkedSynsets) {
             String gloss;
-            if (Link.syns.equals(link)) {
+            if (Link.SYNSET.equals(link)) {
                 gloss = synset.getName();
             } else gloss = dict.getSynset(SynsetID.parseSynsetID(linkedSynset)).getGloss()
                     .replaceFirst("; \".+", "");

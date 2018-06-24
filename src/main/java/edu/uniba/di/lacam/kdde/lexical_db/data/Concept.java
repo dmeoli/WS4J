@@ -1,5 +1,7 @@
 package edu.uniba.di.lacam.kdde.lexical_db.data;
 
+import edu.uniba.di.lacam.kdde.lexical_db.item.POS;
+
 public class Concept {
 
     private String synsetID;

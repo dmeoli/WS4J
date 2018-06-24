@@ -2,7 +2,7 @@ package edu.uniba.di.lacam.kdde.ws4j;
 
 import edu.uniba.di.lacam.kdde.lexical_db.ILexicalDatabase;
 import edu.uniba.di.lacam.kdde.lexical_db.data.Concept;
-import edu.uniba.di.lacam.kdde.lexical_db.data.POS;
+import edu.uniba.di.lacam.kdde.lexical_db.item.POS;
 import edu.uniba.di.lacam.kdde.ws4j.util.*;
 
 import java.util.List;

@@ -3,7 +3,7 @@ package edu.uniba.di.lacam.kdde.ws4j.util;
 import edu.uniba.di.lacam.kdde.lexical_db.ILexicalDatabase;
 import edu.uniba.di.lacam.kdde.lexical_db.MITWordNet;
 import edu.uniba.di.lacam.kdde.lexical_db.data.Concept;
-import edu.uniba.di.lacam.kdde.lexical_db.data.Link;
+import edu.uniba.di.lacam.kdde.lexical_db.item.Link;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -43,11 +43,11 @@ public class Traverser {
 			Set<String> cachedObj = horizonCache.get(synset);
 			if (cachedObj != null) return cachedObj;
 		}
-		List<Link> links = new ArrayList<>();
-		links.add(Link.ants);
-		links.add(Link.attr);
-		links.add(Link.sim);
-		Set<String> result = getGroupedSynsets(synset, links);
+		List<Link> points = new ArrayList<>();
+		points.add(Link.ANTONYM);
+		points.add(Link.ATTRIBUTE);
+		points.add(Link.SIMILAR_TO);
+		Set<String> result = getGroupedSynsets(synset, points);
 		if (WS4JConfiguration.getInstance().useCache()) if (result != null) horizonCache.put(synset, result);
 		return result;
 	}
@@ -57,13 +57,13 @@ public class Traverser {
 			Set<String> cachedObj = upwardCache.get(synset);
 			if (cachedObj != null) return cachedObj;
 		}
-		List<Link> links = new ArrayList<>();
-		links.add(Link.hype);
-		links.add(Link.mero);
-		links.add(Link.mmem);
-		links.add(Link.mprt);
-		links.add(Link.msub);
-		Set<String> result = getGroupedSynsets(synset, links);
+		List<Link> points = new ArrayList<>();
+		points.add(Link.HYPERNYM);
+		points.add(Link.MERONYM);
+		points.add(Link.MERONYM_MEMBER);
+		points.add(Link.MERONYM_PART);
+		points.add(Link.MERONYM_SUBSTANCE);
+		Set<String> result = getGroupedSynsets(synset, points);
 		if (WS4JConfiguration.getInstance().useCache()) if (result != null) upwardCache.put(synset, result);
 		return result;
 	}
@@ -73,22 +73,22 @@ public class Traverser {
 			Set<String> cachedObj = downwardCache.get(synset);
 			if (cachedObj != null) return cachedObj;
 		}
-		List<Link> links = new ArrayList<>();
-		links.add(Link.caus);
-		links.add(Link.enta);
-		links.add(Link.holo);
-		links.add(Link.hmem);
-		links.add(Link.hsub);
-		links.add(Link.hprt);
-		links.add(Link.hypo);
-		Set<String> result = getGroupedSynsets(synset, links);
+		List<Link> points = new ArrayList<>();
+		points.add(Link.CAUSE);
+		points.add(Link.ENTAILMENT);
+		points.add(Link.HOLONYM);
+		points.add(Link.HOLONYM_MEMBER);
+		points.add(Link.HOLONYM_SUBSTANCE);
+		points.add(Link.HOLONYM_PART);
+		points.add(Link.HYPONYM);
+		Set<String> result = getGroupedSynsets(synset, points);
 		if (WS4JConfiguration.getInstance().useCache()) if (result != null) downwardCache.put(synset, result);
 		return result;
 	}
 
-	private static Set<String> getGroupedSynsets(String synset, List<Link> links) {
+	private static Set<String> getGroupedSynsets(String synset, List<Link> points) {
 		Set<String> synsets = new HashSet<>();
-		links.forEach(link -> synsets.addAll(db.linkToSynsets(synset, link)));
+		points.forEach(point -> synsets.addAll(db.linkToSynsets(synset, point)));
 		return synsets;
 	}
 }

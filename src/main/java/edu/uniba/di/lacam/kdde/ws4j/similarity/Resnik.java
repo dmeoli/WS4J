@@ -2,7 +2,7 @@ package edu.uniba.di.lacam.kdde.ws4j.similarity;
 
 import edu.uniba.di.lacam.kdde.lexical_db.ILexicalDatabase;
 import edu.uniba.di.lacam.kdde.lexical_db.data.Concept;
-import edu.uniba.di.lacam.kdde.lexical_db.data.POS;
+import edu.uniba.di.lacam.kdde.lexical_db.item.POS;
 import edu.uniba.di.lacam.kdde.ws4j.util.ICFinder;
 import edu.uniba.di.lacam.kdde.ws4j.util.PathFinder;
 import edu.uniba.di.lacam.kdde.ws4j.Relatedness;
@@ -38,8 +38,8 @@ public class Resnik extends RelatednessCalculator {
 	protected static double max = Double.MAX_VALUE;
 
 	private static List<POS[]> POSPairs = new ArrayList<POS[]>(){{
-		add(new POS[]{POS.n, POS.n});
-		add(new POS[]{POS.v, POS.v});
+		add(new POS[]{POS.NOUN, POS.NOUN});
+		add(new POS[]{POS.VERB, POS.VERB});
 	}};
 
 	public Resnik(ILexicalDatabase db) {

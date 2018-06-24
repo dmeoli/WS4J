@@ -1,7 +1,7 @@
 package edu.uniba.di.lacam.kdde.ws4j.util;
 
 import edu.uniba.di.lacam.kdde.lexical_db.data.Concept;
-import edu.uniba.di.lacam.kdde.lexical_db.data.POS;
+import edu.uniba.di.lacam.kdde.lexical_db.item.POS;
 import edu.uniba.di.lacam.kdde.ws4j.Relatedness;
 import edu.uniba.di.lacam.kdde.ws4j.RelatednessCalculator;
 
@@ -23,21 +23,13 @@ public class WordSimilarityCalculator {
 		POS pos1 = null;
 		int offset1 = word1.indexOf("#");
 		if (offset1 != -1) {
-            try {
-                pos1 = POS.valueOf(word1.substring(offset1+1));
-            } catch (IllegalArgumentException e) {
-                return rc.getMin();
-            }
+            if ((pos1 = POS.getPOS(word1.charAt(offset1+1))) == null) return rc.getMin();
             word1 = word1.substring(0, offset1);
 		}
 		POS pos2 = null;
 		int offset2 = word2.indexOf("#");
 		if (offset2 != -1) {
-            try {
-                pos2 = POS.valueOf(word2.substring(offset2+1));
-            } catch (IllegalArgumentException e) {
-                return rc.getMin();
-            }
+		    if ((pos2 = POS.getPOS(word2.charAt(offset2+1))) == null) return rc.getMin();
             word2 = word2.substring(0, offset2);
 		}
 		if (WS4JConfiguration.getInstance().useCache()) {

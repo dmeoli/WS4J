@@ -2,7 +2,7 @@ package edu.uniba.di.lacam.kdde.ws4j.similarity;
 
 import edu.uniba.di.lacam.kdde.lexical_db.ILexicalDatabase;
 import edu.uniba.di.lacam.kdde.lexical_db.data.Concept;
-import edu.uniba.di.lacam.kdde.lexical_db.data.POS;
+import edu.uniba.di.lacam.kdde.lexical_db.item.POS;
 import edu.uniba.di.lacam.kdde.ws4j.util.GlossFinder;
 import edu.uniba.di.lacam.kdde.ws4j.util.OverlapFinder;
 import edu.uniba.di.lacam.kdde.ws4j.util.WS4JConfiguration;
@@ -35,12 +35,12 @@ public class Lesk extends RelatednessCalculator {
 	private GlossFinder glossFinder;
 
 	private static List<POS[]> POSPairs = new ArrayList<POS[]>(){{
-		add(new POS[]{POS.n, POS.n});
-		add(new POS[]{POS.v, POS.v});
-		add(new POS[]{POS.a, POS.a});
-		add(new POS[]{POS.r, POS.r});
-		add(new POS[]{POS.n, POS.v});
-		add(new POS[]{POS.v, POS.n});
+		add(new POS[]{POS.NOUN, POS.NOUN});
+		add(new POS[]{POS.VERB, POS.VERB});
+		add(new POS[]{POS.ADJECTIVE, POS.ADJECTIVE});
+		add(new POS[]{POS.ADVERB, POS.ADVERB});
+		add(new POS[]{POS.NOUN, POS.VERB});
+		add(new POS[]{POS.VERB, POS.NOUN});
 	}};
 
 	private StringBuilder overlapLog;

@@ -2542,7 +2542,7 @@ cross-fertilise v 2 3 @ > + 2 0 00053889 00053656
 cross-fertilize v 2 3 @ > + 2 0 00053889 00053656  
 cross-file v 1 2 @ ~ 1 0 02472033  
 cross-index v 1 2 @ + 1 0 02472958  
-cross-link v 1 2 @ + 1 0 01291527  
+cross-point v 1 2 @ + 1 0 01291527
 cross-pollinate v 1 2 @ + 1 0 00054059  
 cross-refer v 1 1 @ 1 0 01025935  
 cross_examine v 1 2 @ + 1 0 00787049  
@@ -6077,7 +6077,7 @@ linearise v 1 1 @ 1 0 00489145
 linearize v 1 1 @ 1 0 00489145  
 linger v 5 5 ! @ ~ ^ + 5 4 02731242 02639075 02011560 02058590 02640906  
 linger_over v 1 1 @ 1 0 02640226  
-link v 4 4 @ ~ + ; 4 3 00713167 01354673 02622234 01492052  
+point v 4 4 @ ~ + ; 4 3 00713167 01354673 02622234 01492052
 link_up v 3 3 @ ~ + 3 0 02622234 01354673 00713167  
 lionise v 1 1 @ 1 0 02398956  
 lionize v 1 2 @ + 1 1 02398956  

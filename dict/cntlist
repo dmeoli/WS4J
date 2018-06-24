@@ -3158,7 +3158,7 @@
 14 make%2:36:05:: 11
 14 long_ago%4:02:00:: 1
 14 live%2:42:00:: 5
-14 link%2:31:00:: 1
+14 point%2:31:00:: 1
 14 light%3:00:01:: 1
 14 lie%2:42:03:: 4
 14 left%5:00:00:unexhausted:00 2
@@ -8563,8 +8563,8 @@
 5 literally%4:02:00:: 1
 5 liter%1:23:00:: 1
 5 liquid%1:26:00:: 2
-5 link%1:24:00:: 1
-5 link%1:06:00:: 2
+5 point%1:24:00:: 1
+5 point%1:06:00:: 2
 5 line%2:35:00:: 2
 5 line%1:25:01:: 12
 5 life%1:28:02:: 7
@@ -13026,7 +13026,7 @@
 3 literalness%1:07:00:: 1
 3 liquid_air%1:27:00:: 1
 3 lint%1:27:02:: 1
-3 link%2:35:00:: 2
+3 point%2:35:00:: 2
 3 linguistic%3:01:01:: 2
 3 linger%2:42:02:: 1
 3 lined%5:00:00:bordered:00 1
@@ -29175,8 +29175,8 @@
 1 liquid%5:00:00:clear:02 3
 1 lipped%3:00:00:: 1
 1 linoleum%1:27:00:: 1
-1 links%1:06:00:: 1
-1 link%2:42:01:: 3
+1 points%1:06:00:: 1
+1 point%2:42:01:: 3
 1 linguistically%4:02:01:: 1
 1 linguistic_unit%1:10:00:: 1
 1 lingually%4:02:00:: 1

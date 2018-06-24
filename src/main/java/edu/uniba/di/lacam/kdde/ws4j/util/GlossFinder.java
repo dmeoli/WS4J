@@ -2,19 +2,44 @@ package edu.uniba.di.lacam.kdde.ws4j.util;
 
 import edu.uniba.di.lacam.kdde.lexical_db.ILexicalDatabase;
 import edu.uniba.di.lacam.kdde.lexical_db.data.Concept;
+import edu.uniba.di.lacam.kdde.lexical_db.item.Link;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class GlossFinder {
 
-	private static String[] pairs = {
-			"    :    ", "    :hype", "    :hypo", "    :mero", "    :holo",
-			"hype:    ", "hype:hype", "hype:hypo", "hype:mero", "hype:holo",
-			"hypo:    ", "hypo:hype", "hypo:hypo", "hypo:mero", "hypo:holo",
-			"mero:    ", "mero:hype", "mero:hypo", "mero:mero", "mero:holo",
-			"syns:    ", "syns:hype", "syns:hypo", "syns:mero", "syns:holo"
-	};
+	private static List<Link[]> linkPairs = new ArrayList<Link[]>(){{
+		add(new Link[]{null, null});
+		add(new Link[]{null, Link.HYPERNYM});
+		add(new Link[]{null, Link.HYPONYM});
+		add(new Link[]{null, Link.MERONYM});
+		add(new Link[]{null, Link.HOLONYM});
+
+		add(new Link[]{Link.HYPERNYM, null});
+		add(new Link[]{Link.HYPERNYM, Link.HYPERNYM});
+		add(new Link[]{Link.HYPERNYM, Link.HYPONYM});
+		add(new Link[]{Link.HYPERNYM, Link.MERONYM});
+		add(new Link[]{Link.HYPERNYM, Link.HOLONYM});
+
+		add(new Link[]{Link.HYPONYM, null});
+		add(new Link[]{Link.HYPONYM, Link.HYPERNYM});
+		add(new Link[]{Link.HYPONYM, Link.HYPONYM});
+        add(new Link[]{Link.HYPONYM, Link.MERONYM});
+        add(new Link[]{Link.HYPONYM, Link.HOLONYM});
+
+        add(new Link[]{Link.MERONYM, null});
+        add(new Link[]{Link.MERONYM, Link.HYPERNYM});
+        add(new Link[]{Link.MERONYM, Link.HYPONYM});
+        add(new Link[]{Link.MERONYM, Link.MERONYM});
+        add(new Link[]{Link.MERONYM, Link.HOLONYM});
+
+        add(new Link[]{Link.SYNSET, null});
+        add(new Link[]{Link.SYNSET, Link.HYPERNYM});
+        add(new Link[]{Link.SYNSET, Link.HYPONYM});
+        add(new Link[]{Link.SYNSET, Link.MERONYM});
+        add(new Link[]{Link.SYNSET, Link.HOLONYM});
+	}};
 
 	private ILexicalDatabase db;
 
@@ -23,14 +48,13 @@ public class GlossFinder {
 	}
 
 	public List<SuperGloss> getSuperGlosses(Concept synset1, Concept synset2) {
-		List<SuperGloss> glosses = new ArrayList<>(pairs.length);
-		for (String pair : pairs) {
-			String[] links = pair.split(":");
+		List<SuperGloss> glosses = new ArrayList<>(linkPairs.size());
+		for (Link[] links : linkPairs) {
 			SuperGloss sg = new SuperGloss();
 			sg.gloss1 = db.getGloss(synset1, links[0]);
 			sg.gloss2 = db.getGloss(synset2, links[1]);
-			sg.link1  = links[0];
-			sg.link2  = links[1];
+			sg.link1  = links[0] != null ? links[0].getName() : " ";
+			sg.link2  = links[1] != null ? links[1].getName() : " ";
 			sg.weight = 1.0D;
 			glosses.add(sg);
 		}

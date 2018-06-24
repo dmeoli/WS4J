@@ -55,7 +55,7 @@ public class HirstStOngeTest extends RelatednessCalculatorTest {
 	@Test
 	public void testHappyPathOnWordsWithPOS() {
 		assertEquals(5, rc.calcRelatednessOfWords(nv1 + "#n", nv2 + "#n"), 0.0001D);
-		assertEquals(0, rc.calcRelatednessOfWords(nv1 + "#n", nv2 + "#v"), 0.0001D);
+		assertEquals(0, rc.calcRelatednessOfWords(nv1 + "#n", nv2 + "v"), 0.0001D);
 		assertEquals(0, rc.calcRelatednessOfWords(nv1 + "#v", nv2 + "#n"), 0.0001D);
 		assertEquals(6, rc.calcRelatednessOfWords(nv1 + "#v", nv2 + "#v"), 0.0001D);
 		assertEquals(0, rc.calcRelatednessOfWords(nv1 + "#other", nv2 + "#other"), 0.0001D);

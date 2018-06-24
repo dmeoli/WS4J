@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import edu.uniba.di.lacam.kdde.lexical_db.ILexicalDatabase;
 import edu.uniba.di.lacam.kdde.lexical_db.data.Concept;
-import edu.uniba.di.lacam.kdde.lexical_db.data.Link;
+import edu.uniba.di.lacam.kdde.lexical_db.item.Link;
 
 public class PathFinder {
 
@@ -140,7 +140,7 @@ public class PathFinder {
 			return trees;
 		}
 
-		List<String> synLinks = db.linkToSynsets(synset, Link.hype);
+		List<String> synLinks = db.linkToSynsets(synset, Link.HYPERNYM);
 		
 		List<List<String>> returnList = new ArrayList<>();
 		if (synLinks.size() == 0) {
