@@ -12,6 +12,8 @@ import java.util.List;
  */
 public interface ILexicalDatabase {
 
+    Concept getConcept(String lemma, POS pos, int sense);
+
     Concept getMostFrequentConcept(String lemma, POS pos);
 
     List<Concept> getAllConcepts(String lemma, POS pos);
@@ -20,5 +22,5 @@ public interface ILexicalDatabase {
 
     List<String> findWordsBySynset(String synset);
 
-    List<String> getGloss(Concept synset, Link link);
+    List<String> getGloss(Concept concept, Link link);
 }

@@ -26,10 +26,10 @@ public class Traverser {
 		}
 	}
 
-	public static boolean contained(Concept synset1, Concept synset2) {
-		if (synset1 == null || synset2 == null) return false;
-		List<String> wordsH = db.findWordsBySynset(synset1.getSynsetID());
-		List<String> wordsN = db.findWordsBySynset(synset2.getSynsetID());
+	public static boolean contained(Concept concept1, Concept concept2) {
+		if (concept1 == null || concept2 == null) return false;
+		List<String> wordsH = db.findWordsBySynset(concept1.getSynsetID());
+		List<String> wordsN = db.findWordsBySynset(concept2.getSynsetID());
 		for (String wordH : wordsH) {
 			for (String wordN : wordsN) {
 				if (wordH.contains(wordN) || wordN.contains(wordH)) return true;

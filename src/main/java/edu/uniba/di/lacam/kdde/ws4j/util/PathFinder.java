@@ -1,13 +1,10 @@
 package edu.uniba.di.lacam.kdde.ws4j.util;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import com.google.common.collect.Lists;
 import edu.uniba.di.lacam.kdde.lexical_db.ILexicalDatabase;
 import edu.uniba.di.lacam.kdde.lexical_db.data.Concept;
 import edu.uniba.di.lacam.kdde.lexical_db.item.Link;
@@ -23,125 +20,93 @@ public class PathFinder {
 	private static ConcurrentMap<String, List<List<String>>> cache;
 
 	static {
-		if (WS4JConfiguration.getInstance().useCache()) {
-			cache = new ConcurrentHashMap<>();
-		}
+		if (WS4JConfiguration.getInstance().useCache()) cache = new ConcurrentHashMap<>();
 	}
 
 	List<Subsumer> getAllPaths(Concept synset1, Concept synset2, StringBuilder tracer) {
 		List<Subsumer> paths = new ArrayList<>();
-
 		Set<String> history = new HashSet<>();
 		List<List<String>> lTrees = getHypernymTrees(synset1.getSynsetID(),history);
-
 		history = new HashSet<>();
 		List<List<String>> rTrees = getHypernymTrees(synset2.getSynsetID(),history);
-
 		if (lTrees == null || rTrees == null) return null;
-		
 		for (List<String> lTree : lTrees) {
 			for (List<String> rTree : rTrees) {
 				String subsumer = getSubsumerFromTrees(lTree, rTree);
-
 				if (subsumer == null) continue;
-
 				int lCount = 0;
 				List<String> lPath = new ArrayList<>(lTree.size());
-				List<String> reversedLTree = CollectionUtil.reverse(lTree); 
-				
+				List<String> reversedLTree = Lists.reverse(lTree);
 				for (String synset : reversedLTree) {
 					lCount++;
 					if (synset.equals(subsumer)) break;
 					lPath.add(synset);
 				}
-
 				int rCount = 0;
 				List<String> rPath = new ArrayList<>(rTree.size());
-				List<String> reversedRTree = CollectionUtil.reverse(rTree); 
+				List<String> reversedRTree = Lists.reverse(rTree);
 				for (String synset : reversedRTree) {
 					rCount++;
 					if (synset.equals(subsumer)) break;
 					rPath.add(synset);
 				}
-
 				Subsumer sub = new Subsumer();
 				sub.subsumer = new Concept(subsumer, synset1.getPOS());
 				sub.length = rCount + lCount - 1;
 				sub.lPath = lPath;
 				sub.rPath = rPath;
 				paths.add(sub);
-
 				if (tracer != null) {
 					tracer.append("HyperTree1:");
-					for (String synset : lTree) {
-						tracer.append(" ").append(synset);
-					}
+					for (String synset : lTree) tracer.append(" ").append(synset);
 					tracer.append("\n");
 					tracer.append("HyperTree2:");
-					for (String synset : rTree) {
-						tracer.append(" ").append(synset);
-					}
+					for (String synset : rTree) tracer.append(" ").append(synset);
 					tracer.append("\n");
 				}
 			}
 		}
-
 		paths.sort(Comparator.comparingInt(s -> s.length));
-
 		return paths;
 	}
 
 	public List<Subsumer> getShortestPaths(Concept synset1, Concept synset2, StringBuilder tracer) {
 		List<Subsumer> returnList = new ArrayList<>();
 		List<Subsumer> paths = getAllPaths(synset1, synset2, tracer);
-		if (paths == null || paths.size() == 0)
-			return returnList;
+		if (paths == null || paths.size() == 0) return returnList;
 		int bestLength = paths.get(0).length;
-
 		returnList.add(paths.get(0));
 		for (int i = 1; i < paths.size(); i++) {
-			if (paths.get(i).length > bestLength)
-				break;
+			if (paths.get(i).length > bestLength) break;
 			returnList.add(paths.get(i));
 		}
 		return returnList;
 	}
 
 	private static String getSubsumerFromTrees(List<String> list1, List<String> list2) {
-		List<String> tree1 = CollectionUtil.reverse(list1);
-		List<String> tree2 = CollectionUtil.reverse(list2);
-
-		String tree1Joined = " " + CollectionUtil.join(" ", tree1) + " ";
+		List<String> tree1 = Lists.reverse(list1);
+		List<String> tree2 = Lists.reverse(list2);
+		String tree1Joined = " " + String.join(" ", tree1) + " ";
 		for (String synset2 : tree2) {
-			if (tree1Joined.contains(synset2)) {
-				return synset2;
-			}
+			if (tree1Joined.contains(synset2)) return synset2;
 		}
-
 		return null;
 	}
 
 	List<List<String>> getHypernymTrees(String synset, Set<String> history) {
-		WS4JConfiguration.getInstance().setCache(false);
-
         if (WS4JConfiguration.getInstance().useCache()) {
 			List<List<String>> cachedObj = cache.get(synset);
 			if (cachedObj != null) return clone(cachedObj);
 		}
-
 		if (synset.equals("0")) {
 			List<String> tree = new ArrayList<>();
 			tree.add("0");
 			List<List<String>> trees = new ArrayList<>();
 			trees.add(tree);
-			if (WS4JConfiguration.getInstance().useCache()) {
-				cache.put(synset, clone(trees));
-			}
+			if (WS4JConfiguration.getInstance().useCache()) cache.put(synset, clone(trees));
 			return trees;
 		}
-
 		List<String> synLinks = db.linkToSynsets(synset, Link.HYPERNYM);
-		
 		List<List<String>> returnList = new ArrayList<>();
 		if (synLinks.size() == 0) {
 			List<String> tree = new ArrayList<>();
@@ -152,7 +117,6 @@ public class PathFinder {
 			for (String hypernym : synLinks) {
 				if (history.contains(hypernym)) continue;
 				history.add(hypernym);
-				
 				List<List<String>> hypernymTrees = getHypernymTrees(hypernym, history);
 				if (hypernymTrees != null) {
 					for (List<String> hypernymTree : hypernymTrees) {
@@ -168,10 +132,7 @@ public class PathFinder {
 				}
 			}
 		}
-
-		if (WS4JConfiguration.getInstance().useCache()) {
-			cache.put(synset, clone(returnList));
-		}
+		if (WS4JConfiguration.getInstance().useCache()) cache.put(synset, clone(returnList));
 		return returnList;
 	}
 

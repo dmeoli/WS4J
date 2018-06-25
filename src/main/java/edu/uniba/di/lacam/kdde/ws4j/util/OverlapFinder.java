@@ -41,7 +41,7 @@ public class OverlapFinder {
 				if (containsReplace(words1, words0, i, stringEnd)) {
 					List<String> words0Sub = new ArrayList<>(stringEnd - i+1);
                     words0Sub.addAll(Arrays.asList(words0).subList(i, stringEnd+1));
-					String temp = CollectionUtil.join(" ", words0Sub);
+					String temp = String.join(" ", words0Sub);
 					synchronized (overlaps.getOverlapsHash()) {
 						int v = overlaps.getOverlapsHash().get(temp) != null ? overlaps.getOverlapsHash().get(temp) : 0;
 						overlaps.getOverlapsHash().put(temp, v+1);

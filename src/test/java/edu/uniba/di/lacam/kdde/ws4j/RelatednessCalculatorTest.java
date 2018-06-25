@@ -13,10 +13,10 @@ abstract public class RelatednessCalculatorTest {
 	private static ILexicalDatabase db;
 
 	static {
-		db = new MITWordNet();
 		WS4JConfiguration.getInstance().setMemoryDB(false);
 		WS4JConfiguration.getInstance().setLeskNormalize(false);
 		WS4JConfiguration.getInstance().setMFS(false);
+        db = new MITWordNet();
 	}
 
 	protected String n1 = "cyclone";
