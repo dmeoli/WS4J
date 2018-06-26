@@ -1,4 +1,4 @@
-# WordNet Similarity for Java [![Build Status](https://travis-ci.org/DonatoMeoli/WS4J.svg?branch=master)](https://travis-ci.org/DonatoMeoli/WS4J)
+# WordNet Similarity for Java [![Build Status](https://travis-ci.org/DonatoMeoli/WS4J.svg?branch=master)](https://travis-ci.org/DonatoMeoli/WS4J) [![Release](https://jitpack.io/v/DonatoMeoli/WS4J.svg)](https://jitpack.io/#DonatoMeoli/WS4J)
 
 WS4J provides a pure Java API for several published semantic relatedness/similarity algorithms for, in theory, any 
 WordNet instance. You can immediately use WS4J on Princeton's English WordNet 3.0 lexical database through 
@@ -105,23 +105,21 @@ and a simple demo class:
   `src/main/java/edu/uniba/di/lacam/kdde/donato/meoli/ws4j/demo/SimilarityCalculationDemo.java`
 
 When using the WS4J jar package from other projects, make sure to also include depending libraries. In maven's pom file, 
-these dependencies can be written such as: 
+these repository and dependency can be written such as: 
 
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+    
     <dependencies>
-      <dependency>
-        <groupId>edu.mit.csail</groupId>
-        <artifactId>jwi</artifactId>
-        <version>2.4.0</version>
-        <scope>system</scope> 
-        <systemPath>${basedir}/lib/jwi.jar</systemPath>
-      </dependency>     
-      <dependency>
-        <groupId>edu.uniba.di.lacam.kdde</groupId>
-        <artifactId>ws4j</artifactId>
-        <version>1.0.1</version>
-        <scope>system</scope> 
-        <systemPath>${basedir}/lib/ws4j.jar</systemPath>
-      </dependency>           
+        <dependency>
+            <groupId>com.github.DonatoMeoli</groupId>
+            <artifactId>WS4J</artifactId>
+            <version>master</version>
+        </dependency>
     </dependencies>
 
 ## Running the tests

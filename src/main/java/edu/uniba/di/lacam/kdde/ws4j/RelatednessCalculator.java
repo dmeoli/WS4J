@@ -12,7 +12,7 @@ public abstract class RelatednessCalculator {
 	protected final static String illegalSynset = "Synset is null.";
 	protected final static String identicalSynset = "Synsets are identical.";
 
-	public final static boolean useRootNode;
+	public final static boolean useRootNode = true;
 
 	protected ILexicalDatabase db;
 	protected PathFinder pathFinder;
@@ -22,10 +22,6 @@ public abstract class RelatednessCalculator {
 
 	protected final double min;
 	protected final double max;
-
-	static {
-		useRootNode = true;
-	}
 
 	public RelatednessCalculator(ILexicalDatabase db, double min, double max) {
 		this.db = db;
@@ -59,7 +55,7 @@ public abstract class RelatednessCalculator {
 		return MatrixCalculator.getNormalizedSimilarityMatrix(words1, words2, this);
 	}
 
-	public ILexicalDatabase getDB() {
+	public ILexicalDatabase getLexicalDB() {
 		return db;
 	}
 
