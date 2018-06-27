@@ -22,11 +22,10 @@ public class SimilarityCalculationDemo {
     }
 
 	public static void main(String[] args) {
-        long t0 = System.currentTimeMillis();
+        long t = System.currentTimeMillis();
         for (RelatednessCalculator rc : rcs) {
             System.out.println(rc.getClass().getName() + "\t" + rc.calcRelatednessOfWords("act", "moderate"));
         }
-        long t1 = System.currentTimeMillis();
-        System.out.println("Done in " + (t1-t0) + " msec.");
-	}
+        System.out.println("Done in " + (System.currentTimeMillis()-t) + " msec.");
+    }
 }

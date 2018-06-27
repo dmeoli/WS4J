@@ -59,7 +59,6 @@ public class Traverser {
 		}
 		List<Link> points = new ArrayList<>();
 		points.add(Link.HYPERNYM);
-		points.add(Link.MERONYM);
 		points.add(Link.MERONYM_MEMBER);
 		points.add(Link.MERONYM_PART);
 		points.add(Link.MERONYM_SUBSTANCE);

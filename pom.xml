@@ -83,10 +83,10 @@
 
         <resources>
             <resource>
-                <directory>${basedir}/src/main/config</directory>
+                <directory>${project.basedir}/src/main/config</directory>
             </resource>
             <resource>
-                <directory>${basedir}/src/main/resources</directory>
+                <directory>${project.basedir}/src/main/resources</directory>
             </resource>
         </resources>
     </build>

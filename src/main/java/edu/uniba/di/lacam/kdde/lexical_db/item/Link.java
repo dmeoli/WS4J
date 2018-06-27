@@ -23,7 +23,7 @@ public enum Link {
     SIMILAR_TO("Similar To"),
     SYNSET("Synset Words");
 
-    private final String name;
+    private String name;
 
     Link(String name) {
         this.name = name;

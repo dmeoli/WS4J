@@ -18,7 +18,7 @@ public interface ILexicalDatabase {
 
     List<Concept> getAllConcepts(String lemma, POS pos);
 
-    List<String> linkToSynsets(String synset, Link point);
+    List<String> linkToSynsets(String synset, Link link);
 
     List<String> findWordsBySynset(String synset);
 

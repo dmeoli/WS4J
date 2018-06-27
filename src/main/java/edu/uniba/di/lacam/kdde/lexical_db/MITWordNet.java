@@ -1,7 +1,6 @@
 package edu.uniba.di.lacam.kdde.lexical_db;
 
-import edu.mit.jwi.Dictionary;
-import edu.mit.jwi.IDictionary;
+import edu.mit.jwi.IRAMDictionary;
 import edu.mit.jwi.RAMDictionary;
 import edu.mit.jwi.data.ILoadPolicy;
 import edu.mit.jwi.item.*;
@@ -12,10 +11,11 @@ import edu.uniba.di.lacam.kdde.ws4j.util.Log;
 import edu.uniba.di.lacam.kdde.ws4j.util.Morpha;
 import edu.uniba.di.lacam.kdde.ws4j.util.WS4JConfiguration;
 
-import java.io.File;
 import java.io.IOException;
 
+import java.net.URL;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
@@ -26,23 +26,22 @@ import java.util.stream.Collectors;
  */
 public class MITWordNet implements ILexicalDatabase {
 
-    private static IDictionary dict;
+    private static IRAMDictionary dict;
     private static ConcurrentMap<String, List<String>> cache;
     private static Map<Link, Pointer> mapLinkToPointer;
 
-    private static File WORDNET_DICT = new File(System.getProperty("user.dir") + File.separator + "dict");
+    private static final URL WORDNET_URL = MITWordNet.class.getResource("/WN3.0.dict");
 
     static {
         try {
             if (WS4JConfiguration.getInstance().useMemoryDB()) {
                 Log.info("Loading WordNet into memory...");
-                long t0 = System.currentTimeMillis();
-                dict = new RAMDictionary(WORDNET_DICT, ILoadPolicy.IMMEDIATE_LOAD);
+                long t = System.currentTimeMillis();
+                dict = new RAMDictionary(RAMDictionary.createInputStreamFactory(WORDNET_URL));
                 dict.open();
-                long t1 = System.currentTimeMillis();
-                Log.info("WordNet loaded into memory in %d msec.", (t1-t0));
+                Log.info("WordNet loaded into memory in %d msec.", (System.currentTimeMillis()-t)/ 1000L);
             } else {
-                dict = new Dictionary(WORDNET_DICT);
+                dict = new RAMDictionary(WORDNET_URL, ILoadPolicy.NO_LOAD);
                 dict.open();
             }
         } catch (IOException e) {
@@ -84,8 +83,8 @@ public class MITWordNet implements ILexicalDatabase {
     }
 
     @Override
-    public List<String> linkToSynsets(String synset, Link point) {
-       return dict.getSynset(SynsetID.parseSynsetID(synset)).getRelatedSynsets(mapLinkToPointer.get(point))
+    public List<String> linkToSynsets(String synset, Link link) {
+       return dict.getSynset(SynsetID.parseSynsetID(synset)).getRelatedSynsets(mapLinkToPointer.get(link))
                .stream().map(Object::toString).collect(Collectors.toList());
     }
 

@@ -36,10 +36,9 @@ public abstract class RelatednessCalculator {
 	public abstract List<POS[]> getPOSPairs();
 
 	public Relatedness calcRelatednessOfSynsets(Concept synset1, Concept synset2) {
-		long t0 = System.currentTimeMillis();
+		long t= System.currentTimeMillis();
 		Relatedness r = calcRelatedness(synset1, synset2);
-		long t1 = System.currentTimeMillis();
-		r.appendTrace("Process done in " + (t1-t0) + " msec. \n");
+		r.appendTrace("Process done in " + (System.currentTimeMillis()-t) + " msec.\n");
 		return r;
 	}
 	
