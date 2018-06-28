@@ -11,6 +11,7 @@ import edu.uniba.di.lacam.kdde.ws4j.util.Log;
 import edu.uniba.di.lacam.kdde.ws4j.util.Morpha;
 import edu.uniba.di.lacam.kdde.ws4j.util.WS4JConfiguration;
 
+import java.io.File;
 import java.io.IOException;
 
 import java.net.URL;
@@ -30,18 +31,18 @@ public class MITWordNet implements ILexicalDatabase {
     private static ConcurrentMap<String, List<String>> cache;
     private static Map<Link, Pointer> mapLinkToPointer;
 
-    private static final URL WORDNET_URL = MITWordNet.class.getResource("/WN3.0.dict");
+    private static String WORDNET_PATH = System.getProperty("user.dir") + File.separator + "dict";
 
     static {
         try {
             if (WS4JConfiguration.getInstance().useMemoryDB()) {
                 Log.info("Loading WordNet into memory...");
                 long t = System.currentTimeMillis();
-                dict = new RAMDictionary(RAMDictionary.createInputStreamFactory(WORDNET_URL));
+                dict = new RAMDictionary(new URL("file", null, WORDNET_PATH), ILoadPolicy.IMMEDIATE_LOAD);
                 dict.open();
-                Log.info("WordNet loaded into memory in %d msec.", (System.currentTimeMillis()-t)/ 1000L);
+                Log.info("WordNet loaded into memory in %d msec.", (System.currentTimeMillis()-t) / 1000L);
             } else {
-                dict = new RAMDictionary(WORDNET_URL, ILoadPolicy.NO_LOAD);
+                dict = new RAMDictionary(new URL("file", null, WORDNET_PATH), ILoadPolicy.NO_LOAD);
                 dict.open();
             }
         } catch (IOException e) {
