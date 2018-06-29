@@ -6,45 +6,40 @@ package edu.uniba.di.lacam.kdde.lexical_db.item;
  */
 public enum Link {
 
-    ANTONYM("!", "Antonym"),
-    ATTRIBUTE("=", "Attribute"),
-    CAUSE(">", "Cause"),
-    ENTAILMENT("*", "Entailment"),
-    HYPERNYM("@", "Hypernym"),
-    HYPONYM("~", "Hyponym"),
+    ANTONYM("Antonym", "!"),
+    ATTRIBUTE("Attribute", "="),
+    CAUSE("Cause", ">"),
+    ENTAILMENT("Entailment", "*"),
+    HYPERNYM("Hypernym", "@"),
+    HYPONYM("Hyponym", "~"),
     HOLONYM("Holonym"),
-    HOLONYM_MEMBER("#m", "Member Holonym"),
-    HOLONYM_SUBSTANCE("#s", "Substance Holonym"),
-    HOLONYM_PART("#p", "Part Holonym"),
+    HOLONYM_MEMBER("Member Holonym", "#m"),
+    HOLONYM_SUBSTANCE("Substance Holonym", "#s"),
+    HOLONYM_PART("Part Holonym", "#p"),
     MERONYM("Meronym"),
-    MERONYM_MEMBER("%m", "Member Meronym"),
-    MERONYM_SUBSTANCE("%s", "Substance Meronym"),
-    MERONYM_PART("%p", "Part Meronym"),
-    SIMILAR_TO("&", "Similar To"),
+    MERONYM_MEMBER("Member Meronym", "%m"),
+    MERONYM_SUBSTANCE("Substance Meronym", "%s"),
+    MERONYM_PART("Part Meronym", "%p"),
+    SIMILAR_TO("Similar To", "&"),
     SYNSET("Synset Words");
 
-    private String symbol;
     private String name;
+    private String symbol;
 
-    Link(String symbol, String name) {
-        this.symbol = symbol;
+    Link(String name, String symbol) {
         this.name = name;
+        this.symbol = symbol;
     }
 
     Link(String name) {
-        this(null, name);
-    }
-
-    public String getSymbol() {
-        return symbol;
+        this(name, null);
     }
 
     public String getName() {
         return name;
     }
 
-    @Override
-    public String toString() {
-        return name;
+    public String getSymbol() {
+        return symbol;
     }
 }
