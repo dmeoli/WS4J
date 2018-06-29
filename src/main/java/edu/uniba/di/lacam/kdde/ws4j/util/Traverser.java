@@ -75,7 +75,6 @@ public class Traverser {
 		List<Link> points = new ArrayList<>();
 		points.add(Link.CAUSE);
 		points.add(Link.ENTAILMENT);
-		points.add(Link.HOLONYM);
 		points.add(Link.HOLONYM_MEMBER);
 		points.add(Link.HOLONYM_SUBSTANCE);
 		points.add(Link.HOLONYM_PART);

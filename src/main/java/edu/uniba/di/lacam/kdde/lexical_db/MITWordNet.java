@@ -29,7 +29,6 @@ public class MITWordNet implements ILexicalDatabase {
 
     private static IRAMDictionary dict;
     private static ConcurrentMap<String, List<String>> cache;
-    private static Map<Link, Pointer> mapLinkToPointer;
 
     private static String WORDNET_PATH = System.getProperty("user.dir") + File.separator + "dict";
 
@@ -49,20 +48,6 @@ public class MITWordNet implements ILexicalDatabase {
             e.printStackTrace();
         }
         if (WS4JConfiguration.getInstance().useCache()) cache = new ConcurrentHashMap<>();
-        mapLinkToPointer = new HashMap<>();
-        mapLinkToPointer.put(Link.ANTONYM, Pointer.ANTONYM);
-        mapLinkToPointer.put(Link.ATTRIBUTE, Pointer.ATTRIBUTE);
-        mapLinkToPointer.put(Link.CAUSE, Pointer.CAUSE);
-        mapLinkToPointer.put(Link.ENTAILMENT, Pointer.ENTAILMENT);
-        mapLinkToPointer.put(Link.HYPERNYM, Pointer.HYPERNYM);
-        mapLinkToPointer.put(Link.HYPONYM, Pointer.HYPONYM);
-        mapLinkToPointer.put(Link.HOLONYM_MEMBER, Pointer.HOLONYM_MEMBER);
-        mapLinkToPointer.put(Link.HOLONYM_SUBSTANCE, Pointer.HOLONYM_SUBSTANCE);
-        mapLinkToPointer.put(Link.HOLONYM_PART, Pointer.HOLONYM_PART);
-        mapLinkToPointer.put(Link.MERONYM_MEMBER, Pointer.MERONYM_MEMBER);
-        mapLinkToPointer.put(Link.MERONYM_SUBSTANCE, Pointer.MERONYM_SUBSTANCE);
-        mapLinkToPointer.put(Link.MERONYM_PART, Pointer.MERONYM_PART);
-        mapLinkToPointer.put(Link.SIMILAR_TO, Pointer.SIMILAR_TO);
     }
 
     @Override
@@ -80,7 +65,7 @@ public class MITWordNet implements ILexicalDatabase {
 
     @Override
     public List<String> linkToSynsets(String synset, Link link) {
-       return dict.getSynset(SynsetID.parseSynsetID(synset)).getRelatedSynsets(mapLinkToPointer.get(link))
+       return dict.getSynset(SynsetID.parseSynsetID(synset)).getRelatedSynsets(Pointer.getPointerType(link.getSymbol(), null))
                .stream().map(Object::toString).collect(Collectors.toList());
     }
 
