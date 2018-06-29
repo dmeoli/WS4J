@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentMap;
 
 public class WordSimilarityCalculator {
 
-    private static final char SEPARATOR = '#';
+    public static final char SEPARATOR = '#';
 
     private ConcurrentMap<String, Double> cache;
 	
