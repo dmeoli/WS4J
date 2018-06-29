@@ -10,6 +10,8 @@ import java.util.concurrent.ConcurrentMap;
 
 public class WordSimilarityCalculator {
 
+    private static final char SEPARATOR = '#';
+
     private ConcurrentMap<String, Double> cache;
 	
 	public WordSimilarityCalculator() {
@@ -21,13 +23,13 @@ public class WordSimilarityCalculator {
         if (word1 != null && word1.equals(word2)) return rc.getMax();
         if (word1 == null || word2 == null || word1.length() == 0 || word2.length() == 0) return rc.getMin();
         POS pos1 = null;
-        int offset1 = word1.indexOf("#");
+        int offset1 = word1.indexOf(SEPARATOR);
         if (offset1 != -1) {
             if ((pos1 = POS.getPOS(word1.charAt(offset1+1))) == null) return rc.getMin();
             word1 = word1.substring(0, offset1);
         }
         POS pos2 = null;
-        int offset2 = word2.indexOf("#");
+        int offset2 = word2.indexOf(SEPARATOR);
         if (offset2 != -1) {
             if ((pos2 = POS.getPOS(word2.charAt(offset2+1))) == null) return rc.getMin();
             word2 = word2.substring(0, offset2);
@@ -41,8 +43,8 @@ public class WordSimilarityCalculator {
             if (pos1 != null && pos1 != POSPair[0]) continue;
             if (pos2 != null && pos2 != POSPair[1]) continue;
             if (WS4JConfiguration.getInstance().useMFS()) {
-                Concept synset1 = rc.getLexicalDB().getMostFrequentConcept(word1, POSPair[0]);
-                Concept synset2 = rc.getLexicalDB().getMostFrequentConcept(word2, POSPair[1]);
+                Concept synset1 = rc.getLexicalDB().getConcept(word1, POSPair[0], 1);
+                Concept synset2 = rc.getLexicalDB().getConcept(word2, POSPair[1], 1);
                 maxScore = rc.calcRelatednessOfSynsets(synset1, synset2).getScore();
             } else {
                 for (Concept synset1 : rc.getLexicalDB().getAllConcepts(word1, POSPair[0])) {

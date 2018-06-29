@@ -91,18 +91,18 @@ To customize WS4J, edit:
 To create a jar file with dependencies including resource and config files:
 
 ```
-$ mvn install assembly:single
+$ mvn install
 ```
 
 ## Using WS4J
 
 Then start playing with the facade WS4J API:
 
-  `src/main/java/edu/uniba/di/lacam/kdde/donato/meoli/ws4j/WS4J.java`
+  `src/main/java/edu/uniba/di/lacam/kdde/ws4j/WS4J.java`
 
 and a simple demo class:
 
-  `src/main/java/edu/uniba/di/lacam/kdde/donato/meoli/ws4j/demo/SimilarityCalculationDemo.java`
+  `src/main/java/edu/uniba/di/lacam/kdde/ws4j/demo/SimilarityCalculationDemo.java`
 
 When using the WS4J jar package from other projects, make sure to also include depending libraries. In maven's pom file, 
 these repository and dependency can be written such as: 
@@ -118,7 +118,7 @@ these repository and dependency can be written such as:
         <dependency>
             <groupId>com.github.DonatoMeoli</groupId>
             <artifactId>WS4J</artifactId>
-            <version>master</version>
+            <version>-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

@@ -14,8 +14,6 @@ public interface ILexicalDatabase {
 
     Concept getConcept(String lemma, POS pos, int sense);
 
-    Concept getMostFrequentConcept(String lemma, POS pos);
-
     List<Concept> getAllConcepts(String lemma, POS pos);
 
     List<String> linkToSynsets(String synset, Link link);

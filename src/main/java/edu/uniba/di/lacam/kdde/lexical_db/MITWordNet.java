@@ -68,12 +68,7 @@ public class MITWordNet implements ILexicalDatabase {
     @Override
     public Concept getConcept(String lemma, POS pos, int sense) {
         IIndexWord iIndexWord = dict.getIndexWord(lemma, edu.mit.jwi.item.POS.getPartOfSpeech(pos.getTag()));
-        return iIndexWord != null ? new Concept(iIndexWord.getWordIDs().get(sense).getSynsetID().toString(), pos, lemma) : null;
-    }
-
-    @Override
-    public Concept getMostFrequentConcept(String lemma, POS pos) {
-        return getConcept(lemma, pos, 0);
+        return iIndexWord != null ? new Concept(iIndexWord.getWordIDs().get(sense-1).getSynsetID().toString(), pos, lemma) : null;
     }
 
     @Override
