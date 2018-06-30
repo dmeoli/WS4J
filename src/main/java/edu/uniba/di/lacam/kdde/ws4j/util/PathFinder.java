@@ -106,7 +106,7 @@ public class PathFinder {
 			if (WS4JConfiguration.getInstance().useCache()) cache.put(synset, clone(trees));
 			return trees;
 		}
-		List<String> synLinks = db.linkToSynsets(synset, Link.HYPERNYM);
+		List<String> synLinks = db.getSynsets(synset, Link.HYPERNYM);
 		List<List<String>> returnList = new ArrayList<>();
 		if (synLinks.size() == 0) {
 			List<String> tree = new ArrayList<>();

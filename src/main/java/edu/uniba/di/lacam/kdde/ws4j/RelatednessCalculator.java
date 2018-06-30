@@ -18,7 +18,7 @@ public abstract class RelatednessCalculator {
 	protected PathFinder pathFinder;
 	protected DepthFinder depthFinder;
 
-	private WordSimilarityCalculator wordSimilarity = new WordSimilarityCalculator();
+	private WordSimilarityCalculator wordSimilarity;
 
 	protected final double min;
 	protected final double max;
@@ -29,6 +29,7 @@ public abstract class RelatednessCalculator {
 		this.max = max;
 		pathFinder = new PathFinder(db);
 		depthFinder = new DepthFinder(db);
+		wordSimilarity = new WordSimilarityCalculator();
 	}
 
 	protected abstract Relatedness calcRelatedness(Concept synset1, Concept synset2);
@@ -36,7 +37,7 @@ public abstract class RelatednessCalculator {
 	public abstract List<POS[]> getPOSPairs();
 
 	public Relatedness calcRelatednessOfSynsets(Concept synset1, Concept synset2) {
-		long t= System.currentTimeMillis();
+		long t = System.currentTimeMillis();
 		Relatedness r = calcRelatedness(synset1, synset2);
 		r.appendTrace("Process done in " + (System.currentTimeMillis()-t) + " msec.\n");
 		return r;

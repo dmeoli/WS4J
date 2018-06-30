@@ -19,9 +19,15 @@ public class WordSimilarityCalculator {
 	}
 
     public double calcRelatednessOfWords(String word1, String word2, RelatednessCalculator rc) {
-        String key = word1 + " & " + word2;
         if (word1 != null && word1.equals(word2)) return rc.getMax();
         if (word1 == null || word2 == null || word1.length() == 0 || word2.length() == 0) return rc.getMin();
+        word1 = word1.toLowerCase();
+        word2 = word2.toLowerCase();
+        String key = word1 + " & " + word2;
+        if (WS4JConfiguration.getInstance().useCache()) {
+            Double cachedObj = cache.get(key);
+            if (cachedObj != null) return cachedObj;
+        }
         POS pos1 = null;
         int offset1 = word1.indexOf(SEPARATOR);
         if (offset1 != -1) {
@@ -33,10 +39,6 @@ public class WordSimilarityCalculator {
         if (offset2 != -1) {
             if ((pos2 = POS.getPOS(word2.charAt(offset2+1))) == null) return rc.getMin();
             word2 = word2.substring(0, offset2);
-        }
-        if (WS4JConfiguration.getInstance().useCache()) {
-            Double cachedObj = cache.get(key);
-            if (cachedObj != null) return cachedObj;
         }
         double maxScore = -1.0D;
         for (POS[] POSPair : rc.getPOSPairs()) {
@@ -57,6 +59,7 @@ public class WordSimilarityCalculator {
             }
         }
         if (maxScore == -1.0D) maxScore = 0.0D;
+        maxScore = Math.abs(maxScore);
         if (WS4JConfiguration.getInstance().useCache()) cache.put(key, maxScore);
         return maxScore;
     }

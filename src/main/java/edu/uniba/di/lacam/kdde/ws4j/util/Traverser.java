@@ -28,8 +28,8 @@ public class Traverser {
 
 	public static boolean contained(Concept concept1, Concept concept2) {
 		if (concept1 == null || concept2 == null) return false;
-		List<String> wordsH = db.findWordsBySynset(concept1.getSynsetID());
-		List<String> wordsN = db.findWordsBySynset(concept2.getSynsetID());
+		List<String> wordsH = db.getWords(concept1.getSynsetID());
+		List<String> wordsN = db.getWords(concept2.getSynsetID());
 		for (String wordH : wordsH) {
 			for (String wordN : wordsN) {
 				if (wordH.contains(wordN) || wordN.contains(wordH)) return true;
@@ -59,9 +59,7 @@ public class Traverser {
 		}
 		List<Link> points = new ArrayList<>();
 		points.add(Link.HYPERNYM);
-		points.add(Link.MERONYM_MEMBER);
-		points.add(Link.MERONYM_PART);
-		points.add(Link.MERONYM_SUBSTANCE);
+		points.add(Link.MERONYM);
 		Set<String> result = getGroupedSynsets(synset, points);
 		if (WS4JConfiguration.getInstance().useCache()) if (result != null) upwardCache.put(synset, result);
 		return result;
@@ -75,9 +73,7 @@ public class Traverser {
 		List<Link> points = new ArrayList<>();
 		points.add(Link.CAUSE);
 		points.add(Link.ENTAILMENT);
-		points.add(Link.HOLONYM_MEMBER);
-		points.add(Link.HOLONYM_SUBSTANCE);
-		points.add(Link.HOLONYM_PART);
+		points.add(Link.HOLONYM);
 		points.add(Link.HYPONYM);
 		Set<String> result = getGroupedSynsets(synset, points);
 		if (WS4JConfiguration.getInstance().useCache()) if (result != null) downwardCache.put(synset, result);
@@ -86,7 +82,7 @@ public class Traverser {
 
 	private static Set<String> getGroupedSynsets(String synset, List<Link> points) {
 		Set<String> synsets = new HashSet<>();
-		points.forEach(point -> synsets.addAll(db.linkToSynsets(synset, point)));
+		points.forEach(point -> synsets.addAll(db.getSynsets(synset, point)));
 		return synsets;
 	}
 }

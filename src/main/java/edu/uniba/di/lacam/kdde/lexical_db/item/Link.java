@@ -42,4 +42,9 @@ public enum Link {
     public String getSymbol() {
         return symbol;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

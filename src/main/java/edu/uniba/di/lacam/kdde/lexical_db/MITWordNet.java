@@ -39,7 +39,7 @@ public class MITWordNet implements ILexicalDatabase {
                 long t = System.currentTimeMillis();
                 dict = new RAMDictionary(new URL("file", null, WORDNET_PATH), ILoadPolicy.IMMEDIATE_LOAD);
                 dict.open();
-                Log.info("WordNet loaded into memory in %d msec.", (System.currentTimeMillis()-t) / 1000L);
+                Log.info("WordNet loaded into memory in %d sec.", (System.currentTimeMillis()-t) / 1000L);
             } else {
                 dict = new RAMDictionary(new URL("file", null, WORDNET_PATH), ILoadPolicy.NO_LOAD);
                 dict.open();
@@ -52,27 +52,45 @@ public class MITWordNet implements ILexicalDatabase {
 
     @Override
     public Concept getConcept(String lemma, POS pos, int sense) {
-        IIndexWord iIndexWord = dict.getIndexWord(lemma, edu.mit.jwi.item.POS.getPartOfSpeech(pos.getTag()));
-        return iIndexWord != null ? new Concept(iIndexWord.getWordIDs().get(sense-1).getSynsetID().toString(), pos, lemma) : null;
+        IIndexWord indexWord = dict.getIndexWord(lemma, edu.mit.jwi.item.POS.getPartOfSpeech(pos.getTag()));
+        return indexWord != null ? new Concept(indexWord.getWordIDs().get(sense-1).getSynsetID().toString(), pos, lemma) : null;
     }
 
     @Override
     public List<Concept> getAllConcepts(String lemma, POS pos) {
-        IIndexWord iIndexWord = dict.getIndexWord(lemma, edu.mit.jwi.item.POS.getPartOfSpeech(pos.getTag()));
-        return iIndexWord != null ? iIndexWord.getWordIDs().stream().map(iWordID -> new Concept(
+        IIndexWord indexWord = dict.getIndexWord(lemma, edu.mit.jwi.item.POS.getPartOfSpeech(pos.getTag()));
+        return indexWord != null ? indexWord.getWordIDs().stream().map(iWordID -> new Concept(
                 iWordID.getSynsetID().toString(), pos, lemma)).collect(Collectors.toList()) : Collections.emptyList();
     }
 
     @Override
-    public List<String> linkToSynsets(String synset, Link link) {
-       return dict.getSynset(SynsetID.parseSynsetID(synset)).getRelatedSynsets(Pointer.getPointerType(link.getSymbol(), null))
-               .stream().map(Object::toString).collect(Collectors.toList());
+    public List<String> getSynsets(String synsetID, Link link) {
+        List<String> synsets = new ArrayList<>();
+        if (link == null || link.equals(Link.SYNSET)) {
+            synsets.add(synsetID);
+        } else if (link.equals(Link.MERONYM)) {
+            synsets.addAll(getRelatedSynsets(synsetID, Link.MERONYM_MEMBER));
+            synsets.addAll(getRelatedSynsets(synsetID, Link.MERONYM_SUBSTANCE));
+            synsets.addAll(getRelatedSynsets(synsetID, Link.MERONYM_PART));
+        } else if (link.equals(Link.HOLONYM)) {
+            synsets.addAll(getRelatedSynsets(synsetID, Link.HOLONYM_MEMBER));
+            synsets.addAll(getRelatedSynsets(synsetID, Link.HOLONYM_SUBSTANCE));
+            synsets.addAll(getRelatedSynsets(synsetID, Link.HOLONYM_PART));
+        } else {
+            synsets.addAll(getRelatedSynsets(synsetID, link));
+        }
+        return synsets;
+    }
+
+    private List<String> getRelatedSynsets(String synsetID, Link link) {
+        return dict.getSynset(SynsetID.parseSynsetID(synsetID)).getRelatedSynsets(Pointer.getPointerType(link.getSymbol(), null))
+                .stream().map(Object::toString).collect(Collectors.toList());
     }
 
     @Override
-    public List<String> findWordsBySynset(String synset) {
-        return dict.getSynset(SynsetID.parseSynsetID(synset)).getWords()
-                .stream().map(IWord::getLemma).collect(Collectors.toList());
+    public List<String> getWords(String synsetID) {
+        return dict.getSynset(SynsetID.parseSynsetID(synsetID)).getWords().stream().map(IWord::getLemma)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -82,26 +100,12 @@ public class MITWordNet implements ILexicalDatabase {
             List<String> cachedObj = cache.get(key);
             if (cachedObj != null) return new ArrayList<>(cachedObj);
         }
-        List<String> linkedSynsets = new ArrayList<>();
-        if (link == null || link.equals(Link.SYNSET)) {
-            linkedSynsets.add(concept.getSynsetID());
-        } else if (link.equals(Link.MERONYM)) {
-            linkedSynsets.addAll(linkToSynsets(concept.getSynsetID(), Link.MERONYM_MEMBER));
-            linkedSynsets.addAll(linkToSynsets(concept.getSynsetID(), Link.MERONYM_SUBSTANCE));
-            linkedSynsets.addAll(linkToSynsets(concept.getSynsetID(), Link.MERONYM_PART));
-        } else if (link.equals(Link.HOLONYM)) {
-            linkedSynsets.addAll(linkToSynsets(concept.getSynsetID(), Link.HOLONYM_MEMBER));
-            linkedSynsets.addAll(linkToSynsets(concept.getSynsetID(), Link.HOLONYM_SUBSTANCE));
-            linkedSynsets.addAll(linkToSynsets(concept.getSynsetID(), Link.HOLONYM_PART));
-        } else {
-            linkedSynsets.addAll(linkToSynsets(concept.getSynsetID(), link));
-        }
-        List<String> glosses = new ArrayList<>(linkedSynsets.size());
-        for (String linkedSynset : linkedSynsets) {
+        List<String> synsets = getSynsets(concept.getSynsetID(), link);
+        List<String> glosses = new ArrayList<>(synsets.size());
+        for (String linkedSynset : synsets) {
             String gloss;
             if (Link.SYNSET.equals(link)) gloss = concept.getName();
-            else gloss = dict.getSynset(SynsetID.parseSynsetID(linkedSynset)).getGloss()
-                    .replaceFirst("; \".+", "");
+            else gloss = dict.getSynset(SynsetID.parseSynsetID(linkedSynset)).getGloss().replaceFirst("; \".+", "");
             if (gloss == null) continue;
             gloss = gloss.replaceAll("[.;:,?!(){}\"`$%@<>]", " ")
                     .replaceAll("&", " and ")
