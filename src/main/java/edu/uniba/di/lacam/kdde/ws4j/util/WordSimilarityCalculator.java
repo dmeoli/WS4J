@@ -13,7 +13,7 @@ public class WordSimilarityCalculator {
     public static final char SEPARATOR = '#';
 
     private ConcurrentMap<String, Double> cache;
-	
+
 	public WordSimilarityCalculator() {
 		if (WS4JConfiguration.getInstance().useCache()) cache = new ConcurrentHashMap<>();
 	}
@@ -29,29 +29,39 @@ public class WordSimilarityCalculator {
             if (cachedObj != null) return cachedObj;
         }
         POS pos1 = null;
-        int offset1 = word1.indexOf(SEPARATOR);
-        if (offset1 != -1) {
-            if ((pos1 = POS.getPOS(word1.charAt(offset1+1))) == null) return rc.getMin();
-            word1 = word1.substring(0, offset1);
+        int sense1 = 0;
+        int offset1POS = word1.indexOf(SEPARATOR);
+        int offset1Sense = word1.lastIndexOf(SEPARATOR);
+        if (offset1POS != -1) {
+            if ((pos1 = POS.getPOS(word1.charAt(offset1POS+1))) == null) return rc.getMin();
+            if (offset1Sense != -1 && offset1POS != offset1Sense) sense1 = Character.getNumericValue(word1.charAt(offset1Sense+1));
+            word1 = word1.substring(0, offset1POS);
         }
         POS pos2 = null;
-        int offset2 = word2.indexOf(SEPARATOR);
-        if (offset2 != -1) {
-            if ((pos2 = POS.getPOS(word2.charAt(offset2+1))) == null) return rc.getMin();
-            word2 = word2.substring(0, offset2);
+        int sense2 = 0;
+        int offset2POS = word2.indexOf(SEPARATOR);
+        int offset2Sense = word2.lastIndexOf(SEPARATOR);
+        if (offset2POS != -1) {
+            if ((pos2 = POS.getPOS(word2.charAt(offset2POS+1))) == null) return rc.getMin();
+            if (offset2Sense != -1 && offset2POS != offset2Sense) sense2 = Character.getNumericValue(word2.charAt(offset2Sense+1));
+            word2 = word2.substring(0, offset2POS);
         }
         double maxScore = -1.0D;
         for (POS[] POSPair : rc.getPOSPairs()) {
             if (pos1 != null && pos1 != POSPair[0]) continue;
             if (pos2 != null && pos2 != POSPair[1]) continue;
-            if (WS4JConfiguration.getInstance().useMFS()) {
-                Concept synset1 = rc.getLexicalDB().getConcept(word1, POSPair[0], 1);
-                Concept synset2 = rc.getLexicalDB().getConcept(word2, POSPair[1], 1);
-                maxScore = rc.calcRelatednessOfSynsets(synset1, synset2).getScore();
+            if (sense1 != 0 && sense2 != 0) {
+                Concept concept1 = rc.getLexicalDB().getConcept(word1, POSPair[0], sense1);
+                Concept concept2 = rc.getLexicalDB().getConcept(word2, POSPair[1], sense2);
+                maxScore = rc.calcRelatednessOfSynsets(concept1, concept2).getScore();
+            } else if (WS4JConfiguration.getInstance().useMFS()) {
+                Concept concept1 = rc.getLexicalDB().getConcept(word1, POSPair[0], 1);
+                Concept concept2 = rc.getLexicalDB().getConcept(word2, POSPair[1], 1);
+                maxScore = rc.calcRelatednessOfSynsets(concept1, concept2).getScore();
             } else {
-                for (Concept synset1 : rc.getLexicalDB().getAllConcepts(word1, POSPair[0])) {
-                    for (Concept synset2 : rc.getLexicalDB().getAllConcepts(word2, POSPair[1])) {
-                        Relatedness relatedness = rc.calcRelatednessOfSynsets(synset1, synset2);
+                for (Concept concept1 : rc.getLexicalDB().getAllConcepts(word1, POSPair[0])) {
+                    for (Concept concept2 : rc.getLexicalDB().getAllConcepts(word2, POSPair[1])) {
+                        Relatedness relatedness = rc.calcRelatednessOfSynsets(concept1, concept2);
                         double score = relatedness.getScore();
                         if (score > maxScore) maxScore = score;
                     }

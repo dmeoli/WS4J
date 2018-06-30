@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -50,17 +51,17 @@ final public class ICFinder {
 				POS pos = POS.getPOS(e.charAt(e.length()-1));
 				int id = Integer.parseInt(e.substring(0, e.length()-1));
 				int freq = Integer.parseInt(elements[1]);
-				if (pos.equals(POS.NOUN)) freqN.put(id, freq);
-				else if (pos.equals(POS.VERB)) freqV.put(id, freq);
+				if (Objects.equals(pos, POS.NOUN)) freqN.put(id, freq);
+				else if (Objects.equals(pos, POS.VERB)) freqV.put(id, freq);
 			}
 		}
 		br.close();
 		isr.close();
 	}
 	
-	public List<PathFinder.Subsumer> getLCSbyIC(PathFinder pathFinder, Concept synset1, Concept synset2,
-                                                StringBuilder tracer) {
-		List<PathFinder.Subsumer> paths = pathFinder.getAllPaths(synset1, synset2, tracer);
+	public List<PathFinder.Subsumer> getLCSbyIC(PathFinder pathFinder, Concept concept1, Concept concept2,
+												StringBuilder tracer) {
+		List<PathFinder.Subsumer> paths = pathFinder.getAllPaths(concept1, concept2, tracer);
 		if (paths == null || paths.size() == 0) return null;
 		for (PathFinder.Subsumer path : paths) path.ic = IC(pathFinder, path.subsumer);
 		paths.sort((s1, s2) -> Double.compare(s2.ic, s1.ic));
@@ -71,37 +72,37 @@ final public class ICFinder {
 		return results;
 	}
 
-	public double IC(PathFinder pathFinder, Concept synset) {
-		POS pos = synset.getPOS();
+	public double IC(PathFinder pathFinder, Concept concept) {
+		POS pos = concept.getPOS();
 		if (pos.equals(POS.NOUN) || pos.equals(POS.VERB)) {
-			double prob = probability(pathFinder, synset);
+			double prob = probability(pathFinder, concept);
 			return prob > 0.0D ? - Math.log(prob) : 0.0D;
 		} else return 0.0D;
 	}
 
-	private double probability(PathFinder pathFinder, Concept synset) {
-		Concept rootSynset = pathFinder.getRoot(synset.getSynsetID());
+	private double probability(PathFinder pathFinder, Concept concept) {
+		Concept rootConcept = pathFinder.getRoot(concept.getSynsetID());
 		int rootFreq = 0;
 		if (RelatednessCalculator.useRootNode) {
-			if (synset.getPOS().equals(POS.NOUN)) rootFreq = rootFreqN;
-			else if (synset.getPOS().equals(POS.VERB)) rootFreq = rootFreqV;
-		} else rootFreq = getFrequency(rootSynset);
-		int offFreq = getFrequency(synset);
+			if (concept.getPOS().equals(POS.NOUN)) rootFreq = rootFreqN;
+			else if (concept.getPOS().equals(POS.VERB)) rootFreq = rootFreqV;
+		} else rootFreq = getFrequency(rootConcept);
+		int offFreq = getFrequency(concept);
 		if (offFreq <= rootFreq) return (double) offFreq / (double) rootFreq;
 		return 0.0D;
 	}
 	
-	public int getFrequency(Concept synset) {
-		if (synset.getSynsetID().equals("0")) {
-			if (synset.getPOS().equals(POS.NOUN)) return rootFreqN;
-			else if (synset.getPOS().equals(POS.VERB)) return rootFreqV;
+	public int getFrequency(Concept concept) {
+		if (concept.getSynsetID().equals("0")) {
+			if (concept.getPOS().equals(POS.NOUN)) return rootFreqN;
+			else if (concept.getPOS().equals(POS.VERB)) return rootFreqV;
 		}
-		int synsetID = Integer.parseInt(synset.getSynsetID().replaceAll("[^\\d]", ""));
+		int synsetID = Integer.parseInt(concept.getSynsetID().replaceAll("[^\\d]", ""));
 		int freq = 0;
-		if (synset.getPOS().equals(POS.NOUN)) {
+		if (concept.getPOS().equals(POS.NOUN)) {
 			Integer freqObj = freqN.get(synsetID);
 			freq = freqObj != null ? freqObj : 0;
-		} else if (synset.getPOS().equals(POS.VERB)) {
+		} else if (concept.getPOS().equals(POS.VERB)) {
 			Integer freqObj = freqV.get(synsetID);
 			freq = freqObj != null ? freqObj : 0;
 		}

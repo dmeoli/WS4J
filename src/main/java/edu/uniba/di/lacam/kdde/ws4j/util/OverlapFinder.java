@@ -28,7 +28,6 @@ public class OverlapFinder {
 			}
 		}
 		for (int i = matchStartIndex; i <= currIndex; i++) overlapsLengths.put(i, currIndex - i+1);
-
 		int longestOverlap = -1;
 		for (int length : overlapsLengths.values()) {
 			if (longestOverlap < length) longestOverlap = length;

@@ -1,9 +1,5 @@
 package edu.uniba.di.lacam.kdde.lexical_db.item;
 
-/**
- *
- * @author Donato Meoli
- */
 public enum Link {
 
     ANTONYM("Antonym", "!"),

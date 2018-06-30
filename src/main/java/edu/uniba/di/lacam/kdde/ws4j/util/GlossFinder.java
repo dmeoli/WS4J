@@ -47,12 +47,12 @@ public class GlossFinder {
 		this.db = db;
 	}
 
-	public List<SuperGloss> getSuperGlosses(Concept synset1, Concept synset2) {
+	public List<SuperGloss> getSuperGlosses(Concept concept1, Concept concept2) {
 		List<SuperGloss> glosses = new ArrayList<>(linkPairs.size());
 		for (Link[] links : linkPairs) {
 			SuperGloss sg = new SuperGloss();
-			sg.gloss1 = db.getGloss(synset1, links[0]);
-			sg.gloss2 = db.getGloss(synset2, links[1]);
+			sg.gloss1 = db.getGloss(concept1, links[0]);
+			sg.gloss2 = db.getGloss(concept2, links[1]);
 			sg.link1  = links[0] != null ? links[0].getName() : " ";
 			sg.link2  = links[1] != null ? links[1].getName() : " ";
 			sg.weight = 1.0D;

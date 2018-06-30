@@ -32,13 +32,13 @@ public abstract class RelatednessCalculator {
 		wordSimilarity = new WordSimilarityCalculator();
 	}
 
-	protected abstract Relatedness calcRelatedness(Concept synset1, Concept synset2);
+	protected abstract Relatedness calcRelatedness(Concept concept1, Concept concept2);
 
 	public abstract List<POS[]> getPOSPairs();
 
-	public Relatedness calcRelatednessOfSynsets(Concept synset1, Concept synset2) {
+	public Relatedness calcRelatednessOfSynsets(Concept concept1, Concept concept2) {
 		long t = System.currentTimeMillis();
-		Relatedness r = calcRelatedness(synset1, synset2);
+		Relatedness r = calcRelatedness(concept1, concept2);
 		r.appendTrace("Process done in " + (System.currentTimeMillis()-t) + " msec.\n");
 		return r;
 	}

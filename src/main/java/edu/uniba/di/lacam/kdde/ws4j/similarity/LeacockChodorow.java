@@ -49,16 +49,16 @@ public class LeacockChodorow extends RelatednessCalculator {
 	}
 
 	@Override
-	protected Relatedness calcRelatedness(Concept synset1, Concept synset2) {
+	protected Relatedness calcRelatedness(Concept concept1, Concept concept2) {
 		StringBuilder tracer = new StringBuilder();
-		if (synset1 == null || synset2 == null) return new Relatedness(min, null, illegalSynset);
-		if (synset1.getSynsetID().equals(synset2.getSynsetID())) return new Relatedness(max, identicalSynset, null);
+		if (concept1 == null || concept2 == null) return new Relatedness(min, null, illegalSynset);
+		if (concept1.getSynsetID().equals(concept2.getSynsetID())) return new Relatedness(max, identicalSynset, null);
 		StringBuilder subTracer = WS4JConfiguration.getInstance().useTrace() ? new StringBuilder() : null;
-		List<PathFinder.Subsumer> lcsList = pathFinder.getLCSByPath(synset1, synset2, subTracer);
+		List<PathFinder.Subsumer> lcsList = pathFinder.getLCSByPath(concept1, concept2, subTracer);
 		if (lcsList.size() == 0) return new Relatedness(min);
 		int maxDepth = 1;
-		if (synset1.getPOS().equals(POS.NOUN)) maxDepth = 20;
-		else if (synset1.getPOS().equals(POS.VERB)) maxDepth = 14;
+		if (concept1.getPOS().equals(POS.NOUN)) maxDepth = 20;
+		else if (concept1.getPOS().equals(POS.VERB)) maxDepth = 14;
 		int length = lcsList.get(0).length;
 		double score = -Math.log((double) length / (double) (2 * maxDepth));
 		if (WS4JConfiguration.getInstance().useTrace()) {

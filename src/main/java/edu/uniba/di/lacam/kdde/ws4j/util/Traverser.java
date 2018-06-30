@@ -82,7 +82,7 @@ public class Traverser {
 
 	private static Set<String> getGroupedSynsets(String synset, List<Link> points) {
 		Set<String> synsets = new HashSet<>();
-		points.forEach(point -> synsets.addAll(db.getSynsets(synset, point)));
+		points.forEach(point -> synsets.addAll(db.getLinkedSynsets(synset, point)));
 		return synsets;
 	}
 }

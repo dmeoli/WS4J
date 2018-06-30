@@ -10,9 +10,7 @@ import edu.uniba.di.lacam.kdde.ws4j.similarity.*;
  */
 public class WS4J {
 
-	private static ILexicalDatabase db;
-
-    private static RelatednessCalculator lin;
+	private static RelatednessCalculator lin;
 	private static RelatednessCalculator wup;
 	private static RelatednessCalculator hso;
 	private static RelatednessCalculator lch;
@@ -22,7 +20,7 @@ public class WS4J {
 	private static RelatednessCalculator res;
 
 	static {
-		db = new MITWordNet();
+		ILexicalDatabase db = new MITWordNet();
 		lin = new Lin(db);
 		wup = new WuPalmer(db);
 		hso = new HirstStOnge(db);

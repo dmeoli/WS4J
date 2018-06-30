@@ -13,8 +13,8 @@ public class DepthFinder {
 		this.pathFinder = new PathFinder(db);
 	}
 	
-	public List<Depth> getRelatedness(Concept synset1, Concept synset2, StringBuilder tracer) {
-		List<PathFinder.Subsumer> paths = pathFinder.getAllPaths(synset1, synset2, tracer);
+	public List<Depth> getRelatedness(Concept concept1, Concept concept2, StringBuilder tracer) {
+		List<PathFinder.Subsumer> paths = pathFinder.getAllPaths(concept1, concept2, tracer);
 		if (paths == null || paths.size() == 0) return null;
 		List<Depth> depthList = new ArrayList<>(paths.size());
 		for (PathFinder.Subsumer s : paths) {
@@ -69,7 +69,7 @@ public class DepthFinder {
 		}
 	}
 		
-	public int getShortestDepth(Concept synset) {
-		return Objects.requireNonNull(getSynsetDepths(synset.getSynsetID())).get(0).depth;
+	public int getShortestDepth(Concept concept) {
+		return Objects.requireNonNull(getSynsetDepths(concept.getSynsetID())).get(0).depth;
 	}
 }

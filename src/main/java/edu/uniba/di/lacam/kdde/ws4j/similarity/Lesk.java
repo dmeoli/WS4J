@@ -52,10 +52,10 @@ public class Lesk extends RelatednessCalculator {
 	}
 
 	@Override
-	protected Relatedness calcRelatedness(Concept synset1, Concept synset2) {
+	protected Relatedness calcRelatedness(Concept concept1, Concept concept2) {
         StringBuilder tracer = new StringBuilder();
-		if (synset1 == null || synset2 == null) return new Relatedness(min);
-		List<GlossFinder.SuperGloss> glosses = glossFinder.getSuperGlosses(synset1, synset2);
+		if (concept1 == null || concept2 == null) return new Relatedness(min);
+		List<GlossFinder.SuperGloss> glosses = glossFinder.getSuperGlosses(concept1, concept2);
 		int score = 0;
 		for (GlossFinder.SuperGloss sg : glosses) {
 			double functionsScore = calcFromSuperGloss(sg.getGloss1(), sg.getGloss2());

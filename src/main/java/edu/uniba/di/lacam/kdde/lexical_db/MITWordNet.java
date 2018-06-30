@@ -21,10 +21,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
-/**
- *
- * @author Donato Meoli
- */
 public class MITWordNet implements ILexicalDatabase {
 
     private static IRAMDictionary dict;
@@ -64,26 +60,29 @@ public class MITWordNet implements ILexicalDatabase {
     }
 
     @Override
-    public List<String> getSynsets(String synsetID, Link link) {
-        List<String> synsets = new ArrayList<>();
+    public List<String> getLinkedSynsets(String synsetID, Link link) {
+        List<String> linkedSynsets = new ArrayList<>();
         if (link == null || link.equals(Link.SYNSET)) {
-            synsets.add(synsetID);
-        } else if (link.equals(Link.MERONYM)) {
-            synsets.addAll(getRelatedSynsets(synsetID, Link.MERONYM_MEMBER));
-            synsets.addAll(getRelatedSynsets(synsetID, Link.MERONYM_SUBSTANCE));
-            synsets.addAll(getRelatedSynsets(synsetID, Link.MERONYM_PART));
-        } else if (link.equals(Link.HOLONYM)) {
-            synsets.addAll(getRelatedSynsets(synsetID, Link.HOLONYM_MEMBER));
-            synsets.addAll(getRelatedSynsets(synsetID, Link.HOLONYM_SUBSTANCE));
-            synsets.addAll(getRelatedSynsets(synsetID, Link.HOLONYM_PART));
+            linkedSynsets.add(synsetID);
         } else {
-            synsets.addAll(getRelatedSynsets(synsetID, link));
+            ISynsetID iSynsetID = SynsetID.parseSynsetID(synsetID);
+            if (link.equals(Link.MERONYM)) {
+                linkedSynsets.addAll(getRelatedSynsets(iSynsetID, Link.MERONYM_MEMBER));
+                linkedSynsets.addAll(getRelatedSynsets(iSynsetID, Link.MERONYM_SUBSTANCE));
+                linkedSynsets.addAll(getRelatedSynsets(iSynsetID, Link.MERONYM_PART));
+            } else if (link.equals(Link.HOLONYM)) {
+                linkedSynsets.addAll(getRelatedSynsets(iSynsetID, Link.HOLONYM_MEMBER));
+                linkedSynsets.addAll(getRelatedSynsets(iSynsetID, Link.HOLONYM_SUBSTANCE));
+                linkedSynsets.addAll(getRelatedSynsets(iSynsetID, Link.HOLONYM_PART));
+            } else {
+                linkedSynsets.addAll(getRelatedSynsets(iSynsetID, link));
+            }
         }
-        return synsets;
+        return linkedSynsets;
     }
 
-    private List<String> getRelatedSynsets(String synsetID, Link link) {
-        return dict.getSynset(SynsetID.parseSynsetID(synsetID)).getRelatedSynsets(Pointer.getPointerType(link.getSymbol(), null))
+    private List<String> getRelatedSynsets(ISynsetID synsetID, Link link) {
+        return dict.getSynset(synsetID).getRelatedSynsets(Pointer.getPointerType(link.getSymbol(), null))
                 .stream().map(Object::toString).collect(Collectors.toList());
     }
 
@@ -100,9 +99,9 @@ public class MITWordNet implements ILexicalDatabase {
             List<String> cachedObj = cache.get(key);
             if (cachedObj != null) return new ArrayList<>(cachedObj);
         }
-        List<String> synsets = getSynsets(concept.getSynsetID(), link);
-        List<String> glosses = new ArrayList<>(synsets.size());
-        for (String linkedSynset : synsets) {
+        List<String> linkedSynsets = getLinkedSynsets(concept.getSynsetID(), link);
+        List<String> glosses = new ArrayList<>(linkedSynsets.size());
+        for (String linkedSynset : linkedSynsets) {
             String gloss;
             if (Link.SYNSET.equals(link)) gloss = concept.getName();
             else gloss = dict.getSynset(SynsetID.parseSynsetID(linkedSynset)).getGloss().replaceFirst("; \".+", "");

@@ -23,12 +23,12 @@ public class PathFinder {
 		if (WS4JConfiguration.getInstance().useCache()) cache = new ConcurrentHashMap<>();
 	}
 
-	List<Subsumer> getAllPaths(Concept synset1, Concept synset2, StringBuilder tracer) {
+	List<Subsumer> getAllPaths(Concept concept1, Concept concept2, StringBuilder tracer) {
 		List<Subsumer> paths = new ArrayList<>();
 		Set<String> history = new HashSet<>();
-		List<List<String>> lTrees = getHypernymTrees(synset1.getSynsetID(),history);
+		List<List<String>> lTrees = getHypernymTrees(concept1.getSynsetID(), history);
 		history = new HashSet<>();
-		List<List<String>> rTrees = getHypernymTrees(synset2.getSynsetID(),history);
+		List<List<String>> rTrees = getHypernymTrees(concept2.getSynsetID(), history);
 		if (lTrees == null || rTrees == null) return null;
 		for (List<String> lTree : lTrees) {
 			for (List<String> rTree : rTrees) {
@@ -51,7 +51,7 @@ public class PathFinder {
 					rPath.add(synset);
 				}
 				Subsumer sub = new Subsumer();
-				sub.subsumer = new Concept(subsumer, synset1.getPOS());
+				sub.subsumer = new Concept(subsumer, concept1.getPOS());
 				sub.length = rCount + lCount - 1;
 				sub.lPath = lPath;
 				sub.rPath = rPath;
@@ -70,9 +70,9 @@ public class PathFinder {
 		return paths;
 	}
 
-	public List<Subsumer> getShortestPaths(Concept synset1, Concept synset2, StringBuilder tracer) {
+	public List<Subsumer> getShortestPaths(Concept concept1, Concept concept2, StringBuilder tracer) {
 		List<Subsumer> returnList = new ArrayList<>();
-		List<Subsumer> paths = getAllPaths(synset1, synset2, tracer);
+		List<Subsumer> paths = getAllPaths(concept1, concept2, tracer);
 		if (paths == null || paths.size() == 0) return returnList;
 		int bestLength = paths.get(0).length;
 		returnList.add(paths.get(0));
@@ -106,7 +106,7 @@ public class PathFinder {
 			if (WS4JConfiguration.getInstance().useCache()) cache.put(synset, clone(trees));
 			return trees;
 		}
-		List<String> synLinks = db.getSynsets(synset, Link.HYPERNYM);
+		List<String> synLinks = db.getLinkedSynsets(synset, Link.HYPERNYM);
 		List<List<String>> returnList = new ArrayList<>();
 		if (synLinks.size() == 0) {
 			List<String> tree = new ArrayList<>();
@@ -167,8 +167,8 @@ public class PathFinder {
 		return null;
 	}
 
-	public List<Subsumer> getLCSByPath(Concept synset1, Concept synset2, StringBuilder tracer) {
-		List<Subsumer> paths = getAllPaths(synset1, synset2, tracer);
+	public List<Subsumer> getLCSByPath(Concept concept1, Concept concept2, StringBuilder tracer) {
+		List<Subsumer> paths = getAllPaths(concept1, concept2, tracer);
 		List<Subsumer> returnList = new ArrayList<>(paths.size());
         for (Subsumer path : paths) {
 			if (path.length <= paths.get(0).length) {

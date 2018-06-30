@@ -6,17 +6,13 @@ import edu.uniba.di.lacam.kdde.lexical_db.item.POS;
 
 import java.util.List;
 
-/**
- *
- * @author Donato Meoli
- */
 public interface ILexicalDatabase {
 
     Concept getConcept(String lemma, POS pos, int sense);
 
     List<Concept> getAllConcepts(String lemma, POS pos);
 
-    List<String> getSynsets(String synsetID, Link link);
+    List<String> getLinkedSynsets(String synsetID, Link link);
 
     List<String> getWords(String synsetID);
 

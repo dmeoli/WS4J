@@ -33,16 +33,16 @@ public class WuPalmer extends RelatednessCalculator {
 	}
 
 	@Override
-	protected Relatedness calcRelatedness(Concept synset1, Concept synset2) {
+	protected Relatedness calcRelatedness(Concept concept1, Concept concept2) {
 		StringBuilder tracer = new StringBuilder();
-		if (synset1 == null || synset2 == null) return new Relatedness(min, null, illegalSynset);
-		if (synset1.getSynsetID().equals(synset2.getSynsetID())) return new Relatedness(max, identicalSynset, null);
+		if (concept1 == null || concept2 == null) return new Relatedness(min, null, illegalSynset);
+		if (concept1.getSynsetID().equals(concept2.getSynsetID())) return new Relatedness(max, identicalSynset, null);
 		StringBuilder subTracer = WS4JConfiguration.getInstance().useTrace() ? new StringBuilder() : null;
-		List<DepthFinder.Depth> lcsList = depthFinder.getRelatedness(synset1, synset2, subTracer);
+		List<DepthFinder.Depth> lcsList = depthFinder.getRelatedness(concept1, concept2, subTracer);
 		if (lcsList.size() == 0) return new Relatedness(min);
 		int depth = lcsList.get(0).depth;
-		int depth1 = depthFinder.getShortestDepth(synset1);
-		int depth2 = depthFinder.getShortestDepth(synset2);
+		int depth1 = depthFinder.getShortestDepth(concept1);
+		int depth2 = depthFinder.getShortestDepth(concept2);
 		double score = 0;
 		if (depth1 > 0 && depth2 > 0) score = (double) (2 * depth) / (double) (depth1 + depth2);
 		if (WS4JConfiguration.getInstance().useTrace()) {
@@ -51,8 +51,8 @@ public class WuPalmer extends RelatednessCalculator {
 				tracer.append("Lowest Common Subsumer(s): ");
 				tracer.append(lcs.leaf).append(" (Depth = ").append(lcs.depth).append(")\n");
 			}
-			tracer.append("Depth1(").append(synset1.getSynsetID()).append(") = ").append(depth1).append("\n");
-			tracer.append("Depth2(").append(synset2.getSynsetID()).append(") = ").append(depth2).append("\n");
+			tracer.append("Depth1(").append(concept1.getSynsetID()).append(") = ").append(depth1).append("\n");
+			tracer.append("Depth2(").append(concept2.getSynsetID()).append(") = ").append(depth2).append("\n");
 		}
 		return new Relatedness(score, tracer.toString(), null);
 	}
