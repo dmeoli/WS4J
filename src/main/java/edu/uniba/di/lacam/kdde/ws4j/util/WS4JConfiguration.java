@@ -6,7 +6,7 @@ import java.util.Properties;
 
 final public class WS4JConfiguration {
 
-	private final static String CONFIGURATION = "/WS4J.conf";
+	private final static String CONFIGURATION = "WS4J.conf";
 
 	private Properties properties;
 
@@ -24,7 +24,7 @@ final public class WS4JConfiguration {
 	private WS4JConfiguration() {
 		InputStream stream;
 		try {
-			stream = WS4JConfiguration.class.getResourceAsStream(CONFIGURATION);
+			stream = WS4JConfiguration.class.getResourceAsStream("/" + CONFIGURATION);
 			properties = new Properties();
 			properties.load(stream);
 			cache = readInt("cache",1) == 1;
@@ -48,7 +48,7 @@ final public class WS4JConfiguration {
 	private String readString(String key, String defaultValue) {
 		String value = properties.getProperty(key);
 		if (value == null) {
-		    Log.error("Configuration \"%d\" not found in ", CONFIGURATION);
+		    Log.error("Configuration \"%s\" not found in ", CONFIGURATION);
 			return defaultValue;
 		}
 		value = value.replaceAll("#.+", "").trim();
@@ -83,7 +83,7 @@ final public class WS4JConfiguration {
         this.memoryDB = memoryDB;
     }
 
-	public String getInfoContent() {
+	String getInfoContent() {
 		return infoContent;
 	}
 
@@ -91,12 +91,12 @@ final public class WS4JConfiguration {
 		return stem;
 	}
 
-	public String getStopList() {
-		return stopList;
+	public void setStem(boolean stem) {
+		this.stem = stem;
 	}
 
-	public void setStopList(String stopList) {
-		this.stopList = stopList;
+	String getStopList() {
+		return stopList;
 	}
 
 	public boolean useLeskNormalizer() {
@@ -114,9 +114,4 @@ final public class WS4JConfiguration {
 	public void setMFS(boolean mfs) {
 		this.mfs = mfs;
 	}
-
-	public void setStem(boolean stem) {
-		this.stem = stem;
-	}
-	
 }

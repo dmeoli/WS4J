@@ -65,7 +65,7 @@ public class LeacockChodorow extends RelatednessCalculator {
 			tracer.append(Objects.requireNonNull(subTracer).toString());
 			for (PathFinder.Subsumer lcs : lcsList) {
 				tracer.append("Lowest Common Subsumer(s): ");
-				tracer.append(lcs.subsumer.getSynsetID()).append(" (Length = ").append(lcs.length).append(")\n");
+				tracer.append(lcs.concept.getSynsetID()).append(" (Length = ").append(lcs.length).append(")\n");
 			}
 		}
 		return new Relatedness(score, tracer.toString(), null);

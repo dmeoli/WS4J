@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import edu.uniba.di.lacam.kdde.lexical_db.ILexicalDatabase;
 import edu.uniba.di.lacam.kdde.lexical_db.MITWordNet;
-import edu.uniba.di.lacam.kdde.lexical_db.data.Concept;
 import edu.uniba.di.lacam.kdde.lexical_db.item.POS;
 import edu.uniba.di.lacam.kdde.ws4j.RelatednessCalculator;
 import edu.uniba.di.lacam.kdde.ws4j.RelatednessCalculatorTest;
@@ -26,53 +25,60 @@ public class WuPalmerTest extends RelatednessCalculatorTest {
 		ILexicalDatabase db = new MITWordNet();
 		rc = new WuPalmer(db);
 	}
-	
-	/**
-	 * Test method for {@link WuPalmer#calcRelatednessOfSynsets(Concept, Concept)}.
-	 */
+
 	@Test
 	public void testHappyPathOnSynsets() {
-		assertEquals(0.9565, rc.calcRelatednessOfSynsets(n1Concepts.get(1), n2Concepts.get(0)).getScore(), 0.0001D);
-		assertEquals(0.6957, rc.calcRelatednessOfSynsets(n1Concepts.get(0), n2Concepts.get(0)).getScore(), 0.0001D);
-		assertEquals(0.8571, rc.calcRelatednessOfSynsets(v1Concepts.get(0), v2Concepts.get(0)).getScore(), 0.0001D);
-		assertEquals(0.5714, rc.calcRelatednessOfSynsets(v1Concepts.get(1), v2Concepts.get(0)).getScore(), 0.0001D);
+		assertEquals(0.9565D, rc.calcRelatednessOfSynsets(cycloneConcepts.get(1), hurricaneConcepts.get(0)).getScore(), 0.0001D);
+		assertEquals(0.6957D, rc.calcRelatednessOfSynsets(cycloneConcepts.get(0), hurricaneConcepts.get(0)).getScore(), 0.0001D);
+		assertEquals(0.8571D, rc.calcRelatednessOfSynsets(migrateConcepts.get(0), emigrateConcepts.get(0)).getScore(), 0.0001D);
+		assertEquals(0.5714D, rc.calcRelatednessOfSynsets(migrateConcepts.get(1), emigrateConcepts.get(0)).getScore(), 0.0001D);
 	}
 
-	/**
-	 * Test method for {@link RelatednessCalculator#calcRelatednessOfWords(String, String)}.
-	 */
+    @Test
+    public void testOnSameSynsets() {
+        assertEquals(rc.getMax(), rc.calcRelatednessOfSynsets(cycloneConcepts.get(0), cycloneConcepts.get(0)).getScore(), 0.0001D);
+    }
+
+    @Test
+    public void testOnUnknownSynsets() {
+        assertEquals(rc.getMin(), rc.calcRelatednessOfSynsets(null, cycloneConcepts.get(0)).getScore(), 0.0001D);
+        assertEquals(rc.getMin(), rc.calcRelatednessOfWords(null, CYCLONE), 0.0001D);
+        assertEquals(rc.getMin(), rc.calcRelatednessOfWords("", CYCLONE), 0.0001D);
+    }
+
 	@Test
 	public void testHappyPathOnWords() {
-		assertEquals(0.9565, rc.calcRelatednessOfWords(n1, n2), 0.0001D);
-		assertEquals(0.8571, rc.calcRelatednessOfWords(v1, v2), 0.0001D);
-	}
-	
-	/**
-	 * Test method for {@link RelatednessCalculator#calcRelatednessOfWords(String, String)}.
-	 */
-	@Test
-	public void testHappyPathOnWordsWithPOS() {
-		assertEquals(0.8750, rc.calcRelatednessOfWords(nv1 + WordSimilarityCalculator.SEPARATOR + POS.NOUN,
-				nv2 + WordSimilarityCalculator.SEPARATOR + POS.NOUN), 0.0001D);
-		assertEquals(0.0000, rc.calcRelatednessOfWords(nv1 + WordSimilarityCalculator.SEPARATOR + POS.NOUN,
-				nv2 + WordSimilarityCalculator.SEPARATOR + POS.VERB), 0.0001D);
-		assertEquals(0.0000, rc.calcRelatednessOfWords(nv1 + WordSimilarityCalculator.SEPARATOR + POS.VERB,
-				nv2 + WordSimilarityCalculator.SEPARATOR + POS.NOUN), 0.0001D);
-		assertEquals(0.8333, rc.calcRelatednessOfWords(nv1 + WordSimilarityCalculator.SEPARATOR + POS.VERB,
-				nv2 + WordSimilarityCalculator.SEPARATOR + POS.VERB), 0.0001D);
-		assertEquals(0.0000, rc.calcRelatednessOfWords(nv1 + WordSimilarityCalculator.SEPARATOR + "other",
-                nv2 + WordSimilarityCalculator.SEPARATOR + "other"), 0.0001D);
+		assertEquals(0.9565D, rc.calcRelatednessOfWords(CYCLONE, HURRICANE), 0.0001D);
+		assertEquals(0.8571D, rc.calcRelatednessOfWords(MIGRATE, EMIGRATE), 0.0001D);
 	}
 
 	@Test
-	public void testOnSameSynsets() {
-		assertEquals(rc.getMax(), rc.calcRelatednessOfSynsets(n1Concepts.get(0), n1Concepts.get(0)).getScore(), 0.0001D);
+	public void testHappyPathOnWordsWithPOS() {
+		assertEquals(0.8750D, rc.calcRelatednessOfWords(CHAT + WordSimilarityCalculator.SEPARATOR + POS.NOUN,
+				TALK + WordSimilarityCalculator.SEPARATOR + POS.NOUN), 0.0001D);
+		assertEquals(0.0000D, rc.calcRelatednessOfWords(CHAT + WordSimilarityCalculator.SEPARATOR + POS.NOUN,
+				TALK + WordSimilarityCalculator.SEPARATOR + POS.VERB), 0.0001D);
+		assertEquals(0.0000D, rc.calcRelatednessOfWords(CHAT + WordSimilarityCalculator.SEPARATOR + POS.VERB,
+				TALK + WordSimilarityCalculator.SEPARATOR + POS.NOUN), 0.0001D);
+		assertEquals(0.8333D, rc.calcRelatednessOfWords(CHAT + WordSimilarityCalculator.SEPARATOR + POS.VERB,
+				TALK + WordSimilarityCalculator.SEPARATOR + POS.VERB), 0.0001D);
+		assertEquals(0.0000D, rc.calcRelatednessOfWords(CHAT + WordSimilarityCalculator.SEPARATOR + "other",
+                TALK + WordSimilarityCalculator.SEPARATOR + "other"), 0.0001D);
 	}
-	
-	@Test
-	public void testOnUnknownSynsets() {
-		assertEquals(rc.getMin(), rc.calcRelatednessOfSynsets(null, n1Concepts.get(0)).getScore(), 0.0001D);
-		assertEquals(rc.getMin(), rc.calcRelatednessOfWords(null, n1), 0.0001D);
-		assertEquals(rc.getMin(), rc.calcRelatednessOfWords("", n1), 0.0001D);
-	}
+
+    @Test
+    public void testHappyPathOnWordsWithPOSAndSense() {
+        assertEquals(0.9565D, rc.calcRelatednessOfWords(
+                CYCLONE + WordSimilarityCalculator.SEPARATOR + POS.NOUN + WordSimilarityCalculator.SEPARATOR + 2,
+                HURRICANE + WordSimilarityCalculator.SEPARATOR + POS.NOUN + WordSimilarityCalculator.SEPARATOR + 1), 0.0001D);
+        assertEquals(0.6957D, rc.calcRelatednessOfWords(
+                CYCLONE + WordSimilarityCalculator.SEPARATOR + POS.NOUN + WordSimilarityCalculator.SEPARATOR + 1,
+                HURRICANE + WordSimilarityCalculator.SEPARATOR + POS.NOUN + WordSimilarityCalculator.SEPARATOR + 1), 0.0001D);
+        assertEquals(0.8571D, rc.calcRelatednessOfWords(
+                MIGRATE + WordSimilarityCalculator.SEPARATOR + POS.VERB + WordSimilarityCalculator.SEPARATOR + 1,
+                EMIGRATE + WordSimilarityCalculator.SEPARATOR + POS.VERB + WordSimilarityCalculator.SEPARATOR + 1), 0.0001D);
+        assertEquals(0.5714D, rc.calcRelatednessOfWords(
+                MIGRATE + WordSimilarityCalculator.SEPARATOR + POS.VERB + WordSimilarityCalculator.SEPARATOR + 2,
+                EMIGRATE + WordSimilarityCalculator.SEPARATOR + POS.VERB + WordSimilarityCalculator.SEPARATOR + 1), 0.0001D);
+    }
 }

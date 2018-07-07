@@ -22,7 +22,7 @@ import java.util.Objects;
  * form of the conditional probability of encountering an instance
  * of a child-synset given an instance of a parent synset.
  * Thus the information content of the two nodes, as
- * well as that of their most specific subsumer, plays a part.
+ * well as that of their most specific concept, plays a part.
  * Notice that this formula measures semantic distance, the
  * inverse of similarity.
  * <div style="padding:20px"><code>dist<sub>JS</sub>(c<sub>1</sub>, c<sub>2</sub>) =
@@ -57,14 +57,14 @@ public class JiangConrath extends RelatednessCalculator {
 			tracer.append(Objects.requireNonNull(subTracer).toString());
 			for (PathFinder.Subsumer lcs : lcsList) {
 				tracer.append("Lowest Common Subsumer(s): ");
-				tracer.append(lcs.subsumer.getSynsetID()).append(" (IC = ").append(lcs.ic).append(")\n");
+				tracer.append(lcs.concept.getSynsetID()).append(" (IC = ").append(lcs.ic).append(")\n");
 			}
 		}
 		PathFinder.Subsumer subsumer = lcsList.get(0);
-		String lcsSynset = subsumer.subsumer.getSynsetID();
+		String lcsSynset = subsumer.concept.getSynsetID();
 		double lcsIC = subsumer.ic;
 		Concept rootConcept = pathFinder.getRoot(lcsSynset);
-		rootConcept.setPOS(subsumer.subsumer.getPOS());
+		rootConcept.setPOS(subsumer.concept.getPOS());
 		int rootFreq = ICFinder.getIC().getFrequency(rootConcept);
 		if (rootFreq <= 0) {
 			return new Relatedness(min, tracer.toString(), null);

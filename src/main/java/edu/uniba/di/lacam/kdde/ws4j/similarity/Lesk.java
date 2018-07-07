@@ -35,12 +35,25 @@ public class Lesk extends RelatednessCalculator {
 	private GlossFinder glossFinder;
 
 	private static List<POS[]> POSPairs = new ArrayList<POS[]>(){{
-		add(new POS[]{POS.NOUN, POS.NOUN});
-		add(new POS[]{POS.VERB, POS.VERB});
 		add(new POS[]{POS.ADJECTIVE, POS.ADJECTIVE});
-		add(new POS[]{POS.ADVERB, POS.ADVERB});
-		add(new POS[]{POS.NOUN, POS.VERB});
-		add(new POS[]{POS.VERB, POS.NOUN});
+		add(new POS[]{POS.ADJECTIVE, POS.ADVERB});
+		add(new POS[]{POS.ADJECTIVE, POS.NOUN});
+		add(new POS[]{POS.ADJECTIVE, POS.VERB});
+
+        add(new POS[]{POS.ADVERB, POS.ADJECTIVE});
+        add(new POS[]{POS.ADVERB, POS.ADVERB});
+        add(new POS[]{POS.ADVERB, POS.NOUN});
+        add(new POS[]{POS.ADVERB, POS.VERB});
+
+        add(new POS[]{POS.NOUN, POS.ADJECTIVE});
+        add(new POS[]{POS.NOUN, POS.ADVERB});
+        add(new POS[]{POS.NOUN, POS.NOUN});
+        add(new POS[]{POS.NOUN, POS.VERB});
+
+        add(new POS[]{POS.VERB, POS.ADJECTIVE});
+        add(new POS[]{POS.VERB, POS.ADVERB});
+        add(new POS[]{POS.VERB, POS.NOUN});
+        add(new POS[]{POS.VERB, POS.VERB});
 	}};
 
 	private StringBuilder overlapLog;

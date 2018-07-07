@@ -7,6 +7,8 @@ import edu.uniba.di.lacam.kdde.ws4j.similarity.*;
 
 /**
  * This is a facade class that provides simple APIs for end users.
+ *
+ * @author Hideki Shima
  */
 public class WS4J {
 

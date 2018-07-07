@@ -8,11 +8,11 @@ import java.util.*;
 
 final public class StopWordRemover {
 
-	private static final StopWordRemover instance = new StopWordRemover();
+	private static final StopWordRemover stopWordRemover = new StopWordRemover();
 
 	private Set<String> stopList;
 
-	private StopWordRemover(){
+	private StopWordRemover() {
 		try {
 			loadStopList();
 		} catch (IOException e) {
@@ -21,13 +21,12 @@ final public class StopWordRemover {
 	}
 
 	public static StopWordRemover getInstance(){
-		return StopWordRemover.instance;
+		return StopWordRemover.stopWordRemover;
 	}
 
 	private synchronized void loadStopList() throws IOException {
-		String stopListFileName = WS4JConfiguration.getInstance().getStopList();
 		stopList = new HashSet<>();
-		InputStream stream = StopWordRemover.class.getResourceAsStream("/" + stopListFileName);
+		InputStream stream = StopWordRemover.class.getResourceAsStream("/" + WS4JConfiguration.getInstance().getStopList());
 		InputStreamReader isr = new InputStreamReader(stream);
 		BufferedReader br = new BufferedReader(isr);
 		String line;
@@ -41,9 +40,9 @@ final public class StopWordRemover {
 
 	String[] removeStopWords(String[] words) {
 		List<String> contents = new ArrayList<>(words.length);
-		for (String word : words) {
-			if (!stopList.contains(word)) contents.add(word);
-		}
+		Arrays.asList(words).forEach(word -> {
+            if (!stopList.contains(word)) contents.add(word);
+        });
 		return contents.toArray(new String[0]);
 	}
 }

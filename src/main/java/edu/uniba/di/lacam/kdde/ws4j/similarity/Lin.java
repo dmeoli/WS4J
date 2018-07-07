@@ -53,7 +53,7 @@ public class Lin extends RelatednessCalculator {
 		tracer.append(Objects.requireNonNull(subTracer).toString());
 		for (PathFinder.Subsumer lcs : lcsList) {
 			tracer.append("Lowest Common Subsumer(s): ");
-			tracer.append(lcs.subsumer.getSynsetID()).append(" (IC = ").append(lcs.ic).append(")\n");
+			tracer.append(lcs.concept.getSynsetID()).append(" (IC = ").append(lcs.ic).append(")\n");
 		}
 		tracer.append("Concept1: ").append(concept1.getSynsetID()).append(" (IC = ").append(ic1).append(")\n");
 		tracer.append("Concept2: ").append(concept2.getSynsetID()).append(" (IC = ").append(ic2).append(")\n");

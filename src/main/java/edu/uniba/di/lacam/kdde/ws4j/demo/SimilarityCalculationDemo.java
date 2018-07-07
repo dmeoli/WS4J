@@ -13,7 +13,8 @@ public class SimilarityCalculationDemo {
     private static RelatednessCalculator[] rcs;
 
     static {
-        WS4JConfiguration.getInstance().setMFS(true);
+        WS4JConfiguration.getInstance().setTrace(true);
+        WS4JConfiguration.getInstance().setMFS(false);
         ILexicalDatabase db = new MITWordNet();
         rcs = new RelatednessCalculator[]{
                 new HirstStOnge(db), new LeacockChodorow(db), new Lesk(db), new WuPalmer(db),
@@ -24,7 +25,7 @@ public class SimilarityCalculationDemo {
 	public static void main(String[] args) {
         long t = System.currentTimeMillis();
         Arrays.asList(rcs).forEach(rc -> System.out.println(rc.getClass().getName() + "\t" +
-                rc.calcRelatednessOfWords("act#n#1", "moderate#n#1")));
+                rc.calcRelatednessOfWords("act", "moderate")));
         System.out.println("Done in " + (System.currentTimeMillis()-t) + " msec.");
     }
 }

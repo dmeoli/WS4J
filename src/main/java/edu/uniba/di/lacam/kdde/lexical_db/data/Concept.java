@@ -50,9 +50,9 @@ public class Concept {
     @Override
     public String toString() {
         return "Concept{" +
-                "synsetID='" + synsetID + '\'' +
-                ", pos=" + pos +
-                ", name='" + name + '\'' +
+                "synsetID = " + synsetID +
+                ", pos = " + pos +
+                ", name = " + name +
                 '}';
     }
 }

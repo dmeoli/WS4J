@@ -24,7 +24,7 @@ import java.util.Objects;
  * they share information”,Resnik defined the similarity between
  * two concepts lexicalized in WordNet to be the information
  * content of their lowest super-ordinate (most
- * specific common subsumer) lso(c1; c2):
+ * specific common concept) lso(c1; c2):
  * <div style="padding:20px"><code>sim<sub>R</sub>(c<sub>1</sub>, c<sub>2</sub>) = -log p(lso(c<sub>1</sub>, c<sub>2</sub>)).</code></div>
  * where p(c) is the probability of encountering an instance
  * of a synset c in some specific corpus.
@@ -58,7 +58,7 @@ public class Resnik extends RelatednessCalculator {
 			tracer.append(Objects.requireNonNull(subTracer).toString());
 			for (PathFinder.Subsumer lcs : lcsList) {
 				tracer.append("Lowest Common Subsumer(s): ");
-				tracer.append(lcs.subsumer.getSynsetID()).append(" (IC = ").append(lcs.ic).append(")\n");
+				tracer.append(lcs.concept.getSynsetID()).append(" (IC = ").append(lcs.ic).append(")\n");
 			}
 		}
 		PathFinder.Subsumer subsumer = lcsList.get(0);

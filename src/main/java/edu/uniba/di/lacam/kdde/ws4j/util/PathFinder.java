@@ -51,18 +51,14 @@ public class PathFinder {
 					rPath.add(synset);
 				}
 				Subsumer sub = new Subsumer();
-				sub.subsumer = new Concept(subsumer, concept1.getPOS());
+				sub.concept = new Concept(subsumer, concept1.getPOS());
 				sub.length = rCount + lCount - 1;
 				sub.lPath = lPath;
 				sub.rPath = rPath;
 				paths.add(sub);
 				if (tracer != null) {
-					tracer.append("HyperTree1:");
-					for (String synset : lTree) tracer.append(" ").append(synset);
-					tracer.append("\n");
-					tracer.append("HyperTree2:");
-					for (String synset : rTree) tracer.append(" ").append(synset);
-					tracer.append("\n");
+					tracer.append("HyperTree1: ").append(lTree).append("\n");
+					tracer.append("HyperTree2: ").append(rTree).append("\n");
 				}
 			}
 		}
@@ -138,7 +134,7 @@ public class PathFinder {
 
 	public static class Subsumer {
 
-		public Concept subsumer;
+		public Concept concept;
 		public int length;
 		public double ic;
 		List<String> lPath;
@@ -147,11 +143,11 @@ public class PathFinder {
 		@Override
 		public String toString() {
 			return "Subsumer{" +
-					"subsumer=" + subsumer +
-					", length=" + length +
-					", IC=" + ic +
-					", lPath=" + lPath +
-					", rPath=" + rPath +
+					"concept = " + concept +
+					", length = " + length +
+					", IC = " + ic +
+					", lPath = " + lPath +
+					", rPath = " + rPath +
 					'}';
 		}
 	}
@@ -169,22 +165,22 @@ public class PathFinder {
 
 	public List<Subsumer> getLCSByPath(Concept concept1, Concept concept2, StringBuilder tracer) {
 		List<Subsumer> paths = getAllPaths(concept1, concept2, tracer);
-		List<Subsumer> returnList = new ArrayList<>(paths.size());
-        for (Subsumer path : paths) {
-			if (path.length <= paths.get(0).length) {
-				returnList.add(path);
-			}
-		}
-		return returnList;
+		List<Subsumer> returnPaths = new ArrayList<>(paths.size());
+		paths.forEach(path -> {
+            if (path.length <= paths.get(0).length) {
+                returnPaths.add(path);
+            }
+        });
+		return returnPaths;
 	}
 
-	private static List<List<String>> clone(List<List<String>> original) {
-		List<List<String>> clone = new ArrayList<>(original.size());
-		for (List<String> oStrings : original) {
-			List<String> cStrings = new ArrayList<>(oStrings.size());
-            cStrings.addAll(oStrings);
-			clone.add(cStrings);
-		}
+	private static List<List<String>> clone(List<List<String>> originals) {
+		List<List<String>> clone = new ArrayList<>(originals.size());
+		originals.forEach(original ->{
+            List<String> cStrings = new ArrayList<>(original.size());
+            cStrings.addAll(original);
+            clone.add(cStrings);
+        });
 		return clone;
 	}
 }

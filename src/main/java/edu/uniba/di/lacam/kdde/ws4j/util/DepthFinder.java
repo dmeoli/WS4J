@@ -18,7 +18,7 @@ public class DepthFinder {
 		if (paths == null || paths.size() == 0) return null;
 		List<Depth> depthList = new ArrayList<>(paths.size());
 		for (PathFinder.Subsumer s : paths) {
-			List<Depth> depths = getSynsetDepths(s.subsumer.getSynsetID());
+			List<Depth> depths = getSynsetDepths(s.concept.getSynsetID());
 			if (depths == null || depths.size() == 0) return null;
 			Depth depth = depths.get(0);
 			depthList.add(depth);
@@ -62,9 +62,9 @@ public class DepthFinder {
 		@Override
 		public String toString() {
 			return "Depth{" +
-					"leaf='" + leaf + '\'' +
-					", depth=" + depth +
-					", root='" + root + '\'' +
+					"leaf = " + leaf +
+					", depth = " + depth +
+					", root = " + root +
 					'}';
 		}
 	}

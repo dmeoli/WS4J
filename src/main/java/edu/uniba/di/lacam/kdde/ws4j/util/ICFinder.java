@@ -63,7 +63,7 @@ final public class ICFinder {
 												StringBuilder tracer) {
 		List<PathFinder.Subsumer> paths = pathFinder.getAllPaths(concept1, concept2, tracer);
 		if (paths == null || paths.size() == 0) return null;
-		for (PathFinder.Subsumer path : paths) path.ic = IC(pathFinder, path.subsumer);
+		for (PathFinder.Subsumer path : paths) path.ic = IC(pathFinder, path.concept);
 		paths.sort((s1, s2) -> Double.compare(s2.ic, s1.ic));
 		List<PathFinder.Subsumer> results = new ArrayList<>(paths.size());
 		for (PathFinder.Subsumer path : paths) {

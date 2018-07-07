@@ -31,7 +31,7 @@ public class Relatedness {
 		return trace.toString();
 	}
 
-	public void appendTrace(String trace) {
+	void appendTrace(String trace) {
 		this.trace.append(trace);
 	}
 
