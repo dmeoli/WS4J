@@ -20,7 +20,7 @@ final public class WS4JConfiguration {
 	private boolean leskNormalize;
 	private boolean mfs;
 
-    private static final WS4JConfiguration instance = new WS4JConfiguration();
+    private static final WS4JConfiguration WS4JConfiguration = new WS4JConfiguration();
 
 	private WS4JConfiguration() {
 		InputStream stream;
@@ -57,7 +57,7 @@ final public class WS4JConfiguration {
 	}
 
 	public static WS4JConfiguration getInstance(){
-		return WS4JConfiguration.instance;
+		return WS4JConfiguration;
 	}
 
 	public boolean useCache() {

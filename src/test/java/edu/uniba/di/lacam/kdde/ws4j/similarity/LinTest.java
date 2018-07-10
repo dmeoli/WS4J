@@ -22,7 +22,7 @@ public class LinTest extends RelatednessCalculatorTest {
 	
 	@BeforeClass
 	public static void oneTimeSetUp() {
-		ILexicalDatabase db = new MITWordNet();
+		ILexicalDatabase db = MITWordNet.getInstance();
 		rc = new Lin(db);
 	}
 

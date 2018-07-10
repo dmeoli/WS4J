@@ -22,7 +22,7 @@ public class HirstStOngeTest extends RelatednessCalculatorTest {
 
 	@BeforeClass
 	public static void oneTimeSetUp() {
-		ILexicalDatabase db = new MITWordNet();
+		ILexicalDatabase db = MITWordNet.getInstance();
 		rc = new HirstStOnge(db);
 	}
 

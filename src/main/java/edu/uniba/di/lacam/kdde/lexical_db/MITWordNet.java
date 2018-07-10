@@ -13,7 +13,6 @@ import edu.uniba.di.lacam.kdde.ws4j.util.WS4JConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,24 +24,28 @@ public class MITWordNet implements ILexicalDatabase {
     private static IRAMDictionary dict;
     private static ConcurrentMap<String, List<String>> cache;
 
-    private static final URL WORDNET = MITWordNet.class.getResource(File.separator);
+    private static final ILexicalDatabase db = new MITWordNet();
 
-    static {
+    private MITWordNet() {
         try {
             if (WS4JConfiguration.getInstance().useMemoryDB()) {
                 Log.info("Loading WordNet into memory...");
                 long t = System.currentTimeMillis();
-                dict = new RAMDictionary(WORDNET, ILoadPolicy.IMMEDIATE_LOAD);
+                dict = new RAMDictionary(MITWordNet.class.getResource(File.separator), ILoadPolicy.IMMEDIATE_LOAD);
                 dict.open();
                 Log.info("WordNet loaded into memory in %d sec.", (System.currentTimeMillis()-t) / 1000L);
             } else {
-                dict = new RAMDictionary(WORDNET, ILoadPolicy.NO_LOAD);
+                dict = new RAMDictionary(MITWordNet.class.getResource(File.separator), ILoadPolicy.NO_LOAD);
                 dict.open();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
         if (WS4JConfiguration.getInstance().useCache()) cache = new ConcurrentHashMap<>();
+    }
+
+    public static ILexicalDatabase getInstance(){
+        return db;
     }
 
     @Override

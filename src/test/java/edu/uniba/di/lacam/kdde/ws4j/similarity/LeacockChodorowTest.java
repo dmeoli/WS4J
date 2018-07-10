@@ -22,7 +22,7 @@ public class LeacockChodorowTest extends RelatednessCalculatorTest {
 	
 	@BeforeClass
 	public static void oneTimeSetUp() {
-		ILexicalDatabase db = new MITWordNet();
+		ILexicalDatabase db = MITWordNet.getInstance();
 		rc = new LeacockChodorow(db);
 	}
 
