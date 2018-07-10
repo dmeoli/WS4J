@@ -25,18 +25,18 @@ public class MITWordNet implements ILexicalDatabase {
     private static IRAMDictionary dict;
     private static ConcurrentMap<String, List<String>> cache;
 
-    private static String WORDNET_PATH = System.getProperty("user.dir") + File.separator + "dict";
+    private static final URL WORDNET = MITWordNet.class.getResource(File.separator);
 
     static {
         try {
             if (WS4JConfiguration.getInstance().useMemoryDB()) {
                 Log.info("Loading WordNet into memory...");
                 long t = System.currentTimeMillis();
-                dict = new RAMDictionary(new URL("file", null, WORDNET_PATH), ILoadPolicy.IMMEDIATE_LOAD);
+                dict = new RAMDictionary(WORDNET, ILoadPolicy.IMMEDIATE_LOAD);
                 dict.open();
                 Log.info("WordNet loaded into memory in %d sec.", (System.currentTimeMillis()-t) / 1000L);
             } else {
-                dict = new RAMDictionary(new URL("file", null, WORDNET_PATH), ILoadPolicy.NO_LOAD);
+                dict = new RAMDictionary(WORDNET, ILoadPolicy.NO_LOAD);
                 dict.open();
             }
         } catch (IOException e) {

@@ -13,7 +13,6 @@ public class SimilarityCalculationDemo {
     private static RelatednessCalculator[] rcs;
 
     static {
-        WS4JConfiguration.getInstance().setTrace(true);
         WS4JConfiguration.getInstance().setMFS(false);
         ILexicalDatabase db = new MITWordNet();
         rcs = new RelatednessCalculator[]{

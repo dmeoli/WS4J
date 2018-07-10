@@ -1,5 +1,6 @@
 package edu.uniba.di.lacam.kdde.ws4j.util;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -24,7 +25,7 @@ final public class WS4JConfiguration {
 	private WS4JConfiguration() {
 		InputStream stream;
 		try {
-			stream = WS4JConfiguration.class.getResourceAsStream("/" + CONFIGURATION);
+			stream = getClass().getResourceAsStream(File.separator + CONFIGURATION);
 			properties = new Properties();
 			properties.load(stream);
 			cache = readInt("cache",1) == 1;

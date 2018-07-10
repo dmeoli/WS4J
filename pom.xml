@@ -93,8 +93,17 @@
                 <directory>${project.basedir}/src/main/config</directory>
             </resource>
             <resource>
+                <directory>${project.basedir}/src/main/dict</directory>
+            </resource>
+            <resource>
                 <directory>${project.basedir}/src/main/resources</directory>
             </resource>
         </resources>
+
+        <testResources>
+            <testResource>
+                <directory>${project.basedir}/src/test/dict</directory>
+            </testResource>
+        </testResources>
     </build>
 </project>

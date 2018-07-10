@@ -4,10 +4,7 @@ import edu.uniba.di.lacam.kdde.lexical_db.data.Concept;
 import edu.uniba.di.lacam.kdde.lexical_db.item.POS;
 import edu.uniba.di.lacam.kdde.ws4j.RelatednessCalculator;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -37,10 +34,9 @@ final public class ICFinder {
 	}
 	
 	private synchronized void loadIC() throws IOException {
-		String ICFileName = WS4JConfiguration.getInstance().getInfoContent();
 		freqV = new ConcurrentHashMap<>();
 		freqN = new ConcurrentHashMap<>();
-		InputStream stream = ICFinder.class.getResourceAsStream("/"+ ICFileName);
+		InputStream stream = getClass().getResourceAsStream(File.separator + WS4JConfiguration.getInstance().getInfoContent());
 		InputStreamReader isr = new InputStreamReader(stream);
 		BufferedReader br = new BufferedReader(isr);
 		String line;

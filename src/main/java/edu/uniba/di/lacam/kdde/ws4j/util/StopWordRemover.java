@@ -1,9 +1,6 @@
 package edu.uniba.di.lacam.kdde.ws4j.util;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.*;
 
 final public class StopWordRemover {
@@ -26,7 +23,7 @@ final public class StopWordRemover {
 
 	private synchronized void loadStopList() throws IOException {
 		stopList = new HashSet<>();
-		InputStream stream = StopWordRemover.class.getResourceAsStream("/" + WS4JConfiguration.getInstance().getStopList());
+		InputStream stream = getClass().getResourceAsStream(File.separator + WS4JConfiguration.getInstance().getStopList());
 		InputStreamReader isr = new InputStreamReader(stream);
 		BufferedReader br = new BufferedReader(isr);
 		String line;
