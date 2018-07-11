@@ -22,7 +22,7 @@ public class JiangConrathTest extends RelatednessCalculatorTest {
 	
 	@BeforeClass
 	public static void oneTimeSetUp() {
-		ILexicalDatabase db = MITWordNet.getInstance();
+		ILexicalDatabase db = new MITWordNet();
 		rc = new JiangConrath(db);
 	}
 

@@ -5,9 +5,9 @@ import java.util.*;
 
 final public class StopWordRemover {
 
-	private static final StopWordRemover stopWordRemover = new StopWordRemover();
-
 	private Set<String> stopList;
+
+	private static final StopWordRemover stopWordRemover = new StopWordRemover();
 
 	private StopWordRemover() {
 		try {
@@ -23,7 +23,7 @@ final public class StopWordRemover {
 
 	private synchronized void loadStopList() throws IOException {
 		stopList = new HashSet<>();
-		InputStream stream = getClass().getResourceAsStream(File.separator + WS4JConfiguration.getInstance().getStopList());
+		InputStream stream = getClass().getResourceAsStream(File.separator + WS4JConfiguration.getInstance().getStopWords());
 		InputStreamReader isr = new InputStreamReader(stream);
 		BufferedReader br = new BufferedReader(isr);
 		String line;

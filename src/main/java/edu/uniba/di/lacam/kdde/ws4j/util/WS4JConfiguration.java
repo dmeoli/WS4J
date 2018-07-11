@@ -16,11 +16,11 @@ final public class WS4JConfiguration {
 	private boolean memoryDB;
 	private String infoContent;
 	private boolean stem;
-	private String stopList;
+	private String stopWords;
 	private boolean leskNormalize;
 	private boolean mfs;
 
-    private static final WS4JConfiguration WS4JConfiguration = new WS4JConfiguration();
+    private static final WS4JConfiguration ws4jConfiguration = new WS4JConfiguration();
 
 	private WS4JConfiguration() {
 		InputStream stream;
@@ -31,9 +31,9 @@ final public class WS4JConfiguration {
 			cache = readInt("cache",1) == 1;
 			trace = readInt("trace",0) == 1;
 			memoryDB = readInt("memoryDB", 1) == 1;
-			infoContent = readString("infoContent","ic-semcor.dat");
+			infoContent = readString("infoContent", "infoContent");
 			stem = readInt("stem",0) == 1;
-			stopList = readString("stopList", "stopList");
+			stopWords = readString("stopWords", "stopWords");
 			leskNormalize = readInt("leskNormalize", 0) == 1;
 			mfs = readInt("MFS", 0) == 1;
 			stream.close();
@@ -43,13 +43,13 @@ final public class WS4JConfiguration {
 	}
 	
 	private int readInt(String key, int defaultValue) {
-		return Integer.parseInt(readString(key, defaultValue + ""));
+		return Integer.parseInt(readString(key, String.valueOf(defaultValue)));
 	}
 	
 	private String readString(String key, String defaultValue) {
 		String value = properties.getProperty(key);
 		if (value == null) {
-		    Log.error("Configuration \"%s\" not found in ", CONFIGURATION);
+		    Log.error("Configuration \"%s\" not found in \"%s\"", key, CONFIGURATION);
 			return defaultValue;
 		}
 		value = value.replaceAll("#.+", "").trim();
@@ -57,7 +57,7 @@ final public class WS4JConfiguration {
 	}
 
 	public static WS4JConfiguration getInstance(){
-		return WS4JConfiguration;
+		return ws4jConfiguration;
 	}
 
 	public boolean useCache() {
@@ -84,7 +84,7 @@ final public class WS4JConfiguration {
         this.memoryDB = memoryDB;
     }
 
-	String getInfoContent() {
+	public String getInfoContent() {
 		return infoContent;
 	}
 
@@ -96,8 +96,8 @@ final public class WS4JConfiguration {
 		this.stem = stem;
 	}
 
-	String getStopList() {
-		return stopList;
+	public String getStopWords() {
+		return stopWords;
 	}
 
 	public boolean useLeskNormalizer() {

@@ -14,7 +14,7 @@ public class SimilarityCalculationDemo {
 
     static {
         WS4JConfiguration.getInstance().setMFS(false);
-        ILexicalDatabase db = MITWordNet.getInstance();
+        ILexicalDatabase db = new MITWordNet();
         rcs = new RelatednessCalculator[]{
                 new HirstStOnge(db), new LeacockChodorow(db), new Lesk(db), new WuPalmer(db),
                 new Resnik(db), new JiangConrath(db), new Lin(db), new Path(db)

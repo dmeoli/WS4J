@@ -28,7 +28,7 @@ The semantic relatedness/similarity metrics available are:
  
  - [LESK](http://search.cpan.org/dist/WordNet-Similarity/lib/WordNet/Similarity/lesk.pm): 
  [Banerjee & Pedersen, 2002](https://scholar.google.com/scholar?q=An+Adapted+Lesk+Algorithm+for+Word+Sense+Disambiguation+Using+WordNet) - 
- Lesk (1985) proposed that the relatedness of two words is proportional to to the extent of overlaps of their dictionary 
+ Lesk (1985) proposed that the relatedness of two words is proportional to the extent of overlaps of their dictionary 
  definitions. This Lesk measure is based on adapted Lesk from Banerjee and Pedersen (2002) extended this notion to use 
  WordNet as the dictionary for the word definitions:
  

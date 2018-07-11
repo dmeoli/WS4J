@@ -22,7 +22,7 @@ public class WS4J {
 	private static RelatednessCalculator res;
 
 	static {
-		ILexicalDatabase db = MITWordNet.getInstance();
+		ILexicalDatabase db = new MITWordNet();
 		lin = new Lin(db);
 		wup = new WuPalmer(db);
 		hso = new HirstStOnge(db);

@@ -17,7 +17,7 @@ abstract public class RelatednessCalculatorTest {
 		WS4JConfiguration.getInstance().setMemoryDB(false);
 		WS4JConfiguration.getInstance().setLeskNormalize(false);
 		WS4JConfiguration.getInstance().setMFS(false);
-        db = MITWordNet.getInstance();
+        db = new MITWordNet();
 	}
 
 	protected static final String CYCLONE = "cyclone";

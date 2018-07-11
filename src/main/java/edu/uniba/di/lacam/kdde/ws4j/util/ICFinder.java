@@ -13,15 +13,15 @@ import java.util.concurrent.ConcurrentMap;
 
 final public class ICFinder {
 
-	private static final ICFinder IC = new ICFinder();
+	private static final ICFinder icFinder = new ICFinder();
 
 	private ConcurrentMap<Integer, Integer> freqV;
 	private ConcurrentMap<Integer, Integer> freqN;
 
-	private final static int rootFreqN = 128767; // sum of all root freq of n in IC-semcor.dat
-	private final static int rootFreqV = 95935;  // sum of all root freq of v in IC-semcor.dat
+	private final static int rootFreqN = 128767; // sum of all root freq of n in icFinder-semcor.dat
+	private final static int rootFreqV = 95935;  // sum of all root freq of v in icFinder-semcor.dat
 
-	private ICFinder(){
+	private ICFinder() {
 		try {
 			loadIC();
 		} catch (IOException e) {
@@ -29,8 +29,8 @@ final public class ICFinder {
 		}
 	}
 
-	public static ICFinder getIC(){
-		return ICFinder.IC;
+	public static ICFinder getIC() {
+		return icFinder;
 	}
 	
 	private synchronized void loadIC() throws IOException {
@@ -55,8 +55,7 @@ final public class ICFinder {
 		isr.close();
 	}
 	
-	public List<PathFinder.Subsumer> getLCSbyIC(PathFinder pathFinder, Concept concept1, Concept concept2,
-												StringBuilder tracer) {
+	public List<PathFinder.Subsumer> getLCSbyIC(PathFinder pathFinder, Concept concept1, Concept concept2, StringBuilder tracer) {
 		List<PathFinder.Subsumer> paths = pathFinder.getAllPaths(concept1, concept2, tracer);
 		if (paths == null || paths.size() == 0) return null;
 		for (PathFinder.Subsumer path : paths) path.ic = IC(pathFinder, path.concept);
