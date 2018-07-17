@@ -51,26 +51,26 @@ public class JiangConrath extends RelatednessCalculator {
 		if (concept1 == null || concept2 == null) return new Relatedness(min, null, illegalSynset);
 		if (concept1.getSynsetID().equals(concept2.getSynsetID())) return new Relatedness(max, identicalSynset, null);
 		StringBuilder subTracer = WS4JConfiguration.getInstance().useTrace() ? new StringBuilder() : null;
-		List<PathFinder.Subsumer> lcsList = ICFinder.getIC().getLCSbyIC(pathFinder, concept1, concept2, subTracer);
+		List<PathFinder.Subsumer> lcsList = ICFinder.getInstance().getLCSbyIC(pathFinder, concept1, concept2, subTracer);
 		if (Objects.requireNonNull(lcsList).size() == 0) return new Relatedness(min, tracer.toString(), null);
 		if (WS4JConfiguration.getInstance().useTrace()) {
 			tracer.append(Objects.requireNonNull(subTracer).toString());
-			for (PathFinder.Subsumer lcs : lcsList) {
+			lcsList.forEach(lcs -> {
 				tracer.append("Lowest Common Subsumer(s): ");
 				tracer.append(lcs.concept.getSynsetID()).append(" (IC = ").append(lcs.ic).append(")\n");
-			}
+			});
 		}
 		PathFinder.Subsumer subsumer = lcsList.get(0);
 		String lcsSynset = subsumer.concept.getSynsetID();
 		double lcsIC = subsumer.ic;
 		Concept rootConcept = pathFinder.getRoot(lcsSynset);
 		rootConcept.setPOS(subsumer.concept.getPOS());
-		int rootFreq = ICFinder.getIC().getFrequency(rootConcept);
+		int rootFreq = ICFinder.getInstance().getFrequency(rootConcept);
 		if (rootFreq <= 0) {
 			return new Relatedness(min, tracer.toString(), null);
 		}
-		double IC1 = ICFinder.getIC().IC(pathFinder, concept1);
-		double IC2 = ICFinder.getIC().IC(pathFinder, concept2);
+		double IC1 = ICFinder.getInstance().IC(pathFinder, concept1);
+		double IC2 = ICFinder.getInstance().IC(pathFinder, concept2);
 		if (WS4JConfiguration.getInstance().useTrace()) {
 			tracer.append("Concept1: ").append(concept1.getSynsetID()).append(" (IC = ").append(IC1).append(")\n");
 			tracer.append("Concept2: ").append(concept2.getSynsetID()).append(" (IC = ").append(IC2).append(")\n");

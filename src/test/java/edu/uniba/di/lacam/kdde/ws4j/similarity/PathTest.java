@@ -7,7 +7,7 @@ import edu.uniba.di.lacam.kdde.lexical_db.MITWordNet;
 import edu.uniba.di.lacam.kdde.lexical_db.item.POS;
 import edu.uniba.di.lacam.kdde.ws4j.RelatednessCalculator;
 import edu.uniba.di.lacam.kdde.ws4j.RelatednessCalculatorTest;
-import edu.uniba.di.lacam.kdde.ws4j.util.WordSimilarityCalculator;
+import edu.uniba.di.lacam.kdde.ws4j.WordSimilarityCalculator;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

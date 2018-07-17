@@ -108,7 +108,7 @@ final public class WS4JConfiguration {
 		this.leskNormalize = leskNormalize;
 	}
 
-	boolean useMFS() {
+	public boolean useMFS() {
 		return mfs;
 	}
 

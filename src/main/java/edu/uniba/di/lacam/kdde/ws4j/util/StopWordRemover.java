@@ -18,7 +18,7 @@ final public class StopWordRemover {
 	}
 
 	public static StopWordRemover getInstance(){
-		return StopWordRemover.stopWordRemover;
+		return stopWordRemover;
 	}
 
 	private synchronized void loadStopList() throws IOException {

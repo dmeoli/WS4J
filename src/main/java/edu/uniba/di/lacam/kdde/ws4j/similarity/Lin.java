@@ -45,16 +45,16 @@ public class Lin extends RelatednessCalculator {
 		if (concept1 == null || concept2 == null) return new Relatedness(min, null, illegalSynset);
 		if (concept1.getSynsetID().equals(concept2.getSynsetID())) return new Relatedness(max, identicalSynset, null);
 		StringBuilder subTracer = new StringBuilder();
-		List<PathFinder.Subsumer> lcsList = ICFinder.getIC().getLCSbyIC(pathFinder, concept1, concept2, subTracer);
+		List<PathFinder.Subsumer> lcsList = ICFinder.getInstance().getLCSbyIC(pathFinder, concept1, concept2, subTracer);
 		if (Objects.requireNonNull(lcsList).size() == 0) return new Relatedness(min, tracer.toString(), null);
-		double ic1 = ICFinder.getIC().IC(pathFinder, concept1);
-		double ic2 = ICFinder.getIC().IC(pathFinder, concept2);
+		double ic1 = ICFinder.getInstance().IC(pathFinder, concept1);
+		double ic2 = ICFinder.getInstance().IC(pathFinder, concept2);
 		double score = (ic1 > 0 && ic2 > 0) ? (2D * lcsList.get(0).ic / (ic1 + ic2)) : 0D;
 		tracer.append(Objects.requireNonNull(subTracer).toString());
-		for (PathFinder.Subsumer lcs : lcsList) {
+		lcsList.forEach(lcs -> {
 			tracer.append("Lowest Common Subsumer(s): ");
 			tracer.append(lcs.concept.getSynsetID()).append(" (IC = ").append(lcs.ic).append(")\n");
-		}
+		});
 		tracer.append("Concept1: ").append(concept1.getSynsetID()).append(" (IC = ").append(ic1).append(")\n");
 		tracer.append("Concept2: ").append(concept2.getSynsetID()).append(" (IC = ").append(ic2).append(")\n");
 		return new Relatedness(score, tracer.toString(), null);

@@ -63,10 +63,10 @@ public class LeacockChodorow extends RelatednessCalculator {
 		double score = -Math.log((double) length / (double) (2 * maxDepth));
 		if (WS4JConfiguration.getInstance().useTrace()) {
 			tracer.append(Objects.requireNonNull(subTracer).toString());
-			for (PathFinder.Subsumer lcs : lcsList) {
+			lcsList.forEach(lcs -> {
 				tracer.append("Lowest Common Subsumer(s): ");
 				tracer.append(lcs.concept.getSynsetID()).append(" (Length = ").append(lcs.length).append(")\n");
-			}
+			});
 		}
 		return new Relatedness(score, tracer.toString(), null);
 	}

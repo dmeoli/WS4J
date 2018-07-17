@@ -70,12 +70,12 @@ public class Lesk extends RelatednessCalculator {
 		if (concept1 == null || concept2 == null) return new Relatedness(min);
 		List<GlossFinder.SuperGloss> glosses = glossFinder.getSuperGlosses(concept1, concept2);
 		int score = 0;
-		for (GlossFinder.SuperGloss sg : glosses) {
-			double functionsScore = calcFromSuperGloss(sg.getGloss1(), sg.getGloss2());
-			functionsScore *= sg.getWeight();
+		for (GlossFinder.SuperGloss gloss : glosses) {
+			double functionsScore = calcFromSuperGloss(gloss.getGloss1(), gloss.getGloss2());
+			functionsScore *= gloss.getWeight();
 			if (WS4JConfiguration.getInstance().useTrace() && functionsScore > 0) {
-				tracer.append("Functions: ").append(sg.getLink1().trim()).append(" - ")
-						.append(sg.getLink2().trim()).append(" : ").append(functionsScore).append("\n");
+				tracer.append("Functions: ").append(gloss.getLink1().trim()).append(" - ")
+						.append(gloss.getLink2().trim()).append(" : ").append(functionsScore).append("\n");
 				tracer.append(overlapLogMax).append("\n");
 			}
 			score += functionsScore;

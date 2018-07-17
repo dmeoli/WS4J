@@ -2,7 +2,6 @@ package edu.uniba.di.lacam.kdde.ws4j;
 
 import edu.uniba.di.lacam.kdde.lexical_db.ILexicalDatabase;
 import edu.uniba.di.lacam.kdde.lexical_db.MITWordNet;
-import edu.uniba.di.lacam.kdde.ws4j.util.MatrixCalculator;
 import edu.uniba.di.lacam.kdde.ws4j.similarity.*;
 
 /**

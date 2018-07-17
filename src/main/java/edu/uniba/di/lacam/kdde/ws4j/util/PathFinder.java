@@ -167,16 +167,14 @@ public class PathFinder {
 		List<Subsumer> paths = getAllPaths(concept1, concept2, tracer);
 		List<Subsumer> returnPaths = new ArrayList<>(paths.size());
 		paths.forEach(path -> {
-            if (path.length <= paths.get(0).length) {
-                returnPaths.add(path);
-            }
+            if (path.length <= paths.get(0).length) returnPaths.add(path);
         });
 		return returnPaths;
 	}
 
 	private static List<List<String>> clone(List<List<String>> originals) {
 		List<List<String>> clone = new ArrayList<>(originals.size());
-		originals.forEach(original ->{
+		originals.forEach(original -> {
             List<String> cStrings = new ArrayList<>(original.size());
             cStrings.addAll(original);
             clone.add(cStrings);

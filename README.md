@@ -100,8 +100,8 @@ and a simple demo class:
 
   `src/main/java/edu/uniba/di/lacam/kdde/ws4j/demo/SimilarityCalculationDemo.java`
 
-When using the WS4J jar package from other projects, make sure to also include depending libraries. In maven's pom file, 
-these repository and dependency can be written such as: 
+When using the WS4J jar package from other projects, make sure to also include depending libraries. Add the 
+[JitPack](https://jitpack.io/) repository to your POM file:
 
     <repositories>
         <repository>
@@ -109,6 +109,8 @@ these repository and dependency can be written such as:
             <url>https://jitpack.io</url>
         </repository>
     </repositories>
+    
+and declare this github repo as a dependency:
     
     <dependencies>
         <dependency>

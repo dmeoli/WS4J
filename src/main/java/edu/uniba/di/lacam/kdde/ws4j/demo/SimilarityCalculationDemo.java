@@ -21,7 +21,7 @@ public class SimilarityCalculationDemo {
         };
     }
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
         long t = System.currentTimeMillis();
         Arrays.asList(rcs).forEach(rc -> System.out.println(rc.getClass().getName() + "\t" +
                 rc.calcRelatednessOfWords("act", "moderate")));

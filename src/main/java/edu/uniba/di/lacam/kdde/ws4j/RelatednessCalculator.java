@@ -55,7 +55,7 @@ public abstract class RelatednessCalculator {
 		return MatrixCalculator.getNormalizedSimilarityMatrix(words1, words2, this);
 	}
 
-	public ILexicalDatabase getLexicalDB() {
+	ILexicalDatabase getLexicalDB() {
 		return db;
 	}
 

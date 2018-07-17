@@ -47,10 +47,10 @@ public class WuPalmer extends RelatednessCalculator {
 		if (depth1 > 0 && depth2 > 0) score = (double) (2 * depth) / (double) (depth1 + depth2);
 		if (WS4JConfiguration.getInstance().useTrace()) {
 			tracer.append(Objects.requireNonNull(subTracer).toString());
-			for (DepthFinder.Depth lcs : lcsList) {
+			lcsList.forEach(lcs -> {
 				tracer.append("Lowest Common Subsumer(s): ");
 				tracer.append(lcs.leaf).append(" (Depth = ").append(lcs.depth).append(")\n");
-			}
+			});
 			tracer.append("Depth1(").append(concept1.getSynsetID()).append(") = ").append(depth1).append("\n");
 			tracer.append("Depth2(").append(concept2.getSynsetID()).append(") = ").append(depth2).append("\n");
 		}
