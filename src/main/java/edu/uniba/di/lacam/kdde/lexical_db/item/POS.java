@@ -7,10 +7,10 @@ public enum POS {
     ADJECTIVE("adjective", 'a'),
     ADVERB("adverb", 'r');
 
-    public static final char NOUN_TAG = 'n';
-    public static final char VERB_TAG = 'v';
-    public static final char ADJECTIVE_TAG = 'a';
-    public static final char ADVERB_TAG = 'r';
+    private static final char NOUN_TAG = 'n';
+    private static final char VERB_TAG = 'v';
+    private static final char ADJECTIVE_TAG = 'a';
+    private static final char ADVERB_TAG = 'r';
 
     private final String name;
     private final char tag;

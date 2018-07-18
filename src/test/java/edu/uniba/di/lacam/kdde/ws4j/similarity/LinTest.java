@@ -2,7 +2,6 @@ package edu.uniba.di.lacam.kdde.ws4j.similarity;
 
 import static org.junit.Assert.assertEquals;
 
-import edu.uniba.di.lacam.kdde.lexical_db.ILexicalDatabase;
 import edu.uniba.di.lacam.kdde.lexical_db.MITWordNet;
 import edu.uniba.di.lacam.kdde.lexical_db.item.POS;
 import edu.uniba.di.lacam.kdde.ws4j.RelatednessCalculator;
@@ -22,8 +21,7 @@ public class LinTest extends RelatednessCalculatorTest {
 	
 	@BeforeClass
 	public static void oneTimeSetUp() {
-		ILexicalDatabase db = new MITWordNet();
-		rc = new Lin(db);
+		rc = new Lin(new MITWordNet());
 	}
 
 	@Test

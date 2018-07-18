@@ -27,7 +27,11 @@ public class MITWordNet implements ILexicalDatabase {
 
     private static final String WORDNET_PATH = System.getProperty("user.dir") + File.separator + "dict";
 
-    static {
+    public MITWordNet(IRAMDictionary dict) {
+        MITWordNet.dict = dict;
+    }
+
+    public MITWordNet() {
         try {
             if (WS4JConfiguration.getInstance().useMemoryDB()) {
                 Log.info("Loading WordNet into memory...");
@@ -43,6 +47,10 @@ public class MITWordNet implements ILexicalDatabase {
             e.printStackTrace();
         }
         if (WS4JConfiguration.getInstance().useCache()) cache = new ConcurrentHashMap<>();
+    }
+
+    public static IRAMDictionary getDict() {
+        return dict;
     }
 
     @Override
