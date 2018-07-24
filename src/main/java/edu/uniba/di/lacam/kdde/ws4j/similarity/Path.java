@@ -40,7 +40,7 @@ public class Path extends RelatednessCalculator {
 		List<PathFinder.Subsumer> shortestPaths = pathFinder.getShortestPaths(concept1, concept2, subTracer);
 		if (shortestPaths.size() == 0) return new Relatedness(min);
 		PathFinder.Subsumer path = shortestPaths.get(0);
-		int dist = path.length;
+		int dist = path.getLength();
 		double score;
 		if (dist > 0) score = 1.0D / (double) dist;
 		else score = -1.0D;

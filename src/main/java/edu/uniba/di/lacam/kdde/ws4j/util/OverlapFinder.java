@@ -105,12 +105,20 @@ public class OverlapFinder {
 	public static class Overlaps {
 
 		private ConcurrentMap<String,Integer> overlapsHash;
-		public int length1;
-		public int length2;
+		private int length1;
+		private int length2;
 
-        public ConcurrentMap<String, Integer> getOverlapsHash() {
-            return overlapsHash;
-        }
+		public ConcurrentMap<String, Integer> getOverlapsHash() {
+			return overlapsHash;
+		}
+
+		public int getLength1() {
+			return length1;
+		}
+
+		public int getLength2() {
+			return length2;
+		}
 
         void setOverlapsHash(ConcurrentMap<String, Integer> overlapsHash) {
             this.overlapsHash = overlapsHash;

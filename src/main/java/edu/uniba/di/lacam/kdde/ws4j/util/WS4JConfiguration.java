@@ -84,7 +84,7 @@ final public class WS4JConfiguration {
         this.memoryDB = memoryDB;
     }
 
-	public String getInfoContent() {
+	String getInfoContent() {
 		return infoContent;
 	}
 
@@ -96,7 +96,7 @@ final public class WS4JConfiguration {
 		this.stem = stem;
 	}
 
-	public String getStopWords() {
+	String getStopWords() {
 		return stopWords;
 	}
 

@@ -99,9 +99,17 @@ Then start playing with the facade WS4J API:
 and a simple demo class:
 
   `src/main/java/edu/uniba/di/lacam/kdde/ws4j/demo/SimilarityCalculationDemo.java`
+  
+which can be running through jar-with-dependencies from root folder by typing into terminal:
 
-When using the WS4J jar package from other projects, make sure to also include depending libraries. Add the 
-[JitPack](https://jitpack.io/) repository to your POM file:
+```
+$ java -jar target/ws4j-1.0.1-jar-with-dependencies.jar
+```
+
+When using the WS4J jar package from other projects, make sure to also include depending libraries and 
+[WordNet 3.0](https://wordnet.princeton.edu/download/current-version) or 
+[lower](https://wordnet.princeton.edu/download/old-versions) dict folder into the root of your project. 
+Add the [JitPack](https://jitpack.io/) repository to your POM file:
 
     <repositories>
         <repository>

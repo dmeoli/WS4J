@@ -40,7 +40,7 @@ public class WuPalmer extends RelatednessCalculator {
 		StringBuilder subTracer = WS4JConfiguration.getInstance().useTrace() ? new StringBuilder() : null;
 		List<DepthFinder.Depth> lcsList = depthFinder.getRelatedness(concept1, concept2, subTracer);
 		if (lcsList.size() == 0) return new Relatedness(min);
-		int depth = lcsList.get(0).depth;
+		int depth = lcsList.get(0).getDepth();
 		int depth1 = depthFinder.getShortestDepth(concept1);
 		int depth2 = depthFinder.getShortestDepth(concept2);
 		double score = 0;
@@ -49,7 +49,7 @@ public class WuPalmer extends RelatednessCalculator {
 			tracer.append(Objects.requireNonNull(subTracer).toString());
 			lcsList.forEach(lcs -> {
 				tracer.append("Lowest Common Subsumer(s): ");
-				tracer.append(lcs.leaf).append(" (Depth = ").append(lcs.depth).append(")\n");
+				tracer.append(lcs.getLeaf()).append(" (Depth = ").append(lcs.getDepth()).append(")\n");
 			});
 			tracer.append("Depth1(").append(concept1.getSynsetID()).append(") = ").append(depth1).append("\n");
 			tracer.append("Depth2(").append(concept2.getSynsetID()).append(") = ").append(depth2).append("\n");

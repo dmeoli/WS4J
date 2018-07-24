@@ -59,13 +59,13 @@ public class LeacockChodorow extends RelatednessCalculator {
 		int maxDepth = 1;
 		if (concept1.getPOS().equals(POS.NOUN)) maxDepth = 20;
 		else if (concept1.getPOS().equals(POS.VERB)) maxDepth = 14;
-		int length = lcsList.get(0).length;
+		int length = lcsList.get(0).getLength();
 		double score = -Math.log((double) length / (double) (2 * maxDepth));
 		if (WS4JConfiguration.getInstance().useTrace()) {
 			tracer.append(Objects.requireNonNull(subTracer).toString());
 			lcsList.forEach(lcs -> {
 				tracer.append("Lowest Common Subsumer(s): ");
-				tracer.append(lcs.concept.getSynsetID()).append(" (Length = ").append(lcs.length).append(")\n");
+				tracer.append(lcs.getConcept().getSynsetID()).append(" (Length = ").append(lcs.getLength()).append(")\n");
 			});
 		}
 		return new Relatedness(score, tracer.toString(), null);

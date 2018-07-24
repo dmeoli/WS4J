@@ -1,5 +1,6 @@
 package edu.uniba.di.lacam.kdde.lexical_db.data;
 
+import com.google.gson.Gson;
 import edu.uniba.di.lacam.kdde.lexical_db.item.POS;
 
 public class Concept {
@@ -49,10 +50,6 @@ public class Concept {
 
     @Override
     public String toString() {
-        return "Concept{" +
-                "synsetID = " + synsetID +
-                ", pos = " + pos +
-                ", name = " + name +
-                '}';
+        return new Gson().toJson(this);
     }
 }

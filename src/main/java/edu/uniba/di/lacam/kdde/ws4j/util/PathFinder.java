@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import com.google.common.collect.Lists;
+import com.google.gson.Gson;
 import edu.uniba.di.lacam.kdde.lexical_db.ILexicalDatabase;
 import edu.uniba.di.lacam.kdde.lexical_db.data.Concept;
 import edu.uniba.di.lacam.kdde.lexical_db.item.Link;
@@ -50,12 +51,7 @@ public class PathFinder {
 					if (synset.equals(subsumer)) break;
 					rPath.add(synset);
 				}
-				Subsumer sub = new Subsumer();
-				sub.concept = new Concept(subsumer, concept1.getPOS());
-				sub.length = rCount + lCount - 1;
-				sub.lPath = lPath;
-				sub.rPath = rPath;
-				paths.add(sub);
+				paths.add(new Subsumer(new Concept(subsumer, concept1.getPOS()), rCount + lCount - 1, lPath, rPath));
 				if (tracer != null) {
 					tracer.append("HyperTree1: ").append(lTree).append("\n");
 					tracer.append("HyperTree2: ").append(rTree).append("\n");
@@ -134,23 +130,48 @@ public class PathFinder {
 
 	public static class Subsumer {
 
-		public Concept concept;
-		public int length;
-		public double ic;
-		List<String> lPath;
-		List<String> rPath;
+		private Concept concept;
+		private int length;
+		private double ic;
+		private List<String> lPath;
+		private List<String> rPath;
+
+		Subsumer(Concept concept, int length, List<String> lPath, List<String> rPath) {
+			this.concept = concept;
+			this.length = length;
+			this.lPath = lPath;
+			this.rPath = rPath;
+		}
+
+        void setIC(double ic) {
+            this.ic = ic;
+        }
+
+		public Concept getConcept() {
+			return concept;
+		}
+
+		public int getLength() {
+			return length;
+		}
+
+		public double getIC() {
+			return ic;
+		}
+
+		public List<String> getlPath() {
+			return lPath;
+		}
+
+		public List<String> getrPath() {
+			return rPath;
+		}
 
 		@Override
 		public String toString() {
-			return "Subsumer{" +
-					"concept = " + concept +
-					", length = " + length +
-					", IC = " + ic +
-					", lPath = " + lPath +
-					", rPath = " + rPath +
-					'}';
+			return new Gson().toJson(this);
 		}
-	}
+    }
 
 	public Concept getRoot(String synset) {
 		Set<String> history = new HashSet<>();

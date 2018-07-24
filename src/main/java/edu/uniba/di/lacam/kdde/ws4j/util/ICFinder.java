@@ -58,11 +58,11 @@ final public class ICFinder {
 	public List<PathFinder.Subsumer> getLCSbyIC(PathFinder pathFinder, Concept concept1, Concept concept2, StringBuilder tracer) {
 		List<PathFinder.Subsumer> paths = pathFinder.getAllPaths(concept1, concept2, tracer);
 		if (paths == null || paths.size() == 0) return null;
-		paths.forEach(path -> path.ic = IC(pathFinder, path.concept));
-		paths.sort((s1, s2) -> Double.compare(s2.ic, s1.ic));
+		paths.forEach(path -> path.setIC(IC(pathFinder, path.getConcept())));
+		paths.sort((s1, s2) -> Double.compare(s2.getIC(), s1.getIC()));
 		List<PathFinder.Subsumer> results = new ArrayList<>(paths.size());
 		paths.forEach(path -> {
-            if (path.ic == paths.get(0).ic) results.add(path);
+            if (path.getIC() == paths.get(0).getIC()) results.add(path);
         });
 		return results;
 	}

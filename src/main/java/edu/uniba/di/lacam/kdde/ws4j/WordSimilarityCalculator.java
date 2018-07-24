@@ -7,6 +7,8 @@ import edu.uniba.di.lacam.kdde.ws4j.util.WS4JConfiguration;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 public class WordSimilarityCalculator {
 
     public static final char SEPARATOR = '#';
@@ -25,6 +27,9 @@ public class WordSimilarityCalculator {
         String key = word1 + " & " + word2;
         if (WS4JConfiguration.getInstance().useCache()) {
             Double cachedObj = cache.get(key);
+            if (cachedObj != null) return cachedObj;
+            String reverseKey = word2 + " & " + word1;
+            cachedObj = cache.get(reverseKey);
             if (cachedObj != null) return cachedObj;
         }
         POS pos1 = null;
@@ -84,6 +89,7 @@ public class WordSimilarityCalculator {
         }
         if (maxScore == -1.0D) maxScore = 0.0D;
         maxScore = Math.abs(maxScore);
+        checkArgument(maxScore >= rc.getMin() && maxScore <= rc.getMax());
         if (WS4JConfiguration.getInstance().useCache()) cache.put(key, maxScore);
         return maxScore;
     }

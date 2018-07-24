@@ -57,14 +57,14 @@ public class JiangConrath extends RelatednessCalculator {
 			tracer.append(Objects.requireNonNull(subTracer).toString());
 			lcsList.forEach(lcs -> {
 				tracer.append("Lowest Common Subsumer(s): ");
-				tracer.append(lcs.concept.getSynsetID()).append(" (IC = ").append(lcs.ic).append(")\n");
+				tracer.append(lcs.getConcept().getSynsetID()).append(" (IC = ").append(lcs.getIC()).append(")\n");
 			});
 		}
 		PathFinder.Subsumer subsumer = lcsList.get(0);
-		String lcsSynset = subsumer.concept.getSynsetID();
-		double lcsIC = subsumer.ic;
+		String lcsSynset = subsumer.getConcept().getSynsetID();
+		double lcsIC = subsumer.getIC();
 		Concept rootConcept = pathFinder.getRoot(lcsSynset);
-		rootConcept.setPOS(subsumer.concept.getPOS());
+		rootConcept.setPOS(subsumer.getConcept().getPOS());
 		int rootFreq = ICFinder.getInstance().getFrequency(rootConcept);
 		if (rootFreq <= 0) {
 			return new Relatedness(min, tracer.toString(), null);

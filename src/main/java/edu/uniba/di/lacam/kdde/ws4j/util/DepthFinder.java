@@ -1,5 +1,6 @@
 package edu.uniba.di.lacam.kdde.ws4j.util;
 
+import com.google.gson.Gson;
 import edu.uniba.di.lacam.kdde.lexical_db.ILexicalDatabase;
 import edu.uniba.di.lacam.kdde.lexical_db.data.Concept;
 
@@ -18,7 +19,7 @@ public class DepthFinder {
 		if (paths == null || paths.size() == 0) return null;
 		List<Depth> depthList = new ArrayList<>(paths.size());
 		for (PathFinder.Subsumer s : paths) {
-			List<Depth> depths = getSynsetDepths(s.concept.getSynsetID());
+			List<Depth> depths = getSynsetDepths(s.getConcept().getSynsetID());
 			if (depths == null || depths.size() == 0) return null;
 			Depth depth = depths.get(0);
 			depthList.add(depth);
@@ -42,30 +43,38 @@ public class DepthFinder {
 		List<List<String>> hyperTrees = pathFinder.getHypernymTrees(synset, history);
 		if (hyperTrees == null) return null;
 		List<Depth> depths = new ArrayList<>(hyperTrees.size());
-		for (List<String> tree : hyperTrees) {
-			Depth d = new Depth();
-			d.depth = tree.size();
-			d.root = tree.get(0);
-			d.leaf = synset;
-			depths.add(d);
-		}
+		hyperTrees.forEach(hyperTree -> depths.add(new Depth(synset, hyperTree.size(), hyperTree.get(0))));
 		depths.sort(Comparator.comparingInt(d -> d.depth));
 		return depths;
 	}
 	
 	public static class Depth {
 
-		public String leaf;
-		public int depth;
-		public String root;
+		private String leaf;
+		private int depth;
+		private String root;
 
-		@Override
+		Depth(String leaf, int depth, String root) {
+			this.leaf = leaf;
+			this.depth = depth;
+			this.root = root;
+		}
+
+        public String getLeaf() {
+            return leaf;
+        }
+
+        public int getDepth() {
+            return depth;
+        }
+
+        public String getRoot() {
+            return root;
+        }
+
+        @Override
 		public String toString() {
-			return "Depth{" +
-					"leaf = " + leaf +
-					", depth = " + depth +
-					", root = " + root +
-					'}';
+			return new Gson().toJson(this);
 		}
 	}
 		

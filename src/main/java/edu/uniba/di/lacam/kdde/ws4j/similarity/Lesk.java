@@ -111,10 +111,10 @@ public class Lesk extends RelatednessCalculator {
 		}
 		if (WS4JConfiguration.getInstance().useTrace()) overlapLog = new StringBuilder();
 		if (WS4JConfiguration.getInstance().useLeskNormalizer()) {
-			int denominator = overlaps.length1 + overlaps.length2;
+			int denominator = overlaps.getLength1() + overlaps.getLength2();
 			if  (denominator > 0) functionsScore /= (double) denominator;
 			if (WS4JConfiguration.getInstance().useTrace()) overlapLog.append("Normalized by dividing the score with ")
-                    .append(overlaps.length1).append(" and ").append(overlaps.length2).append("\n");
+                    .append(overlaps.getLength1()).append(" and ").append(overlaps.getLength2()).append("\n");
 		}
 		return functionsScore;
 	}

@@ -49,11 +49,11 @@ public class Lin extends RelatednessCalculator {
 		if (Objects.requireNonNull(lcsList).size() == 0) return new Relatedness(min, tracer.toString(), null);
 		double ic1 = ICFinder.getInstance().IC(pathFinder, concept1);
 		double ic2 = ICFinder.getInstance().IC(pathFinder, concept2);
-		double score = (ic1 > 0 && ic2 > 0) ? (2D * lcsList.get(0).ic / (ic1 + ic2)) : 0D;
+		double score = (ic1 > 0 && ic2 > 0) ? (2D * lcsList.get(0).getIC() / (ic1 + ic2)) : 0D;
 		tracer.append(Objects.requireNonNull(subTracer).toString());
 		lcsList.forEach(lcs -> {
 			tracer.append("Lowest Common Subsumer(s): ");
-			tracer.append(lcs.concept.getSynsetID()).append(" (IC = ").append(lcs.ic).append(")\n");
+			tracer.append(lcs.getConcept().getSynsetID()).append(" (IC = ").append(lcs.getIC()).append(")\n");
 		});
 		tracer.append("Concept1: ").append(concept1.getSynsetID()).append(" (IC = ").append(ic1).append(")\n");
 		tracer.append("Concept2: ").append(concept2.getSynsetID()).append(" (IC = ").append(ic2).append(")\n");

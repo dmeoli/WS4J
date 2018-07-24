@@ -58,12 +58,11 @@ public class Resnik extends RelatednessCalculator {
 			tracer.append(Objects.requireNonNull(subTracer).toString());
 			lcsList.forEach(lcs -> {
 				tracer.append("Lowest Common Subsumer(s): ");
-				tracer.append(lcs.concept.getSynsetID()).append(" (IC = ").append(lcs.ic).append(")\n");
+				tracer.append(lcs.getConcept().getSynsetID()).append(" (IC = ").append(lcs.getIC()).append(")\n");
 			});
 		}
 		PathFinder.Subsumer subsumer = lcsList.get(0);
-		double score = subsumer.ic;
-		return new Relatedness(score, tracer.toString(), null);
+		return new Relatedness(subsumer.getIC(), tracer.toString(), null);
 	}
 	
 	@Override

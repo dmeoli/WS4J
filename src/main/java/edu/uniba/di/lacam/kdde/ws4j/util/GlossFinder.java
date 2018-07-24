@@ -49,15 +49,8 @@ public class GlossFinder {
 
 	public List<SuperGloss> getSuperGlosses(Concept concept1, Concept concept2) {
 		List<SuperGloss> glosses = new ArrayList<>(linkPairs.size());
-		for (Link[] links : linkPairs) {
-			SuperGloss sg = new SuperGloss();
-			sg.gloss1 = db.getGloss(concept1, links[0]);
-			sg.gloss2 = db.getGloss(concept2, links[1]);
-			sg.link1  = links[0] != null ? links[0].getName() : " ";
-			sg.link2  = links[1] != null ? links[1].getName() : " ";
-			sg.weight = 1.0D;
-			glosses.add(sg);
-		}
+		linkPairs.forEach(links -> glosses.add(new SuperGloss(db.getGloss(concept1, links[0]), db.getGloss(concept2, links[1]),
+				links[0] != null ? links[0].getName() : " ", links[1] != null ? links[1].getName() : " ",1.0D)));
 		return glosses;
 	}
 
@@ -68,6 +61,14 @@ public class GlossFinder {
 		private String link1;
 		private String link2;
 		private double weight;
+
+		SuperGloss(List<String> gloss1, List<String> gloss2, String link1, String link2, double weight) {
+			this.gloss1 = gloss1;
+			this.gloss2 = gloss2;
+			this.link1 = link1;
+			this.link2 = link2;
+			this.weight = weight;
+		}
 
 		public List<String> getGloss1() {
 			return gloss1;
