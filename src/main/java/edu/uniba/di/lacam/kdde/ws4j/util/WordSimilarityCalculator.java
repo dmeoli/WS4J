@@ -1,8 +1,9 @@
-package edu.uniba.di.lacam.kdde.ws4j;
+package edu.uniba.di.lacam.kdde.ws4j.util;
 
 import edu.uniba.di.lacam.kdde.lexical_db.data.Concept;
 import edu.uniba.di.lacam.kdde.lexical_db.item.POS;
-import edu.uniba.di.lacam.kdde.ws4j.util.WS4JConfiguration;
+import edu.uniba.di.lacam.kdde.ws4j.Relatedness;
+import edu.uniba.di.lacam.kdde.ws4j.RelatednessCalculator;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;

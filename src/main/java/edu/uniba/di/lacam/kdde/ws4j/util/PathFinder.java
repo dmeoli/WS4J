@@ -86,10 +86,10 @@ public class PathFinder {
 	}
 
 	List<List<String>> getHypernymTrees(String synset, Set<String> history) {
-        if (WS4JConfiguration.getInstance().useCache()) {
+        /* if (WS4JConfiguration.getInstance().useCache()) {
 			List<List<String>> cachedObj = cache.get(synset);
 			if (cachedObj != null) return clone(cachedObj);
-		}
+		} */
 		if (synset.equals("0")) {
 			List<String> tree = new ArrayList<>();
 			tree.add("0");
@@ -124,7 +124,7 @@ public class PathFinder {
 				}
 			}
 		}
-		if (WS4JConfiguration.getInstance().useCache()) cache.put(synset, clone(returnList));
+		// if (WS4JConfiguration.getInstance().useCache()) cache.put(synset, clone(returnList));
 		return returnList;
 	}
 

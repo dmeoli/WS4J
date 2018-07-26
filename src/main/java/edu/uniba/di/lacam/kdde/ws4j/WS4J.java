@@ -3,6 +3,7 @@ package edu.uniba.di.lacam.kdde.ws4j;
 import edu.uniba.di.lacam.kdde.lexical_db.ILexicalDatabase;
 import edu.uniba.di.lacam.kdde.lexical_db.MITWordNet;
 import edu.uniba.di.lacam.kdde.ws4j.similarity.*;
+import edu.uniba.di.lacam.kdde.ws4j.util.MatrixCalculator;
 
 /**
  * This is a facade class that provides simple APIs for end users.

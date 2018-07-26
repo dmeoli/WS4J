@@ -24,34 +24,27 @@ public class Log {
     }
 
     public static void info(final String string, final Object... args) {
-        if (defaultLogLevel >= LOG.LEVEL_INFO.ordinal()) {
-            logger.info(buildString(string, args));
-        }
+        if (defaultLogLevel >= LOG.LEVEL_INFO.ordinal()) logger.info(buildString(string, args));
     }
 
     public static void debug(final String string, final Object... args) {
-        if (defaultLogLevel >= LOG.LEVEL_DEBUG.ordinal()) {
-            logger.debug(buildString(string, args));
-        }
+        if (defaultLogLevel >= LOG.LEVEL_DEBUG.ordinal()) logger.debug(buildString(string, args));
     }
 
     public static void warning(final String string, final Object... args) {
-        if (defaultLogLevel >= LOG.LEVEL_WARNING.ordinal()) {
-            logger.warn(buildString(string, args));
-        }
+        if (defaultLogLevel >= LOG.LEVEL_WARNING.ordinal()) logger.warn(buildString(string, args));
     }
 
     public static void error(final String string, final Object... args) {
-        if (defaultLogLevel >= LOG.LEVEL_ERROR.ordinal()) {
-            logger.error(buildString(string, args));
-        }
+        if (defaultLogLevel >= LOG.LEVEL_ERROR.ordinal()) logger.error(buildString(string, args));
     }
 
     private static String buildString(final String string, final Object... strFmtArgs) {
         Object[] args;
-        if (strFmtArgs != null)args = strFmtArgs;
+        if (strFmtArgs != null) args = strFmtArgs;
         else args = new Object[0];
         return String.format("%s", String.format(string == null ? "<null>" : string, args));
     }
 }
+
 

@@ -1,7 +1,8 @@
-package edu.uniba.di.lacam.kdde.ws4j;
+package edu.uniba.di.lacam.kdde.ws4j.util;
 
 import edu.uniba.di.lacam.kdde.lexical_db.ILexicalDatabase;
 import edu.uniba.di.lacam.kdde.lexical_db.item.POS;
+import edu.uniba.di.lacam.kdde.ws4j.RelatednessCalculator;
 
 import java.util.*;
 
@@ -13,7 +14,7 @@ public class MatrixCalculator {
 		MatrixCalculator.db = db;
 	}
 
-	static double[][] getSimilarityMatrix(String[] words1, String[] words2, RelatednessCalculator rc) {
+	public static double[][] getSimilarityMatrix(String[] words1, String[] words2, RelatednessCalculator rc) {
 		double[][] result = new double[words1.length][words2.length];
 		for (int i = 0; i < words1.length; i++) {
 			for (int j = 0; j < words2.length; j++) {
@@ -24,7 +25,7 @@ public class MatrixCalculator {
 		return result;
 	}
 	
-	static double[][] getNormalizedSimilarityMatrix(String[] words1, String[] words2, RelatednessCalculator rc) {
+	public static double[][] getNormalizedSimilarityMatrix(String[] words1, String[] words2, RelatednessCalculator rc) {
 		double[][] scores = getSimilarityMatrix(words1, words2, rc);
 		double bestScore = 1.0D;
 		for (double[] score : scores) {
@@ -41,7 +42,7 @@ public class MatrixCalculator {
 		return scores;
 	}
 
-	static double[][] getSynonymyMatrix(String[] words1, String[] words2) {
+	public static double[][] getSynonymyMatrix(String[] words1, String[] words2) {
 		List<Set<String>> synonyms1 = new ArrayList<>(words1.length);
 		Arrays.asList(words1).forEach(aWords1 -> {
             Set<String> synonyms = new HashSet<>();

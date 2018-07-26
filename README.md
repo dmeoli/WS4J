@@ -100,7 +100,7 @@ and a simple demo class:
 
   `src/main/java/edu/uniba/di/lacam/kdde/ws4j/demo/SimilarityCalculationDemo.java`
   
-which can be running through jar-with-dependencies from root folder by typing into terminal:
+which can be run through jar-with-dependencies from root folder by typing into terminal:
 
 ```
 $ java -jar target/ws4j-1.0.1-jar-with-dependencies.jar
