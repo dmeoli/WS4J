@@ -50,15 +50,16 @@ public class Resnik extends RelatednessCalculator {
 	protected Relatedness calcRelatedness(Concept concept1, Concept concept2) {
 		StringBuilder tracer = new StringBuilder();
 		if (concept1 == null || concept2 == null) return new Relatedness(min, null, illegalSynset);
-		if (concept1.getSynsetID().equals(concept2.getSynsetID())) return new Relatedness(max, identicalSynset, null);
+		if (concept1.equals(concept2)) return new Relatedness(max, identicalSynset, null);
 		StringBuilder subTracer = WS4JConfiguration.getInstance().useTrace() ? new StringBuilder() : null;
 		List<PathFinder.Subsumer> lcsList = ICFinder.getInstance().getLCSbyIC(pathFinder, concept1, concept2, subTracer);
 		if (Objects.requireNonNull(lcsList).size() == 0) return new Relatedness(min, tracer.toString(), null);
 		if (WS4JConfiguration.getInstance().useTrace()) {
+            tracer.append("RES(").append(concept1).append(", ").append(concept2).append(")\n");
 			tracer.append(Objects.requireNonNull(subTracer).toString());
 			lcsList.forEach(lcs -> {
 				tracer.append("Lowest Common Subsumer(s): ");
-				tracer.append(lcs.getConcept().getSynsetID()).append(" (IC = ").append(lcs.getIC()).append(")\n");
+				tracer.append(lcs.getSubsumer()).append(" (IC = ").append(lcs.getIC()).append(")\n");
 			});
 		}
 		PathFinder.Subsumer subsumer = lcsList.get(0);

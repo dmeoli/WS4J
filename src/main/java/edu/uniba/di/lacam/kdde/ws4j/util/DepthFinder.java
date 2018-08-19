@@ -19,7 +19,7 @@ public class DepthFinder {
 		if (paths == null || paths.size() == 0) return null;
 		List<Depth> depthList = new ArrayList<>(paths.size());
 		for (PathFinder.Subsumer s : paths) {
-			List<Depth> depths = getSynsetDepths(s.getConcept().getSynsetID());
+			List<Depth> depths = getSynsetDepths(s.getSubsumer());
 			if (depths == null || depths.size() == 0) return null;
 			Depth depth = depths.get(0);
 			depthList.add(depth);
@@ -38,29 +38,29 @@ public class DepthFinder {
 		return depthList;
 	}
 	
-	private List<Depth> getSynsetDepths(String synset) {
-		Set<String> history = new HashSet<>();
-		List<List<String>> hyperTrees = pathFinder.getHypernymTrees(synset, history);
+	private List<Depth> getSynsetDepths(Concept concept) {
+		Set<Concept> history = new HashSet<>();
+		List<List<Concept>> hyperTrees = pathFinder.getHypernymTrees(concept, history);
 		if (hyperTrees == null) return null;
 		List<Depth> depths = new ArrayList<>(hyperTrees.size());
-		hyperTrees.forEach(hyperTree -> depths.add(new Depth(synset, hyperTree.size(), hyperTree.get(0))));
+		hyperTrees.forEach(hyperTree -> depths.add(new Depth(concept, hyperTree.size(), hyperTree.get(0))));
 		depths.sort(Comparator.comparingInt(d -> d.depth));
 		return depths;
 	}
 	
 	public static class Depth {
 
-		private String leaf;
+		private Concept leaf;
 		private int depth;
-		private String root;
+		private Concept root;
 
-		Depth(String leaf, int depth, String root) {
+		Depth(Concept leaf, int depth, Concept root) {
 			this.leaf = leaf;
 			this.depth = depth;
 			this.root = root;
 		}
 
-        public String getLeaf() {
+        public Concept getLeaf() {
             return leaf;
         }
 
@@ -68,7 +68,7 @@ public class DepthFinder {
             return depth;
         }
 
-        public String getRoot() {
+        public Concept getRoot() {
             return root;
         }
 
@@ -79,6 +79,6 @@ public class DepthFinder {
 	}
 		
 	public int getShortestDepth(Concept concept) {
-		return Objects.requireNonNull(getSynsetDepths(concept.getSynsetID())).get(0).depth;
+		return Objects.requireNonNull(getSynsetDepths(concept)).get(0).depth;
 	}
 }

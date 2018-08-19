@@ -71,27 +71,31 @@ public class HirstStOnge extends RelatednessCalculator {
 	protected Relatedness calcRelatedness(Concept concept1, Concept concept2) {
 		StringBuilder tracer = new StringBuilder();
 		if (concept1 == null || concept2 == null) return new Relatedness(min, null, illegalSynset);
-		if (concept1.getSynsetID().equals(concept2.getSynsetID())) return new Relatedness(max, identicalSynset, null);
-		Set<String> horizontal1 = Traverser.getHorizontalSynsets(concept1.getSynsetID());
-		Set<String> horizontal2 = Traverser.getHorizontalSynsets(concept2.getSynsetID());
-		boolean inHorizon = horizontal2.contains(concept1.getSynsetID()) || horizontal1.contains(concept2.getSynsetID());
+		if (concept1.equals(concept2)) return new Relatedness(max, identicalSynset, null);
+		Set<Concept> horizontal1 = Traverser.getHorizontalSynsets(concept1);
+		Set<Concept> horizontal2 = Traverser.getHorizontalSynsets(concept2);
+		boolean inHorizon = horizontal2.contains(concept1) || horizontal1.contains(concept2);
 		if (inHorizon) return new Relatedness(max);
-		Set<String> upward2 = Traverser.getUpwardSynsets(concept2.getSynsetID());
-		Set<String> downward2 = Traverser.getDownwardSynsets(concept2.getSynsetID());
+		Set<Concept> upward1 = Traverser.getUpwardSynsets(concept1);
+		Set<Concept> upward2 = Traverser.getUpwardSynsets(concept2);
+		Set<Concept> downward1 = Traverser.getDownwardSynsets(concept1);
+		Set<Concept> downward2 = Traverser.getDownwardSynsets(concept2);
 		if (WS4JConfiguration.getInstance().useTrace()) {
-			tracer.append("Horizontal Links of ").append(concept1.getSynsetID()).append(": ").append(horizontal1).append("\n");
-			tracer.append("Horizontal Links of ").append(concept2.getSynsetID()).append(": ").append(horizontal1).append("\n");
-			tracer.append("Upward Links of ").append(concept2.getSynsetID()).append(": ").append(upward2).append("\n");
-			tracer.append("Downward Links of ").append(concept2.getSynsetID()).append(": ").append(downward2).append("\n");
+		    tracer.append("HSO(").append(concept1).append(", ").append(concept2).append(")\n");
+			tracer.append("Horizontal Links(").append(concept1.toString()).append(") = ").append(horizontal1).append("\n");
+			tracer.append("Horizontal Links(").append(concept2.toString()).append(") = ").append(horizontal1).append("\n");
+			tracer.append("Upward Links(").append(concept1.toString()).append(") = ").append(upward1).append("\n");
+			tracer.append("Upward Links(").append(concept2.toString()).append(") = ").append(upward2).append("\n");
+			tracer.append("Downward Links(").append(concept1.toString()).append(") = ").append(downward1).append("\n");
+			tracer.append("Downward Links(").append(concept2.toString()).append(") = ").append(downward2).append("\n");
 		}
 		boolean contained = Traverser.contained(concept1, concept2);
-		boolean inUpOrDown = upward2.contains(concept1.getSynsetID()) || downward2.contains(concept1.getSynsetID());
+		boolean inUpOrDown = upward2.contains(concept1) || downward2.contains(concept1);
 		if (contained && inUpOrDown) {
 			tracer.append("Strong Rel (Compound Word Match).\n");
 			return new Relatedness(max, tracer.toString(), null);
 		}
-		MedStrong medStrong = new MedStrong();
-		int score = medStrong.medStrong(0, 0, 0, concept1.getSynsetID(), concept1.getSynsetID(), concept2.getSynsetID());
+		int score = new MedStrong().medStrong(0, 0, 0, concept1, concept1.getSynsetID(), concept2);
 		return new Relatedness(score, tracer.toString(), null);
 	}
 
@@ -102,12 +106,12 @@ public class HirstStOnge extends RelatednessCalculator {
 
 	private static class MedStrong {
 
-		int medStrong(int state, int distance, int chdir, String from, String path, String endSynset) {
+		int medStrong(int state, int distance, int chdir, Concept from, String path, Concept endSynset) {
 			if (from.equals(endSynset) && distance > 1) return 8 - distance - chdir;
 			if (distance >= 5) return 0;
-			Set<String> horizontal = Traverser.getHorizontalSynsets(from);
-			Set<String> upward = (state == 0 || state == 1) ? Traverser.getUpwardSynsets(from) : null;
-			Set<String> downward = (state != 6) ? Traverser.getDownwardSynsets(from) : null;
+			Set<Concept> horizontal = Traverser.getHorizontalSynsets(from);
+			Set<Concept> upward = (state == 0 || state == 1) ? Traverser.getUpwardSynsets(from) : null;
+			Set<Concept> downward = (state != 6) ? Traverser.getDownwardSynsets(from) : null;
 			if (state == 0) {
 				int retU = findU(upward, 1, distance, 0, path, endSynset);
 				int retD = findD(downward, 2, distance, 0, path, endSynset);
@@ -144,22 +148,22 @@ public class HirstStOnge extends RelatednessCalculator {
 			return 0;
 		}
 
-		private int findD(Set<String> downward, int state, int distance, int chdir, String path, String endSynset) {
+		private int findD(Set<Concept> downward, int state, int distance, int chdir, String path, Concept endSynset) {
 			return find(downward, state, distance, chdir, path, endSynset, "D");
 		}
 
-		private int findU(Set<String> upward, int state, int distance, int chdir, String path, String endSynset) {
+		private int findU(Set<Concept> upward, int state, int distance, int chdir, String path, Concept endSynset) {
 			return find(upward, state, distance, chdir, path, endSynset, "U");
 		}
 
-		private int findH(Set<String> horizontal, int state, int distance, int chdir, String path, String endSynset) {
+		private int findH(Set<Concept> horizontal, int state, int distance, int chdir, String path, Concept endSynset) {
 			return find(horizontal, state, distance, chdir, path, endSynset, "H");
 		}
 
-		private int find(Set<String> synsetGroup, int state, int distance, int chdir, String path, String endSynset,
+		private int find(Set<Concept> synsetGroup, int state, int distance, int chdir, String path, Concept endSynset,
 						 String abbreviation) {
 			int ret = 0;
-			for (String synset : synsetGroup) {
+			for (Concept synset : synsetGroup) {
 				int retT = medStrong(state, distance+1, chdir, synset, path + " [" + abbreviation + "] " +
 						synset, endSynset);
 				if (retT > ret) ret = retT;

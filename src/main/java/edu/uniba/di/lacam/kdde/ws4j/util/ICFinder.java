@@ -32,7 +32,7 @@ final public class ICFinder {
 	public static ICFinder getInstance() {
 		return icFinder;
 	}
-	
+
 	private synchronized void loadIC() throws IOException {
 		freqV = new ConcurrentHashMap<>();
 		freqN = new ConcurrentHashMap<>();
@@ -54,11 +54,11 @@ final public class ICFinder {
 		br.close();
 		isr.close();
 	}
-	
+
 	public List<PathFinder.Subsumer> getLCSbyIC(PathFinder pathFinder, Concept concept1, Concept concept2, StringBuilder tracer) {
 		List<PathFinder.Subsumer> paths = pathFinder.getAllPaths(concept1, concept2, tracer);
 		if (paths == null || paths.size() == 0) return null;
-		paths.forEach(path -> path.setIC(IC(pathFinder, path.getConcept())));
+		paths.forEach(path -> path.setIC(IC(pathFinder, path.getSubsumer())));
 		paths.sort((s1, s2) -> Double.compare(s2.getIC(), s1.getIC()));
 		List<PathFinder.Subsumer> results = new ArrayList<>(paths.size());
 		paths.forEach(path -> {
@@ -76,17 +76,16 @@ final public class ICFinder {
 	}
 
 	private double probability(PathFinder pathFinder, Concept concept) {
-		Concept rootConcept = pathFinder.getRoot(concept.getSynsetID());
 		int rootFreq = 0;
 		if (RelatednessCalculator.useRootNode) {
 			if (concept.getPOS().equals(POS.NOUN)) rootFreq = rootFreqN;
 			else if (concept.getPOS().equals(POS.VERB)) rootFreq = rootFreqV;
-		} else rootFreq = getFrequency(rootConcept);
+		} else rootFreq = getFrequency(pathFinder.getRoot(concept));
 		int offFreq = getFrequency(concept);
 		if (offFreq <= rootFreq) return (double) offFreq / (double) rootFreq;
 		return 0.0D;
 	}
-	
+
 	public int getFrequency(Concept concept) {
 		if (concept.getSynsetID().equals("0")) {
 			if (concept.getPOS().equals(POS.NOUN)) return rootFreqN;

@@ -49,34 +49,32 @@ public class JiangConrath extends RelatednessCalculator {
 	protected Relatedness calcRelatedness(Concept concept1, Concept concept2) {
 		StringBuilder tracer = new StringBuilder();
 		if (concept1 == null || concept2 == null) return new Relatedness(min, null, illegalSynset);
-		if (concept1.getSynsetID().equals(concept2.getSynsetID())) return new Relatedness(max, identicalSynset, null);
+		if (concept1.equals(concept2)) return new Relatedness(max, identicalSynset, null);
 		StringBuilder subTracer = WS4JConfiguration.getInstance().useTrace() ? new StringBuilder() : null;
 		List<PathFinder.Subsumer> lcsList = ICFinder.getInstance().getLCSbyIC(pathFinder, concept1, concept2, subTracer);
 		if (Objects.requireNonNull(lcsList).size() == 0) return new Relatedness(min, tracer.toString(), null);
 		if (WS4JConfiguration.getInstance().useTrace()) {
+			tracer.append("JCN(").append(concept1).append(", ").append(concept2).append(")\n");
 			tracer.append(Objects.requireNonNull(subTracer).toString());
 			lcsList.forEach(lcs -> {
 				tracer.append("Lowest Common Subsumer(s): ");
-				tracer.append(lcs.getConcept().getSynsetID()).append(" (IC = ").append(lcs.getIC()).append(")\n");
+				tracer.append(lcs.getSubsumer().toString()).append(" (IC = ").append(lcs.getIC()).append(")\n");
 			});
 		}
 		PathFinder.Subsumer subsumer = lcsList.get(0);
-		String lcsSynset = subsumer.getConcept().getSynsetID();
 		double lcsIC = subsumer.getIC();
-		Concept rootConcept = pathFinder.getRoot(lcsSynset);
-		rootConcept.setPOS(subsumer.getConcept().getPOS());
+		Concept rootConcept = pathFinder.getRoot(subsumer.getSubsumer());
+		rootConcept.setPOS(subsumer.getSubsumer().getPOS());
 		int rootFreq = ICFinder.getInstance().getFrequency(rootConcept);
-		if (rootFreq <= 0) {
-			return new Relatedness(min, tracer.toString(), null);
-		}
-		double IC1 = ICFinder.getInstance().IC(pathFinder, concept1);
-		double IC2 = ICFinder.getInstance().IC(pathFinder, concept2);
+		if (rootFreq <= 0) return new Relatedness(min, tracer.toString(), null);
+		double ic1 = ICFinder.getInstance().IC(pathFinder, concept1);
+		double ic2 = ICFinder.getInstance().IC(pathFinder, concept2);
 		if (WS4JConfiguration.getInstance().useTrace()) {
-			tracer.append("Concept1: ").append(concept1.getSynsetID()).append(" (IC = ").append(IC1).append(")\n");
-			tracer.append("Concept2: ").append(concept2.getSynsetID()).append(" (IC = ").append(IC2).append(")\n");
+			tracer.append("IC(").append(concept1.toString()).append(") = ").append(ic1).append("\n");
+			tracer.append("IC(").append(concept2.toString()).append(") = ").append(ic2).append("\n");
 		}
 		double distance;
-		if (IC1 > 0 && IC2 > 0) distance = IC1 + IC2 - (2 * lcsIC);
+		if (ic1 > 0 && ic2 > 0) distance = ic1 + ic2 - (2 * lcsIC);
 		else return new Relatedness(min, tracer.toString(), null);
 		double score;
 		if (distance == 0.0D) {

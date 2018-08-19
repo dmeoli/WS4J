@@ -13,9 +13,9 @@ public class Traverser {
 
     private static ILexicalDatabase db;
 
-	private static ConcurrentMap<String, Set<String>> horizonCache;
-	private static ConcurrentMap<String, Set<String>> upwardCache;
-	private static ConcurrentMap<String, Set<String>> downwardCache;
+	private static ConcurrentMap<Concept, Set<Concept>> horizonCache;
+	private static ConcurrentMap<Concept, Set<Concept>> upwardCache;
+	private static ConcurrentMap<Concept, Set<Concept>> downwardCache;
 
 	static {
 	    db = new MITWordNet();
@@ -28,8 +28,8 @@ public class Traverser {
 
 	public static boolean contained(Concept concept1, Concept concept2) {
 		if (concept1 == null || concept2 == null) return false;
-		List<String> wordsH = db.getWords(concept1.getSynsetID());
-		List<String> wordsN = db.getWords(concept2.getSynsetID());
+		List<String> wordsH = db.getWords(concept1);
+		List<String> wordsN = db.getWords(concept2);
 		for (String wordH : wordsH) {
 			for (String wordN : wordsN) {
 				if (wordH.contains(wordN) || wordN.contains(wordH)) return true;
@@ -38,36 +38,36 @@ public class Traverser {
 		return false;
 	}
 
-	public static Set<String> getHorizontalSynsets(String synset) {
+	public static Set<Concept> getHorizontalSynsets(Concept synset) {
 		if (WS4JConfiguration.getInstance().useCache()) {
-			Set<String> cachedObj = horizonCache.get(synset);
+			Set<Concept> cachedObj = horizonCache.get(synset);
 			if (cachedObj != null) return cachedObj;
 		}
 		List<Link> points = new ArrayList<>();
 		points.add(Link.ANTONYM);
 		points.add(Link.ATTRIBUTE);
 		points.add(Link.SIMILAR_TO);
-		Set<String> result = getGroupedSynsets(synset, points);
+		Set<Concept> result = getGroupedSynsets(synset, points);
 		if (WS4JConfiguration.getInstance().useCache()) if (result != null) horizonCache.put(synset, result);
 		return result;
 	}
 
-	public static Set<String> getUpwardSynsets(String synset) {
+	public static Set<Concept> getUpwardSynsets(Concept synset) {
         if (WS4JConfiguration.getInstance().useCache()) {
-			Set<String> cachedObj = upwardCache.get(synset);
+			Set<Concept> cachedObj = upwardCache.get(synset);
 			if (cachedObj != null) return cachedObj;
 		}
 		List<Link> points = new ArrayList<>();
 		points.add(Link.HYPERNYM);
 		points.add(Link.MERONYM);
-		Set<String> result = getGroupedSynsets(synset, points);
+		Set<Concept> result = getGroupedSynsets(synset, points);
 		if (WS4JConfiguration.getInstance().useCache()) if (result != null) upwardCache.put(synset, result);
 		return result;
 	}
 
-	public static Set<String> getDownwardSynsets(String synset) {
+	public static Set<Concept> getDownwardSynsets(Concept synset) {
         if (WS4JConfiguration.getInstance().useCache()) {
-			Set<String> cachedObj = downwardCache.get(synset);
+			Set<Concept> cachedObj = downwardCache.get(synset);
 			if (cachedObj != null) return cachedObj;
 		}
 		List<Link> points = new ArrayList<>();
@@ -75,13 +75,13 @@ public class Traverser {
 		points.add(Link.ENTAILMENT);
 		points.add(Link.HOLONYM);
 		points.add(Link.HYPONYM);
-		Set<String> result = getGroupedSynsets(synset, points);
+		Set<Concept> result = getGroupedSynsets(synset, points);
 		if (WS4JConfiguration.getInstance().useCache()) if (result != null) downwardCache.put(synset, result);
 		return result;
 	}
 
-	private static Set<String> getGroupedSynsets(String synset, List<Link> points) {
-		Set<String> synsets = new HashSet<>();
+	private static Set<Concept> getGroupedSynsets(Concept synset, List<Link> points) {
+		Set<Concept> synsets = new HashSet<>();
 		points.forEach(point -> synsets.addAll(db.getLinkedSynsets(synset, point)));
 		return synsets;
 	}

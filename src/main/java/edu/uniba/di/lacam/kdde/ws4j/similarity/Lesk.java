@@ -74,6 +74,7 @@ public class Lesk extends RelatednessCalculator {
 			double functionsScore = calcFromSuperGloss(gloss.getGloss1(), gloss.getGloss2());
 			functionsScore *= gloss.getWeight();
 			if (WS4JConfiguration.getInstance().useTrace() && functionsScore > 0) {
+				tracer.append("LESK(").append(concept1).append(", ").append(concept2).append(")\n");
 				tracer.append("Functions: ").append(gloss.getLink1().trim()).append(" - ")
 						.append(gloss.getLink2().trim()).append(" : ").append(functionsScore).append("\n");
 				tracer.append(overlapLogMax).append("\n");

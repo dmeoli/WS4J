@@ -52,20 +52,21 @@ public class LeacockChodorow extends RelatednessCalculator {
 	protected Relatedness calcRelatedness(Concept concept1, Concept concept2) {
 		StringBuilder tracer = new StringBuilder();
 		if (concept1 == null || concept2 == null) return new Relatedness(min, null, illegalSynset);
-		if (concept1.getSynsetID().equals(concept2.getSynsetID())) return new Relatedness(max, identicalSynset, null);
+		if (concept1.equals(concept2)) return new Relatedness(max, identicalSynset, null);
 		StringBuilder subTracer = WS4JConfiguration.getInstance().useTrace() ? new StringBuilder() : null;
 		List<PathFinder.Subsumer> lcsList = pathFinder.getLCSByPath(concept1, concept2, subTracer);
 		if (lcsList.size() == 0) return new Relatedness(min);
 		int maxDepth = 1;
 		if (concept1.getPOS().equals(POS.NOUN)) maxDepth = 20;
 		else if (concept1.getPOS().equals(POS.VERB)) maxDepth = 14;
-		int length = lcsList.get(0).getLength();
+		int length = lcsList.get(0).getPathLength();
 		double score = -Math.log((double) length / (double) (2 * maxDepth));
 		if (WS4JConfiguration.getInstance().useTrace()) {
+            tracer.append("LCH(").append(concept1).append(", ").append(concept2).append(")\n");
 			tracer.append(Objects.requireNonNull(subTracer).toString());
 			lcsList.forEach(lcs -> {
 				tracer.append("Lowest Common Subsumer(s): ");
-				tracer.append(lcs.getConcept().getSynsetID()).append(" (Length = ").append(lcs.getLength()).append(")\n");
+				tracer.append(lcs.getSubsumer().toString()).append(" (Length = ").append(lcs.getPathLength()).append(")\n");
 			});
 		}
 		return new Relatedness(score, tracer.toString(), null);

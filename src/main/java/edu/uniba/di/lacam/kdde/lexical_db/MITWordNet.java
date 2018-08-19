@@ -67,12 +67,12 @@ public class MITWordNet implements ILexicalDatabase {
     }
 
     @Override
-    public List<String> getLinkedSynsets(String synsetID, Link link) {
-        List<String> linkedSynsets = new ArrayList<>();
+    public List<Concept> getLinkedSynsets(Concept concept, Link link) {
+        List<Concept> linkedSynsets = new ArrayList<>();
         if (link == null || link.equals(Link.SYNSET)) {
-            linkedSynsets.add(synsetID);
+            linkedSynsets.add(concept);
         } else {
-            ISynsetID iSynsetID = SynsetID.parseSynsetID(synsetID);
+            ISynsetID iSynsetID = SynsetID.parseSynsetID(concept.getSynsetID());
             if (link.equals(Link.MERONYM)) {
                 linkedSynsets.addAll(getRelatedSynsets(iSynsetID, Link.MERONYM_MEMBER));
                 linkedSynsets.addAll(getRelatedSynsets(iSynsetID, Link.MERONYM_SUBSTANCE));
@@ -88,14 +88,14 @@ public class MITWordNet implements ILexicalDatabase {
         return linkedSynsets;
     }
 
-    private List<String> getRelatedSynsets(ISynsetID synsetID, Link link) {
+    private List<Concept> getRelatedSynsets(ISynsetID synsetID, Link link) {
         return dict.getSynset(synsetID).getRelatedSynsets(Pointer.getPointerType(link.getSymbol(), null))
-                .stream().map(Object::toString).collect(Collectors.toList());
+                .stream().map(synset -> new Concept(synset.toString())).collect(Collectors.toList());
     }
 
     @Override
-    public List<String> getWords(String synsetID) {
-        return dict.getSynset(SynsetID.parseSynsetID(synsetID)).getWords().stream().map(IWord::getLemma)
+    public List<String> getWords(Concept concept) {
+        return dict.getSynset(SynsetID.parseSynsetID(concept.getSynsetID())).getWords().stream().map(IWord::getLemma)
                 .collect(Collectors.toList());
     }
 
@@ -106,12 +106,13 @@ public class MITWordNet implements ILexicalDatabase {
             List<String> cachedObj = cache.get(key);
             if (cachedObj != null) return new ArrayList<>(cachedObj);
         }
-        List<String> linkedSynsets = getLinkedSynsets(concept.getSynsetID(), link);
+        List<Concept> linkedSynsets = getLinkedSynsets(concept, link);
         List<String> glosses = new ArrayList<>(linkedSynsets.size());
-        for (String linkedSynset : linkedSynsets) {
+        for (Concept linkedSynset : linkedSynsets) {
             String gloss;
             if (Link.SYNSET.equals(link)) gloss = concept.getName();
-            else gloss = dict.getSynset(SynsetID.parseSynsetID(linkedSynset)).getGloss().replaceFirst("; \".+", "");
+            else gloss = dict.getSynset(SynsetID.parseSynsetID(linkedSynset.getSynsetID())).getGloss()
+                    .replaceFirst("; \".+", "");
             if (gloss == null) continue;
             gloss = gloss.replaceAll("[.;:,?!(){}\"`$%@<>]", " ")
                     .replaceAll("&", " and ")

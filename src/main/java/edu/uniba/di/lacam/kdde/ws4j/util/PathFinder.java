@@ -3,9 +3,9 @@ package edu.uniba.di.lacam.kdde.ws4j.util;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
-import com.google.gson.Gson;
 import edu.uniba.di.lacam.kdde.lexical_db.ILexicalDatabase;
 import edu.uniba.di.lacam.kdde.lexical_db.data.Concept;
 import edu.uniba.di.lacam.kdde.lexical_db.item.Link;
@@ -13,12 +13,12 @@ import edu.uniba.di.lacam.kdde.lexical_db.item.Link;
 public class PathFinder {
 
 	private ILexicalDatabase db;
-	
+
 	public PathFinder(ILexicalDatabase db) {
 		this.db = db;
 	}
 
-	private static ConcurrentMap<String, List<List<String>>> cache;
+	private static ConcurrentMap<Concept, List<List<Concept>>> cache;
 
 	static {
 		if (WS4JConfiguration.getInstance().useCache()) cache = new ConcurrentHashMap<>();
@@ -26,39 +26,40 @@ public class PathFinder {
 
 	List<Subsumer> getAllPaths(Concept concept1, Concept concept2, StringBuilder tracer) {
 		List<Subsumer> paths = new ArrayList<>();
-		Set<String> history = new HashSet<>();
-		List<List<String>> lTrees = getHypernymTrees(concept1.getSynsetID(), history);
+		Set<Concept> history = new HashSet<>();
+		List<List<Concept>> lTrees = getHypernymTrees(concept1, history);
 		history = new HashSet<>();
-		List<List<String>> rTrees = getHypernymTrees(concept2.getSynsetID(), history);
+		List<List<Concept>> rTrees = getHypernymTrees(concept2, history);
 		if (lTrees == null || rTrees == null) return null;
-		for (List<String> lTree : lTrees) {
-			for (List<String> rTree : rTrees) {
-				String subsumer = getSubsumerFromTrees(lTree, rTree);
+		for (List<Concept> lTree : lTrees) {
+			for (List<Concept> rTree : rTrees) {
+				Concept subsumer = getSubsumerFromTrees(lTree, rTree);
 				if (subsumer == null) continue;
 				int lCount = 0;
-				List<String> lPath = new ArrayList<>(lTree.size());
-				List<String> reversedLTree = Lists.reverse(lTree);
-				for (String synset : reversedLTree) {
+				List<Concept> lPath = new ArrayList<>(lTree.size());
+				List<Concept> reversedLTree = Lists.reverse(lTree);
+				for (Concept synset : reversedLTree) {
 					lCount++;
 					if (synset.equals(subsumer)) break;
 					lPath.add(synset);
 				}
 				int rCount = 0;
-				List<String> rPath = new ArrayList<>(rTree.size());
-				List<String> reversedRTree = Lists.reverse(rTree);
-				for (String synset : reversedRTree) {
+				List<Concept> rPath = new ArrayList<>(rTree.size());
+				List<Concept> reversedRTree = Lists.reverse(rTree);
+				for (Concept synset : reversedRTree) {
 					rCount++;
 					if (synset.equals(subsumer)) break;
 					rPath.add(synset);
 				}
-				paths.add(new Subsumer(new Concept(subsumer, concept1.getPOS()), rCount + lCount - 1, lPath, rPath));
+				paths.add(new Subsumer(new Concept(subsumer.getSynsetID(), concept1.getPOS()),
+                        rCount + lCount - 1, lPath, rPath));
 				if (tracer != null) {
-					tracer.append("HyperTree1: ").append(lTree).append("\n");
-					tracer.append("HyperTree2: ").append(rTree).append("\n");
+					tracer.append("HyperTree(").append(concept1).append(") = ").append(lTree).append("\n");
+					tracer.append("HyperTree(").append(concept2).append(") = ").append(rTree).append("\n");
 				}
 			}
 		}
-		paths.sort(Comparator.comparingInt(s -> s.length));
+		paths.sort(Comparator.comparingInt(s -> s.pathLength));
 		return paths;
 	}
 
@@ -66,60 +67,58 @@ public class PathFinder {
 		List<Subsumer> returnList = new ArrayList<>();
 		List<Subsumer> paths = getAllPaths(concept1, concept2, tracer);
 		if (paths == null || paths.size() == 0) return returnList;
-		int bestLength = paths.get(0).length;
+		int bestLength = paths.get(0).pathLength;
 		returnList.add(paths.get(0));
 		for (int i = 1; i < paths.size(); i++) {
-			if (paths.get(i).length > bestLength) break;
+			if (paths.get(i).pathLength > bestLength) break;
 			returnList.add(paths.get(i));
 		}
 		return returnList;
 	}
 
-	private static String getSubsumerFromTrees(List<String> list1, List<String> list2) {
-		List<String> tree1 = Lists.reverse(list1);
-		List<String> tree2 = Lists.reverse(list2);
+	private static Concept getSubsumerFromTrees(List<Concept> list1, List<Concept> list2) {
+		List<String> tree1 = Lists.reverse(list1.stream().map(Concept::getSynsetID).collect(Collectors.toList()));
+		List<String> tree2 = Lists.reverse(list2.stream().map(Concept::getSynsetID).collect(Collectors.toList()));
 		String tree1Joined = " " + String.join(" ", tree1) + " ";
-		for (String synset2 : tree2) {
-			if (tree1Joined.contains(synset2)) return synset2;
-		}
+		for (String synset : tree2) if (tree1Joined.contains(synset)) return new Concept(synset);
 		return null;
 	}
 
-	List<List<String>> getHypernymTrees(String synset, Set<String> history) {
+	List<List<Concept>> getHypernymTrees(Concept synset, Set<Concept> history) {
         /* if (WS4JConfiguration.getInstance().useCache()) {
-			List<List<String>> cachedObj = cache.get(synset);
+			List<List<Concept>> cachedObj = cache.get(synset);
 			if (cachedObj != null) return clone(cachedObj);
 		} */
-		if (synset.equals("0")) {
-			List<String> tree = new ArrayList<>();
-			tree.add("0");
-			List<List<String>> trees = new ArrayList<>();
+		if (synset.getSynsetID().equals("0")) {
+			List<Concept> tree = new ArrayList<>();
+			tree.add(new Concept("0"));
+			List<List<Concept>> trees = new ArrayList<>();
 			trees.add(tree);
-			if (WS4JConfiguration.getInstance().useCache()) cache.put(synset, clone(trees));
+			// if (WS4JConfiguration.getInstance().useCache()) cache.put(synset, clone(trees));
 			return trees;
 		}
-		List<String> synLinks = db.getLinkedSynsets(synset, Link.HYPERNYM);
-		List<List<String>> returnList = new ArrayList<>();
+		List<Concept> synLinks = db.getLinkedSynsets(synset, Link.HYPERNYM);
+		List<List<Concept>> returnList = new ArrayList<>();
 		if (synLinks.size() == 0) {
-			List<String> tree = new ArrayList<>();
+			List<Concept> tree = new ArrayList<>();
 			tree.add(synset);
-			tree.add(0, "0");
+			tree.add(0, new Concept("0"));
 			returnList.add(tree);
 		} else {
-			for (String hypernym : synLinks) {
+			for (Concept hypernym : synLinks) {
 				if (history.contains(hypernym)) continue;
 				history.add(hypernym);
-				List<List<String>> hypernymTrees = getHypernymTrees(hypernym, history);
+				List<List<Concept>> hypernymTrees = getHypernymTrees(hypernym, history);
 				if (hypernymTrees != null) {
-					for (List<String> hypernymTree : hypernymTrees) {
+					for (List<Concept> hypernymTree : hypernymTrees) {
 						hypernymTree.add(synset);
 						returnList.add(hypernymTree);
 					}
 				}
 				if (returnList.size() == 0) {
-					List<String> newList = new ArrayList<>();
+					List<Concept> newList = new ArrayList<>();
 					newList.add(synset);
-					newList.add(0, "0");
+					newList.add(0, new Concept("0"));
 					returnList.add(newList);
 				}
 			}
@@ -130,15 +129,15 @@ public class PathFinder {
 
 	public static class Subsumer {
 
-		private Concept concept;
-		private int length;
+		private Concept subsumer;
+		private int pathLength;
 		private double ic;
-		private List<String> lPath;
-		private List<String> rPath;
+		private List<Concept> lPath;
+		private List<Concept> rPath;
 
-		Subsumer(Concept concept, int length, List<String> lPath, List<String> rPath) {
-			this.concept = concept;
-			this.length = length;
+		Subsumer(Concept subsumer, int pathLength, List<Concept> lPath, List<Concept> rPath) {
+			this.subsumer = subsumer;
+			this.pathLength = pathLength;
 			this.lPath = lPath;
 			this.rPath = rPath;
 		}
@@ -147,40 +146,43 @@ public class PathFinder {
             this.ic = ic;
         }
 
-		public Concept getConcept() {
-			return concept;
+		public Concept getSubsumer() {
+			return subsumer;
 		}
 
-		public int getLength() {
-			return length;
+		public int getPathLength() {
+			return pathLength;
 		}
 
 		public double getIC() {
 			return ic;
 		}
 
-		public List<String> getlPath() {
+		public List<Concept> getlPath() {
 			return lPath;
 		}
 
-		public List<String> getrPath() {
+		public List<Concept> getrPath() {
 			return rPath;
 		}
 
 		@Override
 		public String toString() {
-			return new Gson().toJson(this);
+			return "{" +
+					"subsumer=" + subsumer +
+					", pathLength=" + pathLength +
+					", ic=" + ic +
+					", lPath=" + lPath +
+					", rPath=" + rPath +
+					'}';
 		}
-    }
+	}
 
-	public Concept getRoot(String synset) {
-		Set<String> history = new HashSet<>();
-		List<List<String>> paths = getHypernymTrees(synset,history);
-		if (paths != null && paths.size() > 0 && paths.get(0).size() > 1) {
-			return new Concept(paths.get(0).get(1));
-		} else if (paths != null && paths.size() > 0) {
-			return new Concept(paths.get(0).get(0));
-		}
+	public Concept getRoot(Concept synset) {
+		Set<Concept> history = new HashSet<>();
+		List<List<Concept>> paths = getHypernymTrees(synset, history);
+		if (paths != null && paths.size() > 0 && paths.get(0).size() > 1) return paths.get(0).get(1);
+		else if (paths != null && paths.size() > 0) return paths.get(0).get(0);
 		return null;
 	}
 
@@ -188,15 +190,15 @@ public class PathFinder {
 		List<Subsumer> paths = getAllPaths(concept1, concept2, tracer);
 		List<Subsumer> returnPaths = new ArrayList<>(paths.size());
 		paths.forEach(path -> {
-            if (path.length <= paths.get(0).length) returnPaths.add(path);
+            if (path.pathLength <= paths.get(0).pathLength) returnPaths.add(path);
         });
 		return returnPaths;
 	}
 
-	private static List<List<String>> clone(List<List<String>> originals) {
-		List<List<String>> clone = new ArrayList<>(originals.size());
+	private static List<List<Concept>> clone(List<List<Concept>> originals) {
+		List<List<Concept>> clone = new ArrayList<>(originals.size());
 		originals.forEach(original -> {
-            List<String> cStrings = new ArrayList<>(original.size());
+            List<Concept> cStrings = new ArrayList<>(original.size());
             cStrings.addAll(original);
             clone.add(cStrings);
         });
