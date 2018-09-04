@@ -2,7 +2,6 @@ package edu.uniba.di.lacam.kdde.ws4j.similarity;
 
 import static org.junit.Assert.assertEquals;
 
-import edu.uniba.di.lacam.kdde.lexical_db.MITWordNet;
 import edu.uniba.di.lacam.kdde.lexical_db.item.POS;
 import edu.uniba.di.lacam.kdde.ws4j.RelatednessCalculator;
 import edu.uniba.di.lacam.kdde.ws4j.RelatednessCalculatorTest;
@@ -21,7 +20,7 @@ public class ResnikTest extends RelatednessCalculatorTest {
 	
 	@BeforeClass
 	public static void oneTimeSetUp() {
-		rc = new Resnik(new MITWordNet());
+		rc = new Resnik(db);
 	}
 
 	@Test

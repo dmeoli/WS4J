@@ -11,13 +11,13 @@ import java.util.List;
 
 abstract public class RelatednessCalculatorTest {
 
-	private static ILexicalDatabase db;
+	protected static ILexicalDatabase db;
 
 	static {
 		WS4JConfiguration.getInstance().setMemoryDB(false);
 		WS4JConfiguration.getInstance().setLeskNormalize(false);
 		WS4JConfiguration.getInstance().setMFS(false);
-        db = new MITWordNet();
+        db = MITWordNet.getInstance();
 	}
 
 	protected static final String CYCLONE = "cyclone";

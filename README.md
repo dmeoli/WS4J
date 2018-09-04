@@ -124,7 +124,7 @@ and declare this github repo as a dependency:
         <dependency>
             <groupId>com.github.DonatoMeoli</groupId>
             <artifactId>WS4J</artifactId>
-            <version>-SNAPSHOT</version>
+            <version>x.y.z</version>
         </dependency>
     </dependencies>
 

@@ -18,7 +18,7 @@ public class Traverser {
 	private static ConcurrentMap<Concept, Set<Concept>> downwardCache;
 
 	static {
-	    db = new MITWordNet();
+	    db = MITWordNet.getInstance();
 		if (WS4JConfiguration.getInstance().useCache()) {
 			horizonCache = new ConcurrentHashMap<>();
 			upwardCache = new ConcurrentHashMap<>();

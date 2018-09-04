@@ -14,7 +14,7 @@ public class SimilarityCalculationDemo {
 
     static {
         WS4JConfiguration.getInstance().setTrace(true);
-        ILexicalDatabase db = new MITWordNet();
+        ILexicalDatabase db = MITWordNet.getInstance();
         rcs = new RelatednessCalculator[]{
                 new HirstStOnge(db), new LeacockChodorow(db), new Lesk(db), new WuPalmer(db),
                 new Resnik(db), new JiangConrath(db), new Lin(db), new Path(db)
@@ -24,7 +24,7 @@ public class SimilarityCalculationDemo {
     public static void main(String[] args) {
         long t = System.currentTimeMillis();
         Arrays.asList(rcs).forEach(rc -> System.out.println(rc.getClass().getName() + "\t" +
-                rc.calcRelatednessOfWords("cancer", "diagnosis")));
+                rc.calcRelatednessOfWords("act", "moderate")));
         System.out.println("Done in " + (System.currentTimeMillis()-t) + " msec.");
     }
 }

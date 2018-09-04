@@ -22,16 +22,14 @@ import java.util.stream.Collectors;
 
 public class MITWordNet implements ILexicalDatabase {
 
+    private static final String WORDNET_PATH = System.getProperty("user.dir") + File.separator + "dict";
+
     private static IRAMDictionary dict;
     private static ConcurrentMap<String, List<String>> cache;
 
-    private static final String WORDNET_PATH = System.getProperty("user.dir") + File.separator + "dict";
+    private static final ILexicalDatabase db = new MITWordNet();
 
-    public MITWordNet(IRAMDictionary dict) {
-        MITWordNet.dict = dict;
-    }
-
-    public MITWordNet() {
+    private MITWordNet() {
         try {
             if (WS4JConfiguration.getInstance().useMemoryDB()) {
                 Log.info("Loading WordNet into memory...");
@@ -49,8 +47,8 @@ public class MITWordNet implements ILexicalDatabase {
         if (WS4JConfiguration.getInstance().useCache()) cache = new ConcurrentHashMap<>();
     }
 
-    public static IRAMDictionary getDict() {
-        return dict;
+    public static ILexicalDatabase getInstance() {
+        return db;
     }
 
     @Override
@@ -62,28 +60,25 @@ public class MITWordNet implements ILexicalDatabase {
     @Override
     public List<Concept> getAllConcepts(String lemma, POS pos) {
         IIndexWord indexWord = dict.getIndexWord(lemma, edu.mit.jwi.item.POS.getPartOfSpeech(pos.getTag()));
-        return indexWord != null ? indexWord.getWordIDs().stream().map(iWordID -> new Concept(
-                iWordID.getSynsetID().toString(), pos, lemma)).collect(Collectors.toList()) : Collections.emptyList();
+        return indexWord != null ? indexWord.getWordIDs().stream().map(wordID -> new Concept(
+                wordID.getSynsetID().toString(), pos, lemma)).collect(Collectors.toList()) : Collections.emptyList();
     }
 
     @Override
     public List<Concept> getLinkedSynsets(Concept concept, Link link) {
         List<Concept> linkedSynsets = new ArrayList<>();
-        if (link == null || link.equals(Link.SYNSET)) {
-            linkedSynsets.add(concept);
-        } else {
-            ISynsetID iSynsetID = SynsetID.parseSynsetID(concept.getSynsetID());
+        if (link == null || link.equals(Link.SYNSET)) linkedSynsets.add(concept);
+        else {
+            ISynsetID synsetID = SynsetID.parseSynsetID(concept.getSynsetID());
             if (link.equals(Link.MERONYM)) {
-                linkedSynsets.addAll(getRelatedSynsets(iSynsetID, Link.MERONYM_MEMBER));
-                linkedSynsets.addAll(getRelatedSynsets(iSynsetID, Link.MERONYM_SUBSTANCE));
-                linkedSynsets.addAll(getRelatedSynsets(iSynsetID, Link.MERONYM_PART));
+                linkedSynsets.addAll(getRelatedSynsets(synsetID, Link.MERONYM_MEMBER));
+                linkedSynsets.addAll(getRelatedSynsets(synsetID, Link.MERONYM_SUBSTANCE));
+                linkedSynsets.addAll(getRelatedSynsets(synsetID, Link.MERONYM_PART));
             } else if (link.equals(Link.HOLONYM)) {
-                linkedSynsets.addAll(getRelatedSynsets(iSynsetID, Link.HOLONYM_MEMBER));
-                linkedSynsets.addAll(getRelatedSynsets(iSynsetID, Link.HOLONYM_SUBSTANCE));
-                linkedSynsets.addAll(getRelatedSynsets(iSynsetID, Link.HOLONYM_PART));
-            } else {
-                linkedSynsets.addAll(getRelatedSynsets(iSynsetID, link));
-            }
+                linkedSynsets.addAll(getRelatedSynsets(synsetID, Link.HOLONYM_MEMBER));
+                linkedSynsets.addAll(getRelatedSynsets(synsetID, Link.HOLONYM_SUBSTANCE));
+                linkedSynsets.addAll(getRelatedSynsets(synsetID, Link.HOLONYM_PART));
+            } else linkedSynsets.addAll(getRelatedSynsets(synsetID, link));
         }
         return linkedSynsets;
     }

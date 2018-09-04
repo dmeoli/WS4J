@@ -104,7 +104,7 @@ public class OverlapFinder {
 
 	public static class Overlaps {
 
-		private ConcurrentMap<String,Integer> overlapsHash;
+		private ConcurrentMap<String, Integer> overlapsHash;
 		private int length1;
 		private int length2;
 
