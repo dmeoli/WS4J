@@ -3,7 +3,6 @@ package edu.uniba.di.lacam.kdde.ws4j.similarity;
 import static org.junit.Assert.assertEquals;
 
 import edu.uniba.di.lacam.kdde.lexical_db.item.POS;
-import edu.uniba.di.lacam.kdde.ws4j.RelatednessCalculator;
 import edu.uniba.di.lacam.kdde.ws4j.RelatednessCalculatorTest;
 import edu.uniba.di.lacam.kdde.ws4j.util.WordSimilarityCalculator;
 import org.junit.BeforeClass;
@@ -15,8 +14,6 @@ import org.junit.Test;
  * @author Hideki Shima
  */
 public class LeacockChodorowTest extends RelatednessCalculatorTest {
-
-	private static RelatednessCalculator rc;
 	
 	@BeforeClass
 	public static void oneTimeSetUp() {

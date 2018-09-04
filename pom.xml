@@ -16,9 +16,8 @@
 
     <repositories>
         <repository>
-            <id>ws4j</id>
-            <name>ws4j-repo</name>
-            <url>file://${project.basedir}/lib</url>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
     </repositories>
 
@@ -29,9 +28,9 @@
             <version>1.8.4</version>
         </dependency>
         <dependency>
-            <groupId>edu.mit.csail</groupId>
+            <groupId>com.github.rm-hull</groupId>
             <artifactId>jwi</artifactId>
-            <version>2.4.0</version>
+            <version>7d37b0d23d</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

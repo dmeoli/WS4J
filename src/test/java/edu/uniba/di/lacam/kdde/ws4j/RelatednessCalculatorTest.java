@@ -12,6 +12,7 @@ import java.util.List;
 abstract public class RelatednessCalculatorTest {
 
 	protected static ILexicalDatabase db;
+	protected static RelatednessCalculator rc;
 
 	static {
 		WS4JConfiguration.getInstance().setMemoryDB(false);

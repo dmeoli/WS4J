@@ -76,9 +76,9 @@ public class PathFinder {
 		return returnList;
 	}
 
-	private static Concept getSubsumerFromTrees(List<Concept> list1, List<Concept> list2) {
-		List<String> tree1 = Lists.reverse(list1.stream().map(Concept::getSynsetID).collect(Collectors.toList()));
-		List<String> tree2 = Lists.reverse(list2.stream().map(Concept::getSynsetID).collect(Collectors.toList()));
+	private static Concept getSubsumerFromTrees(List<Concept> concepts1, List<Concept> concepts2) {
+		List<String> tree1 = Lists.reverse(concepts1.stream().map(Concept::getSynsetID).collect(Collectors.toList()));
+		List<String> tree2 = Lists.reverse(concepts2.stream().map(Concept::getSynsetID).collect(Collectors.toList()));
 		String tree1Joined = " " + String.join(" ", tree1) + " ";
 		for (String synset : tree2) if (tree1Joined.contains(synset)) return new Concept(synset);
 		return null;

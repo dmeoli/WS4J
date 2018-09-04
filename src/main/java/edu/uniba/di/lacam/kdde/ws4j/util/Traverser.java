@@ -31,9 +31,7 @@ public class Traverser {
 		List<String> wordsH = db.getWords(concept1);
 		List<String> wordsN = db.getWords(concept2);
 		for (String wordH : wordsH) {
-			for (String wordN : wordsN) {
-				if (wordH.contains(wordN) || wordN.contains(wordH)) return true;
-			}
+			for (String wordN : wordsN) if (wordH.contains(wordN) || wordN.contains(wordH)) return true;
 		}
 		return false;
 	}
