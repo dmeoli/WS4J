@@ -7,9 +7,10 @@ import edu.mit.jwi.item.*;
 import edu.uniba.di.lacam.kdde.lexical_db.data.Concept;
 import edu.uniba.di.lacam.kdde.lexical_db.item.Link;
 import edu.uniba.di.lacam.kdde.lexical_db.item.POS;
-import edu.uniba.di.lacam.kdde.ws4j.util.Log;
 import edu.uniba.di.lacam.kdde.ws4j.util.Morpha;
 import edu.uniba.di.lacam.kdde.ws4j.util.WS4JConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,6 +23,8 @@ import java.util.stream.Collectors;
 
 public class MITWordNet implements ILexicalDatabase {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(MITWordNet.class);
+
     private static final String WORDNET_PATH = System.getProperty("user.dir") + File.separator + "dict";
 
     private static IRAMDictionary dict;
@@ -32,11 +35,12 @@ public class MITWordNet implements ILexicalDatabase {
     private MITWordNet() {
         try {
             if (WS4JConfiguration.getInstance().useMemoryDB()) {
-                Log.info("Loading WordNet into memory...");
+                if (WS4JConfiguration.getInstance().useTrace()) LOGGER.info("Loading WordNet into memory...");
                 long t = System.currentTimeMillis();
                 dict = new RAMDictionary(new URL("file", null, WORDNET_PATH), ILoadPolicy.IMMEDIATE_LOAD);
                 dict.open();
-                Log.info("WordNet loaded into memory in %d sec.", (System.currentTimeMillis()-t) / 1000L);
+                if (WS4JConfiguration.getInstance().useTrace()) LOGGER.info("WordNet loaded into memory in {} sec.",
+                        (System.currentTimeMillis()-t) / 1000L);
             } else {
                 dict = new RAMDictionary(new URL("file", null, WORDNET_PATH), ILoadPolicy.NO_LOAD);
                 dict.open();

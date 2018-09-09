@@ -1,11 +1,16 @@
 package edu.uniba.di.lacam.kdde.ws4j.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
 final public class WS4JConfiguration {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(WS4JConfiguration.class);
 
 	private final static String CONFIGURATION = "WS4J.conf";
 
@@ -49,7 +54,7 @@ final public class WS4JConfiguration {
 	private String readString(String key, String defaultValue) {
 		String value = properties.getProperty(key);
 		if (value == null) {
-		    Log.error("Configuration \"%s\" not found in \"%s\"", key, CONFIGURATION);
+		    LOGGER.error("Configuration \"{}\" not found in \"{}\"", key, CONFIGURATION);
 			return defaultValue;
 		}
 		value = value.replaceAll("#.+", "").trim();

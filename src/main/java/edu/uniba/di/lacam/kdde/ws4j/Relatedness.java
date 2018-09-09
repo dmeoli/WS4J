@@ -1,11 +1,14 @@
 package edu.uniba.di.lacam.kdde.ws4j;
 
-import edu.uniba.di.lacam.kdde.ws4j.util.Log;
 import edu.uniba.di.lacam.kdde.ws4j.util.WS4JConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
 public class Relatedness {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(Relatedness.class);
 
 	private double score;
 	private StringBuffer trace;
@@ -22,9 +25,9 @@ public class Relatedness {
 		this.trace = new StringBuffer(trace == null ? "" : trace);
 		this.error = new StringBuffer(error == null ? "" : error);
 		if (WS4JConfiguration.getInstance().useTrace() && !this.trace.toString().equals("")) {
-            for (String str : Objects.requireNonNull(trace).split("\\R")) Log.info(str);
+            for (String str : Objects.requireNonNull(trace).split("\\R")) LOGGER.info(str);
         }
-        if (WS4JConfiguration.getInstance().useTrace() && !this.error.toString().equals("")) Log.error(error);
+        if (WS4JConfiguration.getInstance().useTrace() && !this.error.toString().equals("")) LOGGER.error(error);
 	}
 
 	public String getTrace() {
