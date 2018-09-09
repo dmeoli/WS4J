@@ -84,7 +84,7 @@ Any WordNet instance can be used in WS4J if it implements the ILexicalDatabase i
 
 ## Built with Maven
 
-To create a jar file with dependencies including resource and config files:
+To create a jar file with dependencies including resource files:
 
 ```
 $ mvn install

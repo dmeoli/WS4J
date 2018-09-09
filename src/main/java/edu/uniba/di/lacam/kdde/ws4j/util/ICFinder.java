@@ -13,6 +13,8 @@ import java.util.concurrent.ConcurrentMap;
 
 final public class ICFinder {
 
+	private static final String INFO_CONTENT = "infoContent";
+
 	private ConcurrentMap<Integer, Integer> freqV;
 	private ConcurrentMap<Integer, Integer> freqN;
 
@@ -36,7 +38,7 @@ final public class ICFinder {
 	private synchronized void loadIC() throws IOException {
 		freqV = new ConcurrentHashMap<>();
 		freqN = new ConcurrentHashMap<>();
-		InputStream stream = getClass().getResourceAsStream(File.separator + WS4JConfiguration.getInstance().getInfoContent());
+		InputStream stream = getClass().getResourceAsStream(File.separator + INFO_CONTENT);
 		InputStreamReader isr = new InputStreamReader(stream);
 		BufferedReader br = new BufferedReader(isr);
 		String line;

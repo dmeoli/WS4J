@@ -21,11 +21,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
-public class MITWordNet implements ILexicalDatabase {
+import static edu.uniba.di.lacam.kdde.lexical_db.item.Link.*;
+
+final public class MITWordNet implements ILexicalDatabase {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MITWordNet.class);
 
-    private static final String WORDNET_PATH = System.getProperty("user.dir") + File.separator + "dict";
+    private static final String WORDNET = System.getProperty("user.dir") + File.separator + "dict";
 
     private static IRAMDictionary dict;
     private static ConcurrentMap<String, List<String>> cache;
@@ -37,12 +39,12 @@ public class MITWordNet implements ILexicalDatabase {
             if (WS4JConfiguration.getInstance().useMemoryDB()) {
                 if (WS4JConfiguration.getInstance().useTrace()) LOGGER.info("Loading WordNet into memory...");
                 long t = System.currentTimeMillis();
-                dict = new RAMDictionary(new URL("file", null, WORDNET_PATH), ILoadPolicy.IMMEDIATE_LOAD);
+                dict = new RAMDictionary(new URL("file", null, WORDNET), ILoadPolicy.IMMEDIATE_LOAD);
                 dict.open();
                 if (WS4JConfiguration.getInstance().useTrace()) LOGGER.info("WordNet loaded into memory in {} sec.",
                         (System.currentTimeMillis()-t) / 1000L);
             } else {
-                dict = new RAMDictionary(new URL("file", null, WORDNET_PATH), ILoadPolicy.NO_LOAD);
+                dict = new RAMDictionary(new URL("file", null, WORDNET), ILoadPolicy.NO_LOAD);
                 dict.open();
             }
         } catch (IOException e) {
@@ -71,17 +73,17 @@ public class MITWordNet implements ILexicalDatabase {
     @Override
     public List<Concept> getLinkedSynsets(Concept concept, Link link) {
         List<Concept> linkedSynsets = new ArrayList<>();
-        if (link == null || link.equals(Link.SYNSET)) linkedSynsets.add(concept);
+        if (link == null || link.equals(SYNSET)) linkedSynsets.add(concept);
         else {
             ISynsetID synsetID = SynsetID.parseSynsetID(concept.getSynsetID());
-            if (link.equals(Link.MERONYM)) {
-                linkedSynsets.addAll(getRelatedSynsets(synsetID, Link.MERONYM_MEMBER));
-                linkedSynsets.addAll(getRelatedSynsets(synsetID, Link.MERONYM_SUBSTANCE));
-                linkedSynsets.addAll(getRelatedSynsets(synsetID, Link.MERONYM_PART));
-            } else if (link.equals(Link.HOLONYM)) {
-                linkedSynsets.addAll(getRelatedSynsets(synsetID, Link.HOLONYM_MEMBER));
-                linkedSynsets.addAll(getRelatedSynsets(synsetID, Link.HOLONYM_SUBSTANCE));
-                linkedSynsets.addAll(getRelatedSynsets(synsetID, Link.HOLONYM_PART));
+            if (link.equals(MERONYM)) {
+                linkedSynsets.addAll(getRelatedSynsets(synsetID, MERONYM_MEMBER));
+                linkedSynsets.addAll(getRelatedSynsets(synsetID, MERONYM_SUBSTANCE));
+                linkedSynsets.addAll(getRelatedSynsets(synsetID, MERONYM_PART));
+            } else if (link.equals(HOLONYM)) {
+                linkedSynsets.addAll(getRelatedSynsets(synsetID, HOLONYM_MEMBER));
+                linkedSynsets.addAll(getRelatedSynsets(synsetID, HOLONYM_SUBSTANCE));
+                linkedSynsets.addAll(getRelatedSynsets(synsetID, HOLONYM_PART));
             } else linkedSynsets.addAll(getRelatedSynsets(synsetID, link));
         }
         return linkedSynsets;
@@ -109,7 +111,7 @@ public class MITWordNet implements ILexicalDatabase {
         List<String> glosses = new ArrayList<>(linkedSynsets.size());
         for (Concept linkedSynset : linkedSynsets) {
             String gloss;
-            if (Link.SYNSET.equals(link)) gloss = concept.getName();
+            if (SYNSET.equals(link)) gloss = concept.getName();
             else gloss = dict.getSynset(SynsetID.parseSynsetID(linkedSynset.getSynsetID())).getGloss()
                     .replaceFirst("; \".+", "");
             if (gloss == null) continue;

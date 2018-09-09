@@ -8,7 +8,8 @@ import java.util.stream.Collectors;
 import com.google.common.collect.Lists;
 import edu.uniba.di.lacam.kdde.lexical_db.ILexicalDatabase;
 import edu.uniba.di.lacam.kdde.lexical_db.data.Concept;
-import edu.uniba.di.lacam.kdde.lexical_db.item.Link;
+
+import static edu.uniba.di.lacam.kdde.lexical_db.item.Link.*;
 
 public class PathFinder {
 
@@ -97,7 +98,7 @@ public class PathFinder {
 			// if (WS4JConfiguration.getInstance().useCache()) cache.put(synset, clone(trees));
 			return trees;
 		}
-		List<Concept> synLinks = db.getLinkedSynsets(synset, Link.HYPERNYM);
+		List<Concept> synLinks = db.getLinkedSynsets(synset, HYPERNYM);
 		List<List<Concept>> returnList = new ArrayList<>();
 		if (synLinks.size() == 0) {
 			List<Concept> tree = new ArrayList<>();

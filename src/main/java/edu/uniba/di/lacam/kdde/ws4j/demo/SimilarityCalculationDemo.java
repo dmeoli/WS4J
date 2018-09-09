@@ -4,7 +4,6 @@ import edu.uniba.di.lacam.kdde.lexical_db.ILexicalDatabase;
 import edu.uniba.di.lacam.kdde.lexical_db.MITWordNet;
 import edu.uniba.di.lacam.kdde.ws4j.RelatednessCalculator;
 import edu.uniba.di.lacam.kdde.ws4j.similarity.*;
-import edu.uniba.di.lacam.kdde.ws4j.util.WS4JConfiguration;
 
 import java.util.Arrays;
 
@@ -13,7 +12,6 @@ public class SimilarityCalculationDemo {
     private static RelatednessCalculator[] rcs;
 
     static {
-        WS4JConfiguration.getInstance().setTrace(true);
         ILexicalDatabase db = MITWordNet.getInstance();
         rcs = new RelatednessCalculator[]{
                 new HirstStOnge(db), new LeacockChodorow(db), new Lesk(db), new WuPalmer(db),

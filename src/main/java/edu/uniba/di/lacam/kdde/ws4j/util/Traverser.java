@@ -9,6 +9,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import static edu.uniba.di.lacam.kdde.lexical_db.item.Link.*;
+
 public class Traverser {
 
     private static ILexicalDatabase db;
@@ -42,9 +44,9 @@ public class Traverser {
 			if (cachedObj != null) return cachedObj;
 		}
 		List<Link> points = new ArrayList<>();
-		points.add(Link.ANTONYM);
-		points.add(Link.ATTRIBUTE);
-		points.add(Link.SIMILAR_TO);
+		points.add(ANTONYM);
+		points.add(ATTRIBUTE);
+		points.add(SIMILAR_TO);
 		Set<Concept> result = getGroupedSynsets(synset, points);
 		if (WS4JConfiguration.getInstance().useCache()) if (result != null) horizonCache.put(synset, result);
 		return result;
@@ -56,8 +58,8 @@ public class Traverser {
 			if (cachedObj != null) return cachedObj;
 		}
 		List<Link> points = new ArrayList<>();
-		points.add(Link.HYPERNYM);
-		points.add(Link.MERONYM);
+		points.add(HYPERNYM);
+		points.add(MERONYM);
 		Set<Concept> result = getGroupedSynsets(synset, points);
 		if (WS4JConfiguration.getInstance().useCache()) if (result != null) upwardCache.put(synset, result);
 		return result;
@@ -69,10 +71,10 @@ public class Traverser {
 			if (cachedObj != null) return cachedObj;
 		}
 		List<Link> points = new ArrayList<>();
-		points.add(Link.CAUSE);
-		points.add(Link.ENTAILMENT);
-		points.add(Link.HOLONYM);
-		points.add(Link.HYPONYM);
+		points.add(CAUSE);
+		points.add(ENTAILMENT);
+		points.add(HOLONYM);
+		points.add(HYPONYM);
 		Set<Concept> result = getGroupedSynsets(synset, points);
 		if (WS4JConfiguration.getInstance().useCache()) if (result != null) downwardCache.put(synset, result);
 		return result;

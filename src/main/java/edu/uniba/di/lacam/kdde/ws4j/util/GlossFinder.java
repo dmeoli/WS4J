@@ -7,38 +7,40 @@ import edu.uniba.di.lacam.kdde.lexical_db.item.Link;
 import java.util.ArrayList;
 import java.util.List;
 
+import static edu.uniba.di.lacam.kdde.lexical_db.item.Link.*;
+
 public class GlossFinder {
 
 	private static List<Link[]> linkPairs = new ArrayList<Link[]>(){{
 		add(new Link[]{null, null});
-		add(new Link[]{null, Link.HYPERNYM});
-		add(new Link[]{null, Link.HYPONYM});
-		add(new Link[]{null, Link.MERONYM});
-		add(new Link[]{null, Link.HOLONYM});
+		add(new Link[]{null, HYPERNYM});
+		add(new Link[]{null, HYPONYM});
+		add(new Link[]{null, MERONYM});
+		add(new Link[]{null, HOLONYM});
 
-		add(new Link[]{Link.HYPERNYM, null});
-		add(new Link[]{Link.HYPERNYM, Link.HYPERNYM});
-		add(new Link[]{Link.HYPERNYM, Link.HYPONYM});
-		add(new Link[]{Link.HYPERNYM, Link.MERONYM});
-		add(new Link[]{Link.HYPERNYM, Link.HOLONYM});
+		add(new Link[]{HYPERNYM, null});
+		add(new Link[]{HYPERNYM, HYPERNYM});
+		add(new Link[]{HYPERNYM, HYPONYM});
+		add(new Link[]{HYPERNYM, MERONYM});
+		add(new Link[]{HYPERNYM, HOLONYM});
 
-		add(new Link[]{Link.HYPONYM, null});
-		add(new Link[]{Link.HYPONYM, Link.HYPERNYM});
-		add(new Link[]{Link.HYPONYM, Link.HYPONYM});
-        add(new Link[]{Link.HYPONYM, Link.MERONYM});
-        add(new Link[]{Link.HYPONYM, Link.HOLONYM});
+		add(new Link[]{HYPONYM, null});
+		add(new Link[]{HYPONYM, HYPERNYM});
+		add(new Link[]{HYPONYM, HYPONYM});
+        add(new Link[]{HYPONYM, MERONYM});
+        add(new Link[]{HYPONYM, HOLONYM});
 
-        add(new Link[]{Link.MERONYM, null});
-        add(new Link[]{Link.MERONYM, Link.HYPERNYM});
-        add(new Link[]{Link.MERONYM, Link.HYPONYM});
-        add(new Link[]{Link.MERONYM, Link.MERONYM});
-        add(new Link[]{Link.MERONYM, Link.HOLONYM});
+        add(new Link[]{MERONYM, null});
+        add(new Link[]{MERONYM, HYPERNYM});
+        add(new Link[]{MERONYM, HYPONYM});
+        add(new Link[]{MERONYM, MERONYM});
+        add(new Link[]{MERONYM, HOLONYM});
 
-        add(new Link[]{Link.SYNSET, null});
-        add(new Link[]{Link.SYNSET, Link.HYPERNYM});
-        add(new Link[]{Link.SYNSET, Link.HYPONYM});
-        add(new Link[]{Link.SYNSET, Link.MERONYM});
-        add(new Link[]{Link.SYNSET, Link.HOLONYM});
+        add(new Link[]{SYNSET, null});
+        add(new Link[]{SYNSET, HYPERNYM});
+        add(new Link[]{SYNSET, HYPONYM});
+        add(new Link[]{SYNSET, MERONYM});
+        add(new Link[]{SYNSET, HOLONYM});
 	}};
 
 	private ILexicalDatabase db;
