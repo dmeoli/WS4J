@@ -35,7 +35,7 @@ final public class ICFinder {
 		return icFinder;
 	}
 
-	private synchronized void loadIC() throws IOException {
+	synchronized private void loadIC() throws IOException {
 		freqV = new ConcurrentHashMap<>();
 		freqN = new ConcurrentHashMap<>();
 		InputStream stream = getClass().getResourceAsStream(File.separator + INFO_CONTENT);

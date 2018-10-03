@@ -13,7 +13,7 @@ final public class StopWordRemover {
 
 	private StopWordRemover() {
 		try {
-			loadStopList();
+			loadStopWords();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -23,7 +23,7 @@ final public class StopWordRemover {
 		return stopWordRemover;
 	}
 
-	private synchronized void loadStopList() throws IOException {
+	synchronized private void loadStopWords() throws IOException {
 		stopList = new HashSet<>();
 		InputStream stream = getClass().getResourceAsStream(File.separator + STOP_WORDS);
 		InputStreamReader isr = new InputStreamReader(stream);
@@ -39,9 +39,7 @@ final public class StopWordRemover {
 
 	String[] removeStopWords(String[] words) {
 		List<String> contents = new ArrayList<>(words.length);
-		Arrays.asList(words).forEach(word -> {
-            if (!stopList.contains(word)) contents.add(word);
-        });
+		Arrays.stream(words).filter(word -> !stopList.contains(word)).forEach(contents::add);
 		return contents.toArray(new String[0]);
 	}
 }

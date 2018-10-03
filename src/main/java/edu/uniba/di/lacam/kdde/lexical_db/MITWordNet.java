@@ -36,21 +36,25 @@ final public class MITWordNet implements ILexicalDatabase {
 
     private MITWordNet() {
         try {
-            if (WS4JConfiguration.getInstance().useMemoryDB()) {
-                if (WS4JConfiguration.getInstance().useTrace()) LOGGER.info("Loading WordNet into memory...");
-                long t = System.currentTimeMillis();
-                dict = new RAMDictionary(new URL("file", null, WORDNET), ILoadPolicy.IMMEDIATE_LOAD);
-                dict.open();
-                if (WS4JConfiguration.getInstance().useTrace()) LOGGER.info("WordNet loaded into memory in {} sec.",
-                        (System.currentTimeMillis()-t) / 1000L);
-            } else {
-                dict = new RAMDictionary(new URL("file", null, WORDNET), ILoadPolicy.NO_LOAD);
-                dict.open();
-            }
+            loadWordNet();
         } catch (IOException e) {
             e.printStackTrace();
         }
         if (WS4JConfiguration.getInstance().useCache()) cache = new ConcurrentHashMap<>();
+    }
+
+    synchronized private void loadWordNet() throws IOException {
+        if (WS4JConfiguration.getInstance().useMemoryDB()) {
+            if (WS4JConfiguration.getInstance().useTrace()) LOGGER.info("Loading WordNet into memory...");
+            long t = System.currentTimeMillis();
+            dict = new RAMDictionary(new URL("file", null, WORDNET), ILoadPolicy.IMMEDIATE_LOAD);
+            dict.open();
+            if (WS4JConfiguration.getInstance().useTrace()) LOGGER.info("WordNet loaded into memory in {} sec.",
+                    (System.currentTimeMillis() - t) / 1000L);
+        } else {
+            dict = new RAMDictionary(new URL("file", null, WORDNET), ILoadPolicy.NO_LOAD);
+            dict.open();
+        }
     }
 
     public static ILexicalDatabase getInstance() {
@@ -60,7 +64,7 @@ final public class MITWordNet implements ILexicalDatabase {
     @Override
     public Concept getConcept(String lemma, POS pos, int sense) {
         IIndexWord indexWord = dict.getIndexWord(lemma, edu.mit.jwi.item.POS.getPartOfSpeech(pos.getTag()));
-        return indexWord != null ? new Concept(indexWord.getWordIDs().get(sense-1).getSynsetID().toString(), pos, lemma) : null;
+        return indexWord != null ? new Concept(indexWord.getWordIDs().get(sense - 1).getSynsetID().toString(), pos, lemma) : null;
     }
 
     @Override
