@@ -25,7 +25,7 @@ final public class StopWordRemover {
 
 	synchronized private void loadStopWords() throws IOException {
 		stopList = new HashSet<>();
-		InputStream stream = getClass().getResourceAsStream(File.separator + STOP_WORDS);
+		InputStream stream = getClass().getClassLoader().getResourceAsStream(STOP_WORDS);
 		InputStreamReader isr = new InputStreamReader(stream);
 		BufferedReader br = new BufferedReader(isr);
 		String line;
