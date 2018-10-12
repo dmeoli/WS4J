@@ -62,22 +62,22 @@ final public class MITWordNet implements ILexicalDatabase {
     }
 
     @Override
-    public Concept getConcept(String lemma, POS pos, int sense) {
+    synchronized public Concept getConcept(String lemma, POS pos, int sense) {
         IIndexWord indexWord = dict.getIndexWord(lemma, edu.mit.jwi.item.POS.getPartOfSpeech(pos.getTag()));
-        return indexWord != null ? new Concept(indexWord.getWordIDs().get(sense - 1).getSynsetID().toString(), pos, lemma) : null;
+        return Objects.nonNull(indexWord) ? new Concept(indexWord.getWordIDs().get(sense - 1).getSynsetID().toString(), pos, lemma) : null;
     }
 
     @Override
-    public List<Concept> getAllConcepts(String lemma, POS pos) {
+    synchronized public List<Concept> getAllConcepts(String lemma, POS pos) {
         IIndexWord indexWord = dict.getIndexWord(lemma, edu.mit.jwi.item.POS.getPartOfSpeech(pos.getTag()));
-        return indexWord != null ? indexWord.getWordIDs().stream().map(wordID -> new Concept(
+        return Objects.nonNull(indexWord) ? indexWord.getWordIDs().stream().map(wordID -> new Concept(
                 wordID.getSynsetID().toString(), pos, lemma)).collect(Collectors.toList()) : Collections.emptyList();
     }
 
     @Override
     public List<Concept> getLinkedSynsets(Concept concept, Link link) {
         List<Concept> linkedSynsets = new ArrayList<>();
-        if (link == null || link.equals(SYNSET)) linkedSynsets.add(concept);
+        if (Objects.isNull(link) || link.equals(SYNSET)) linkedSynsets.add(concept);
         else {
             ISynsetID synsetID = SynsetID.parseSynsetID(concept.getSynsetID());
             if (link.equals(MERONYM)) {
@@ -93,23 +93,23 @@ final public class MITWordNet implements ILexicalDatabase {
         return linkedSynsets;
     }
 
-    private List<Concept> getRelatedSynsets(ISynsetID synsetID, Link link) {
+    synchronized private List<Concept> getRelatedSynsets(ISynsetID synsetID, Link link) {
         return dict.getSynset(synsetID).getRelatedSynsets(Pointer.getPointerType(link.getSymbol(), null))
                 .stream().map(synset -> new Concept(synset.toString())).collect(Collectors.toList());
     }
 
     @Override
-    public List<String> getWords(Concept concept) {
+    synchronized public List<String> getWords(Concept concept) {
         return dict.getSynset(SynsetID.parseSynsetID(concept.getSynsetID())).getWords().stream().map(IWord::getLemma)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<String> getGloss(Concept concept, Link link) {
+    synchronized public List<String> getGloss(Concept concept, Link link) {
         String key = concept + " " + link;
         if (WS4JConfiguration.getInstance().useCache()) {
             List<String> cachedObj = cache.get(key);
-            if (cachedObj != null) return new ArrayList<>(cachedObj);
+            if (Objects.nonNull(cachedObj)) return new ArrayList<>(cachedObj);
         }
         List<Concept> linkedSynsets = getLinkedSynsets(concept, link);
         List<String> glosses = new ArrayList<>(linkedSynsets.size());
@@ -118,7 +118,7 @@ final public class MITWordNet implements ILexicalDatabase {
             if (SYNSET.equals(link)) gloss = concept.getName();
             else gloss = dict.getSynset(SynsetID.parseSynsetID(linkedSynset.getSynsetID())).getGloss()
                     .replaceFirst("; \".+", "");
-            if (gloss == null) continue;
+            if (Objects.isNull(gloss)) continue;
             gloss = gloss.replaceAll("[.;:,?!(){}\"`$%@<>]", " ")
                     .replaceAll("&", " and ")
                     .replaceAll("_", " ")
