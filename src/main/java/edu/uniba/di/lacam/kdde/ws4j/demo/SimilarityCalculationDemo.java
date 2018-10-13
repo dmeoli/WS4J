@@ -23,6 +23,6 @@ public class SimilarityCalculationDemo {
         long t = System.currentTimeMillis();
         Arrays.asList(rcs).forEach(rc -> System.out.println(rc.getClass().getName() + "\t" +
                 rc.calcRelatednessOfWords("act", "moderate")));
-        System.out.println("Done in " + (System.currentTimeMillis() - t) + " msec.");
+        System.out.println("\nDone in " + (System.currentTimeMillis() - t) + " msec.");
     }
 }

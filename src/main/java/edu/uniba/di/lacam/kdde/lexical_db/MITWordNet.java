@@ -12,7 +12,6 @@ import edu.uniba.di.lacam.kdde.ws4j.util.WS4JConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
@@ -27,7 +26,7 @@ final public class MITWordNet implements ILexicalDatabase {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MITWordNet.class);
 
-    private static final String WORDNET = System.getProperty("user.dir") + File.separator + "dict";
+    private static final URL WORDNET = MITWordNet.class.getClassLoader().getResource("wn30.dict");
 
     private static IRAMDictionary dict;
     private static ConcurrentMap<String, List<String>> cache;
@@ -43,16 +42,15 @@ final public class MITWordNet implements ILexicalDatabase {
         if (WS4JConfiguration.getInstance().useCache()) cache = new ConcurrentHashMap<>();
     }
 
-    synchronized private void loadWordNet() throws IOException {
+    private void loadWordNet() throws IOException {
         if (WS4JConfiguration.getInstance().useMemoryDB()) {
-            if (WS4JConfiguration.getInstance().useTrace()) LOGGER.info("Loading WordNet into memory...");
+            LOGGER.info("Loading WordNet into memory");
             long t = System.currentTimeMillis();
-            dict = new RAMDictionary(new URL("file", null, WORDNET), ILoadPolicy.IMMEDIATE_LOAD);
+            dict = new RAMDictionary(WORDNET, ILoadPolicy.IMMEDIATE_LOAD);
             dict.open();
-            if (WS4JConfiguration.getInstance().useTrace()) LOGGER.info("WordNet loaded into memory in {} sec.",
-                    (System.currentTimeMillis() - t) / 1000L);
+            LOGGER.info("WordNet loaded into memory in {} sec.", (System.currentTimeMillis() - t) / 1000L);
         } else {
-            dict = new RAMDictionary(new URL("file", null, WORDNET), ILoadPolicy.NO_LOAD);
+            dict = new RAMDictionary(WORDNET, ILoadPolicy.NO_LOAD);
             dict.open();
         }
     }
@@ -62,13 +60,13 @@ final public class MITWordNet implements ILexicalDatabase {
     }
 
     @Override
-    synchronized public Concept getConcept(String lemma, POS pos, int sense) {
+    public Concept getConcept(String lemma, POS pos, int sense) {
         IIndexWord indexWord = dict.getIndexWord(lemma, edu.mit.jwi.item.POS.getPartOfSpeech(pos.getTag()));
         return Objects.nonNull(indexWord) ? new Concept(indexWord.getWordIDs().get(sense - 1).getSynsetID().toString(), pos, lemma) : null;
     }
 
     @Override
-    synchronized public List<Concept> getAllConcepts(String lemma, POS pos) {
+    public List<Concept> getAllConcepts(String lemma, POS pos) {
         IIndexWord indexWord = dict.getIndexWord(lemma, edu.mit.jwi.item.POS.getPartOfSpeech(pos.getTag()));
         return Objects.nonNull(indexWord) ? indexWord.getWordIDs().stream().map(wordID -> new Concept(
                 wordID.getSynsetID().toString(), pos, lemma)).collect(Collectors.toList()) : Collections.emptyList();
@@ -93,19 +91,19 @@ final public class MITWordNet implements ILexicalDatabase {
         return linkedSynsets;
     }
 
-    synchronized private List<Concept> getRelatedSynsets(ISynsetID synsetID, Link link) {
+    private List<Concept> getRelatedSynsets(ISynsetID synsetID, Link link) {
         return dict.getSynset(synsetID).getRelatedSynsets(Pointer.getPointerType(link.getSymbol(), null))
                 .stream().map(synset -> new Concept(synset.toString())).collect(Collectors.toList());
     }
 
     @Override
-    synchronized public List<String> getWords(Concept concept) {
+    public List<String> getWords(Concept concept) {
         return dict.getSynset(SynsetID.parseSynsetID(concept.getSynsetID())).getWords().stream().map(IWord::getLemma)
                 .collect(Collectors.toList());
     }
 
     @Override
-    synchronized public List<String> getGloss(Concept concept, Link link) {
+    public List<String> getGloss(Concept concept, Link link) {
         String key = concept + " " + link;
         if (WS4JConfiguration.getInstance().useCache()) {
             List<String> cachedObj = cache.get(key);
