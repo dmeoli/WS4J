@@ -59,7 +59,7 @@ final public class MITWordNet implements ILexicalDatabase {
         }
     }
 
-    public static IRAMDictionary getDictionary() {
+    public IRAMDictionary getDictionary() {
         return dict;
     }
 
