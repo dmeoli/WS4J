@@ -34,40 +34,40 @@ import java.util.Objects;
  */
 public class Resnik extends RelatednessCalculator {
 
-	protected static double min = 0.0D;
-	protected static double max = Double.MAX_VALUE;
+    private static double min = 0.0D;
+    private static double max = Double.MAX_VALUE;
 
-	private static List<POS[]> POSPairs = new ArrayList<POS[]>(){{
-		add(new POS[]{POS.NOUN, POS.NOUN});
-		add(new POS[]{POS.VERB, POS.VERB});
-	}};
+    private static List<POS[]> POSPairs = new ArrayList<POS[]>() {{
+        add(new POS[]{POS.NOUN, POS.NOUN});
+        add(new POS[]{POS.VERB, POS.VERB});
+    }};
 
-	public Resnik(ILexicalDatabase db) {
-		super(db, min, max);
-	}
+    public Resnik(ILexicalDatabase db) {
+        super(db, min, max);
+    }
 
-	@Override
-	protected Relatedness calcRelatedness(Concept concept1, Concept concept2) {
-		StringBuilder tracer = new StringBuilder();
-		if (concept1 == null || concept2 == null) return new Relatedness(min, null, illegalSynset);
-		if (concept1.equals(concept2)) return new Relatedness(max, identicalSynset, null);
-		StringBuilder subTracer = WS4JConfiguration.getInstance().useTrace() ? new StringBuilder() : null;
-		List<PathFinder.Subsumer> lcsList = ICFinder.getInstance().getLCSbyIC(pathFinder, concept1, concept2, subTracer);
-		if (Objects.requireNonNull(lcsList).size() == 0) return new Relatedness(min, tracer.toString(), null);
-		if (WS4JConfiguration.getInstance().useTrace()) {
+    @Override
+    protected Relatedness calcRelatedness(Concept concept1, Concept concept2) {
+        StringBuilder tracer = new StringBuilder();
+        if (concept1 == null || concept2 == null) return new Relatedness(min, null, illegalSynset);
+        if (concept1.equals(concept2)) return new Relatedness(max, identicalSynset, null);
+        StringBuilder subTracer = WS4JConfiguration.getInstance().useTrace() ? new StringBuilder() : null;
+        List<PathFinder.Subsumer> lcsList = ICFinder.getInstance().getLCSbyIC(pathFinder, concept1, concept2, subTracer);
+        if (Objects.requireNonNull(lcsList).size() == 0) return new Relatedness(min, tracer.toString(), null);
+        if (WS4JConfiguration.getInstance().useTrace()) {
             tracer.append("RES(").append(concept1).append(", ").append(concept2).append(")\n");
-			tracer.append(Objects.requireNonNull(subTracer).toString());
-			lcsList.forEach(lcs -> {
-				tracer.append("Lowest Common Subsumer(s): ");
-				tracer.append(lcs.getSubsumer()).append(" (IC = ").append(lcs.getIC()).append(")\n");
-			});
-		}
-		PathFinder.Subsumer subsumer = lcsList.get(0);
-		return new Relatedness(subsumer.getIC(), tracer.toString(), null);
-	}
-	
-	@Override
-	public List<POS[]> getPOSPairs() {
-		return POSPairs;
-	}
+            tracer.append(Objects.requireNonNull(subTracer).toString());
+            lcsList.forEach(lcs -> {
+                tracer.append("Lowest Common Subsumer(s): ");
+                tracer.append(lcs.getSubsumer()).append(" (IC = ").append(lcs.getIC()).append(")\n");
+            });
+        }
+        PathFinder.Subsumer subsumer = lcsList.get(0);
+        return new Relatedness(subsumer.getIC(), tracer.toString(), null);
+    }
+
+    @Override
+    public List<POS[]> getPOSPairs() {
+        return POSPairs;
+    }
 }

@@ -16,9 +16,9 @@ public class WordSimilarityCalculator {
 
     private ConcurrentMap<String, Double> cache;
 
-	public WordSimilarityCalculator() {
-		if (WS4JConfiguration.getInstance().useCache()) cache = new ConcurrentHashMap<>();
-	}
+    public WordSimilarityCalculator() {
+        if (WS4JConfiguration.getInstance().useCache()) cache = new ConcurrentHashMap<>();
+    }
 
     private String normalize(String word) {
         word = word.toLowerCase();
@@ -47,9 +47,9 @@ public class WordSimilarityCalculator {
         int offset1POS = word1.indexOf(SEPARATOR);
         int offset1Sense = word1.lastIndexOf(SEPARATOR);
         if (offset1POS != -1) {
-            if ((pos1 = POS.getPOS(word1.charAt(offset1POS+1))) == null) return rc.getMin();
+            if ((pos1 = POS.getPOS(word1.charAt(offset1POS + 1))) == null) return rc.getMin();
             if (offset1Sense != -1 && offset1POS != offset1Sense) {
-                if ((sense1 = Character.getNumericValue(word1.charAt(offset1Sense+1))) == 0)
+                if ((sense1 = Character.getNumericValue(word1.charAt(offset1Sense + 1))) == 0)
                     throw new IllegalArgumentException("Sense number must be greater than 0");
             }
             word1 = word1.substring(0, offset1POS);
@@ -67,9 +67,9 @@ public class WordSimilarityCalculator {
         int offset2POS = word2.indexOf(SEPARATOR);
         int offset2Sense = word2.lastIndexOf(SEPARATOR);
         if (offset2POS != -1) {
-            if ((pos2 = POS.getPOS(word2.charAt(offset2POS+1))) == null) return rc.getMin();
+            if ((pos2 = POS.getPOS(word2.charAt(offset2POS + 1))) == null) return rc.getMin();
             if (offset2Sense != -1 && offset2POS != offset2Sense) {
-                if ((sense2 = Character.getNumericValue(word2.charAt(offset2Sense+1))) == 0)
+                if ((sense2 = Character.getNumericValue(word2.charAt(offset2Sense + 1))) == 0)
                     throw new IllegalArgumentException("Sense number must be greater than 0");
             }
             word2 = word2.substring(0, offset2POS);

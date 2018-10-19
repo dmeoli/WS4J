@@ -20,8 +20,8 @@ public abstract class RelatednessCalculator {
 
     private WordSimilarityCalculator wordSimilarity;
 
-    protected final double min;
-    protected final double max;
+    private final double min;
+    private final double max;
 
     public RelatednessCalculator(ILexicalDatabase db, double min, double max) {
         this.db = db;

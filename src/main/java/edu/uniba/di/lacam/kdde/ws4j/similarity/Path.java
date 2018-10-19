@@ -20,41 +20,41 @@ import java.util.Objects;
  */
 public class Path extends RelatednessCalculator {
 
-	protected static double min = 0.0D;
-	protected static double max = 1.0D;
+    private static double min = 0.0D;
+    private static double max = 1.0D;
 
-	private static List<POS[]> POSPairs = new ArrayList<POS[]>(){{
-		add(new POS[]{POS.NOUN, POS.NOUN});
-		add(new POS[]{POS.VERB, POS.VERB});
-	}};
+    private static List<POS[]> POSPairs = new ArrayList<POS[]>() {{
+        add(new POS[]{POS.NOUN, POS.NOUN});
+        add(new POS[]{POS.VERB, POS.VERB});
+    }};
 
-	public Path(ILexicalDatabase db) {
-		super(db, min, max);
-	}
+    public Path(ILexicalDatabase db) {
+        super(db, min, max);
+    }
 
-	protected Relatedness calcRelatedness(Concept concept1, Concept concept2) {
-		StringBuilder tracer = new StringBuilder();
-		if (concept1 == null || concept2 == null) return new Relatedness(min, null, illegalSynset);
-		if (concept1.equals(concept2)) return new Relatedness(max, identicalSynset, null);
-		StringBuilder subTracer = WS4JConfiguration.getInstance().useTrace() ? new StringBuilder() : null;
-		List<PathFinder.Subsumer> shortestPaths = pathFinder.getShortestPaths(concept1, concept2, subTracer);
-		if (shortestPaths.size() == 0) return new Relatedness(min);
-		PathFinder.Subsumer path = shortestPaths.get(0);
-		int dist = path.getPathLength();
-		double score;
-		if (dist > 0) score = 1.0D / (double) dist;
-		else score = -1.0D;
-		if (WS4JConfiguration.getInstance().useTrace()) {
+    protected Relatedness calcRelatedness(Concept concept1, Concept concept2) {
+        StringBuilder tracer = new StringBuilder();
+        if (concept1 == null || concept2 == null) return new Relatedness(min, null, illegalSynset);
+        if (concept1.equals(concept2)) return new Relatedness(max, identicalSynset, null);
+        StringBuilder subTracer = WS4JConfiguration.getInstance().useTrace() ? new StringBuilder() : null;
+        List<PathFinder.Subsumer> shortestPaths = pathFinder.getShortestPaths(concept1, concept2, subTracer);
+        if (shortestPaths.size() == 0) return new Relatedness(min);
+        PathFinder.Subsumer path = shortestPaths.get(0);
+        int dist = path.getPathLength();
+        double score;
+        if (dist > 0) score = 1.0D / (double) dist;
+        else score = -1.0D;
+        if (WS4JConfiguration.getInstance().useTrace()) {
             tracer.append("PATH(").append(concept1).append(", ").append(concept2).append(")\n");
-			tracer.append(Objects.requireNonNull(subTracer).toString());
-			tracer.append("Shortest path: ").append(path).append("\n");
-			tracer.append("Path length = ").append(dist).append("\n");
-		}
-		return new Relatedness(score, tracer.toString(), null);
-	}
-	
-	@Override
-	public List<POS[]> getPOSPairs() {
-		return POSPairs;
-	}
+            tracer.append(Objects.requireNonNull(subTracer).toString());
+            tracer.append("Shortest path: ").append(path).append("\n");
+            tracer.append("Path length = ").append(dist).append("\n");
+        }
+        return new Relatedness(score, tracer.toString(), null);
+    }
+
+    @Override
+    public List<POS[]> getPOSPairs() {
+        return POSPairs;
+    }
 }

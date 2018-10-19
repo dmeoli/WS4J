@@ -20,46 +20,46 @@ import java.util.Objects;
  */
 public class WuPalmer extends RelatednessCalculator {
 
-	protected static double min = 0.0D;
-	protected static double max = 1.0D;
+    private static double min = 0.0D;
+    private static double max = 1.0D;
 
-	private static List<POS[]> POSPairs = new ArrayList<POS[]>(){{
-		add(new POS[]{POS.NOUN, POS.NOUN});
-		add(new POS[]{POS.VERB, POS.VERB});
-	}};
+    private static List<POS[]> POSPairs = new ArrayList<POS[]>() {{
+        add(new POS[]{POS.NOUN, POS.NOUN});
+        add(new POS[]{POS.VERB, POS.VERB});
+    }};
 
-	public WuPalmer(ILexicalDatabase db) {
-		super(db, min, max);
-	}
+    public WuPalmer(ILexicalDatabase db) {
+        super(db, min, max);
+    }
 
-	@Override
-	protected Relatedness calcRelatedness(Concept concept1, Concept concept2) {
-		StringBuilder tracer = new StringBuilder();
-		if (concept1 == null || concept2 == null) return new Relatedness(min, null, illegalSynset);
-		if (concept1.equals(concept2)) return new Relatedness(max, identicalSynset, null);
-		StringBuilder subTracer = WS4JConfiguration.getInstance().useTrace() ? new StringBuilder() : null;
-		List<DepthFinder.Depth> lcsList = depthFinder.getRelatedness(concept1, concept2, subTracer);
-		if (lcsList.size() == 0) return new Relatedness(min);
-		int depth = lcsList.get(0).getDepth();
-		int depth1 = depthFinder.getShortestDepth(concept1);
-		int depth2 = depthFinder.getShortestDepth(concept2);
-		double score = 0;
-		if (depth1 > 0 && depth2 > 0) score = (double) (2 * depth) / (double) (depth1 + depth2);
-		if (WS4JConfiguration.getInstance().useTrace()) {
-			tracer.append("WUP(").append(concept1).append(", ").append(concept2).append(")\n");
-			tracer.append(Objects.requireNonNull(subTracer).toString());
-			lcsList.forEach(lcs -> {
-				tracer.append("Lowest Common Subsumer(s): ");
-				tracer.append(lcs.getLeaf()).append(" (Depth = ").append(lcs.getDepth()).append(")\n");
-			});
-			tracer.append("Depth(").append(concept1).append(") = ").append(depth1).append("\n");
-			tracer.append("Depth(").append(concept2).append(") = ").append(depth2).append("\n");
-		}
-		return new Relatedness(score, tracer.toString(), null);
-	}
-	
-	@Override
-	public List<POS[]> getPOSPairs() {
-		return POSPairs;
-	}
+    @Override
+    protected Relatedness calcRelatedness(Concept concept1, Concept concept2) {
+        StringBuilder tracer = new StringBuilder();
+        if (concept1 == null || concept2 == null) return new Relatedness(min, null, illegalSynset);
+        if (concept1.equals(concept2)) return new Relatedness(max, identicalSynset, null);
+        StringBuilder subTracer = WS4JConfiguration.getInstance().useTrace() ? new StringBuilder() : null;
+        List<DepthFinder.Depth> lcsList = depthFinder.getRelatedness(concept1, concept2, subTracer);
+        if (lcsList.size() == 0) return new Relatedness(min);
+        int depth = lcsList.get(0).getDepth();
+        int depth1 = depthFinder.getShortestDepth(concept1);
+        int depth2 = depthFinder.getShortestDepth(concept2);
+        double score = 0;
+        if (depth1 > 0 && depth2 > 0) score = (double) (2 * depth) / (double) (depth1 + depth2);
+        if (WS4JConfiguration.getInstance().useTrace()) {
+            tracer.append("WUP(").append(concept1).append(", ").append(concept2).append(")\n");
+            tracer.append(Objects.requireNonNull(subTracer).toString());
+            lcsList.forEach(lcs -> {
+                tracer.append("Lowest Common Subsumer(s): ");
+                tracer.append(lcs.getLeaf()).append(" (Depth = ").append(lcs.getDepth()).append(")\n");
+            });
+            tracer.append("Depth(").append(concept1).append(") = ").append(depth1).append("\n");
+            tracer.append("Depth(").append(concept2).append(") = ").append(depth2).append("\n");
+        }
+        return new Relatedness(score, tracer.toString(), null);
+    }
+
+    @Override
+    public List<POS[]> getPOSPairs() {
+        return POSPairs;
+    }
 }

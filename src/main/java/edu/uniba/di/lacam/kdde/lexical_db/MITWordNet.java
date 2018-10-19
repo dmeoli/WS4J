@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,37 +25,38 @@ final public class MITWordNet implements ILexicalDatabase {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MITWordNet.class);
 
-    private static final URL WORDNET = MITWordNet.class.getClassLoader().getResource("wn30.dict");
+    private static final String WORDNET_FILE = "wn30.dict";
 
     private static IRAMDictionary dict;
-    private static ConcurrentMap<String, List<String>> cache;
+    private static ConcurrentMap<String, List<String>> glosses;
 
-    private static final ILexicalDatabase db = new MITWordNet();
+    public MITWordNet(IRAMDictionary dict) {
+        MITWordNet.dict = dict;
+        if (WS4JConfiguration.getInstance().useCache()) glosses = new ConcurrentHashMap<>();
+    }
 
-    private MITWordNet() {
+    public MITWordNet() {
         try {
             loadWordNet();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (WS4JConfiguration.getInstance().useCache()) cache = new ConcurrentHashMap<>();
+        if (WS4JConfiguration.getInstance().useCache()) glosses = new ConcurrentHashMap<>();
     }
 
     private void loadWordNet() throws IOException {
         if (WS4JConfiguration.getInstance().useMemoryDB()) {
             LOGGER.info("Loading WordNet into memory");
             long t = System.currentTimeMillis();
-            dict = new RAMDictionary(WORDNET, ILoadPolicy.IMMEDIATE_LOAD);
+            dict = new RAMDictionary(Objects.requireNonNull(
+                    MITWordNet.class.getClassLoader().getResource(WORDNET_FILE)), ILoadPolicy.IMMEDIATE_LOAD);
             dict.open();
             LOGGER.info("WordNet loaded into memory in {} sec.", (System.currentTimeMillis() - t) / 1000L);
         } else {
-            dict = new RAMDictionary(WORDNET, ILoadPolicy.NO_LOAD);
+            dict = new RAMDictionary(Objects.requireNonNull(
+                    MITWordNet.class.getClassLoader().getResource(WORDNET_FILE)), ILoadPolicy.NO_LOAD);
             dict.open();
         }
-    }
-
-    public static ILexicalDatabase getInstance() {
-        return db;
     }
 
     public static IRAMDictionary getDictionary() {
@@ -66,7 +66,8 @@ final public class MITWordNet implements ILexicalDatabase {
     @Override
     public Concept getConcept(String lemma, POS pos, int sense) {
         IIndexWord indexWord = dict.getIndexWord(lemma, edu.mit.jwi.item.POS.getPartOfSpeech(pos.getTag()));
-        return Objects.nonNull(indexWord) ? new Concept(indexWord.getWordIDs().get(sense - 1).getSynsetID().toString(), pos, lemma) : null;
+        return Objects.nonNull(indexWord) ?
+                new Concept(indexWord.getWordIDs().get(sense - 1).getSynsetID().toString(), pos, lemma) : null;
     }
 
     @Override
@@ -110,8 +111,8 @@ final public class MITWordNet implements ILexicalDatabase {
     public List<String> getGloss(Concept concept, Link link) {
         String key = concept + " " + link;
         if (WS4JConfiguration.getInstance().useCache()) {
-            List<String> cachedObj = cache.get(key);
-            if (Objects.nonNull(cachedObj)) return new ArrayList<>(cachedObj);
+            List<String> gloss = glosses.get(key);
+            if (Objects.nonNull(gloss)) return new ArrayList<>(gloss);
         }
         List<Concept> linkedSynsets = getLinkedSynsets(concept, link);
         List<String> glosses = new ArrayList<>(linkedSynsets.size());
@@ -131,7 +132,7 @@ final public class MITWordNet implements ILexicalDatabase {
             if (WS4JConfiguration.getInstance().useStem()) gloss = Morpha.stemSentence(gloss);
             glosses.add(gloss);
         }
-        if (WS4JConfiguration.getInstance().useCache()) cache.put(key, new ArrayList<>(glosses));
+        if (WS4JConfiguration.getInstance().useCache()) MITWordNet.glosses.put(key, new ArrayList<>(glosses));
         return glosses;
     }
 }

@@ -24,7 +24,7 @@ import java.util.Objects;
  * <div style="padding:20px"><code>sim<sub>LC</sub>(c<sub>1</sub>, c<sub>2</sub>) =
  * -log(len(c<sub>1</sub>, c<sub>2</sub>) / 2D).</code></div>
  * </blockquote>
- *
+ * <p>
  * (from lch.pm) This module computes the semantic relatedness of word senses according
  * to a method described by Leacock and Chodorow (1998). This method counts up
  * the number of edges between the senses in the 'is-a' hierarchy of WordNet.
@@ -36,44 +36,44 @@ import java.util.Objects;
  */
 public class LeacockChodorow extends RelatednessCalculator {
 
-	protected static double min = 0.0D;
-	protected static double max = Double.MAX_VALUE;
+    private static double min = 0.0D;
+    private static double max = Double.MAX_VALUE;
 
-	private static List<POS[]> POSPairs = new ArrayList<POS[]>(){{
-		add(new POS[]{POS.NOUN, POS.NOUN});
-		add(new POS[]{POS.VERB, POS.VERB});
-	}};
-	
-	public LeacockChodorow(ILexicalDatabase db) {
-		super(db, min, max);
-	}
+    private static List<POS[]> POSPairs = new ArrayList<POS[]>() {{
+        add(new POS[]{POS.NOUN, POS.NOUN});
+        add(new POS[]{POS.VERB, POS.VERB});
+    }};
 
-	@Override
-	protected Relatedness calcRelatedness(Concept concept1, Concept concept2) {
-		StringBuilder tracer = new StringBuilder();
-		if (concept1 == null || concept2 == null) return new Relatedness(min, null, illegalSynset);
-		if (concept1.equals(concept2)) return new Relatedness(max, identicalSynset, null);
-		StringBuilder subTracer = WS4JConfiguration.getInstance().useTrace() ? new StringBuilder() : null;
-		List<PathFinder.Subsumer> lcsList = pathFinder.getLCSByPath(concept1, concept2, subTracer);
-		if (lcsList.size() == 0) return new Relatedness(min);
-		int maxDepth = 1;
-		if (concept1.getPOS().equals(POS.NOUN)) maxDepth = 20;
-		else if (concept1.getPOS().equals(POS.VERB)) maxDepth = 14;
-		int length = lcsList.get(0).getPathLength();
-		double score = -Math.log((double) length / (double) (2 * maxDepth));
-		if (WS4JConfiguration.getInstance().useTrace()) {
+    public LeacockChodorow(ILexicalDatabase db) {
+        super(db, min, max);
+    }
+
+    @Override
+    protected Relatedness calcRelatedness(Concept concept1, Concept concept2) {
+        StringBuilder tracer = new StringBuilder();
+        if (concept1 == null || concept2 == null) return new Relatedness(min, null, illegalSynset);
+        if (concept1.equals(concept2)) return new Relatedness(max, identicalSynset, null);
+        StringBuilder subTracer = WS4JConfiguration.getInstance().useTrace() ? new StringBuilder() : null;
+        List<PathFinder.Subsumer> lcsList = pathFinder.getLCSByPath(concept1, concept2, subTracer);
+        if (lcsList.size() == 0) return new Relatedness(min);
+        int maxDepth = 1;
+        if (concept1.getPOS().equals(POS.NOUN)) maxDepth = 20;
+        else if (concept1.getPOS().equals(POS.VERB)) maxDepth = 14;
+        int length = lcsList.get(0).getPathLength();
+        double score = -Math.log((double) length / (double) (2 * maxDepth));
+        if (WS4JConfiguration.getInstance().useTrace()) {
             tracer.append("LCH(").append(concept1).append(", ").append(concept2).append(")\n");
-			tracer.append(Objects.requireNonNull(subTracer).toString());
-			lcsList.forEach(lcs -> {
-				tracer.append("Lowest Common Subsumer(s): ");
-				tracer.append(lcs.getSubsumer().toString()).append(" (Length = ").append(lcs.getPathLength()).append(")\n");
-			});
-		}
-		return new Relatedness(score, tracer.toString(), null);
-	}
-	
-	@Override
-	public List<POS[]> getPOSPairs() {
-		return POSPairs;
-	}
+            tracer.append(Objects.requireNonNull(subTracer).toString());
+            lcsList.forEach(lcs -> {
+                tracer.append("Lowest Common Subsumer(s): ");
+                tracer.append(lcs.getSubsumer().toString()).append(" (Length = ").append(lcs.getPathLength()).append(")\n");
+            });
+        }
+        return new Relatedness(score, tracer.toString(), null);
+    }
+
+    @Override
+    public List<POS[]> getPOSPairs() {
+        return POSPairs;
+    }
 }

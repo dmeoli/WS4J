@@ -30,11 +30,16 @@ public enum POS {
 
     public static POS getPOS(char tag) {
         switch (tag) {
-            case (NOUN_TAG): return NOUN;
-            case (VERB_TAG): return VERB;
-            case (ADJECTIVE_TAG): return ADJECTIVE;
-            case (ADVERB_TAG): return ADVERB;
-            default: return null;
+            case (NOUN_TAG):
+                return NOUN;
+            case (VERB_TAG):
+                return VERB;
+            case (ADJECTIVE_TAG):
+                return ADJECTIVE;
+            case (ADVERB_TAG):
+                return ADVERB;
+            default:
+                return null;
         }
     }
 
