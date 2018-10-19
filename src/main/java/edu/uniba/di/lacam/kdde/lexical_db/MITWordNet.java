@@ -59,6 +59,10 @@ final public class MITWordNet implements ILexicalDatabase {
         return db;
     }
 
+    public static IRAMDictionary getDictionary() {
+        return dict;
+    }
+
     @Override
     public Concept getConcept(String lemma, POS pos, int sense) {
         IIndexWord indexWord = dict.getIndexWord(lemma, edu.mit.jwi.item.POS.getPartOfSpeech(pos.getTag()));
