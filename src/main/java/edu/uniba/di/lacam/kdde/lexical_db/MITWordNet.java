@@ -44,7 +44,7 @@ final public class MITWordNet implements ILexicalDatabase {
         if (WS4JConfiguration.getInstance().useCache()) glosses = new ConcurrentHashMap<>();
     }
 
-    private void loadWordNet() throws IOException {
+    synchronized private void loadWordNet() throws IOException {
         if (WS4JConfiguration.getInstance().useMemoryDB()) {
             LOGGER.info("Loading WordNet into memory");
             long t = System.currentTimeMillis();
