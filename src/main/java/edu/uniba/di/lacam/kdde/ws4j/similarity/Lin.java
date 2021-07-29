@@ -28,10 +28,10 @@ import java.util.Objects;
  */
 public class Lin extends RelatednessCalculator {
 
-    private static double min = 0.0D;
-    private static double max = 1.0D;
+    private static final double min = 0.0D;
+    private static final double max = 1.0D;
 
-    private static List<POS[]> POSPairs = new ArrayList<POS[]>() {{
+    private static final List<POS[]> POSPairs = new ArrayList<POS[]>() {{
         add(new POS[]{POS.NOUN, POS.NOUN});
         add(new POS[]{POS.VERB, POS.VERB});
     }};
@@ -53,7 +53,7 @@ public class Lin extends RelatednessCalculator {
         double score = (ic1 > 0 && ic2 > 0) ? (2D * lcsList.get(0).getIC() / (ic1 + ic2)) : 0D;
         if (WS4JConfiguration.getInstance().useTrace()) {
             tracer.append("LIN(").append(concept1).append(", ").append(concept2).append(")\n");
-            tracer.append(Objects.requireNonNull(subTracer).toString());
+            tracer.append(Objects.requireNonNull(subTracer));
             lcsList.forEach(lcs -> {
                 tracer.append("Lowest Common Subsumer(s): ");
                 tracer.append(lcs.getSubsumer()).append(" (IC = ").append(lcs.getIC()).append(")\n");

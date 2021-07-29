@@ -20,10 +20,10 @@ import java.util.Objects;
  */
 public class Path extends RelatednessCalculator {
 
-    private static double min = 0.0D;
-    private static double max = 1.0D;
+    private static final double min = 0.0D;
+    private static final double max = 1.0D;
 
-    private static List<POS[]> POSPairs = new ArrayList<POS[]>() {{
+    private static final List<POS[]> POSPairs = new ArrayList<POS[]>() {{
         add(new POS[]{POS.NOUN, POS.NOUN});
         add(new POS[]{POS.VERB, POS.VERB});
     }};
@@ -46,7 +46,7 @@ public class Path extends RelatednessCalculator {
         else score = -1.0D;
         if (WS4JConfiguration.getInstance().useTrace()) {
             tracer.append("PATH(").append(concept1).append(", ").append(concept2).append(")\n");
-            tracer.append(Objects.requireNonNull(subTracer).toString());
+            tracer.append(Objects.requireNonNull(subTracer));
             tracer.append("Shortest path: ").append(path).append("\n");
             tracer.append("Path length = ").append(dist).append("\n");
         }

@@ -33,10 +33,10 @@ import java.util.Objects;
  */
 public class JiangConrath extends RelatednessCalculator {
 
-    private static double min = 0.0D;
-    private static double max = Double.MAX_VALUE;
+    private static final double min = 0.0D;
+    private static final double max = Double.MAX_VALUE;
 
-    private static List<POS[]> POSPairs = new ArrayList<POS[]>() {{
+    private static final List<POS[]> POSPairs = new ArrayList<POS[]>() {{
         add(new POS[]{POS.NOUN, POS.NOUN});
         add(new POS[]{POS.VERB, POS.VERB});
     }};
@@ -55,7 +55,7 @@ public class JiangConrath extends RelatednessCalculator {
         if (Objects.requireNonNull(lcsList).size() == 0) return new Relatedness(min, tracer.toString(), null);
         if (WS4JConfiguration.getInstance().useTrace()) {
             tracer.append("JCN(").append(concept1).append(", ").append(concept2).append(")\n");
-            tracer.append(Objects.requireNonNull(subTracer).toString());
+            tracer.append(Objects.requireNonNull(subTracer));
             lcsList.forEach(lcs -> {
                 tracer.append("Lowest Common Subsumer(s): ");
                 tracer.append(lcs.getSubsumer().toString()).append(" (IC = ").append(lcs.getIC()).append(")\n");
@@ -70,8 +70,8 @@ public class JiangConrath extends RelatednessCalculator {
         double ic1 = ICFinder.getInstance().IC(pathFinder, concept1);
         double ic2 = ICFinder.getInstance().IC(pathFinder, concept2);
         if (WS4JConfiguration.getInstance().useTrace()) {
-            tracer.append("IC(").append(concept1.toString()).append(") = ").append(ic1).append("\n");
-            tracer.append("IC(").append(concept2.toString()).append(") = ").append(ic2).append("\n");
+            tracer.append("IC(").append(concept1).append(") = ").append(ic1).append("\n");
+            tracer.append("IC(").append(concept2).append(") = ").append(ic2).append("\n");
         }
         double distance;
         if (ic1 > 0 && ic2 > 0) distance = ic1 + ic2 - (2 * lcsIC);

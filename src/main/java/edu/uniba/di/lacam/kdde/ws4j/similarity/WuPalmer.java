@@ -20,10 +20,10 @@ import java.util.Objects;
  */
 public class WuPalmer extends RelatednessCalculator {
 
-    private static double min = 0.0D;
-    private static double max = 1.0D;
+    private static final double min = 0.0D;
+    private static final double max = 1.0D;
 
-    private static List<POS[]> POSPairs = new ArrayList<POS[]>() {{
+    private static final List<POS[]> POSPairs = new ArrayList<POS[]>() {{
         add(new POS[]{POS.NOUN, POS.NOUN});
         add(new POS[]{POS.VERB, POS.VERB});
     }};
@@ -47,7 +47,7 @@ public class WuPalmer extends RelatednessCalculator {
         if (depth1 > 0 && depth2 > 0) score = (double) (2 * depth) / (double) (depth1 + depth2);
         if (WS4JConfiguration.getInstance().useTrace()) {
             tracer.append("WUP(").append(concept1).append(", ").append(concept2).append(")\n");
-            tracer.append(Objects.requireNonNull(subTracer).toString());
+            tracer.append(Objects.requireNonNull(subTracer));
             lcsList.forEach(lcs -> {
                 tracer.append("Lowest Common Subsumer(s): ");
                 tracer.append(lcs.getLeaf()).append(" (Depth = ").append(lcs.getDepth()).append(")\n");

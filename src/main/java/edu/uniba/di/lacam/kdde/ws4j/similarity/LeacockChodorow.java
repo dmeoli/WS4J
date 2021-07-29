@@ -36,10 +36,10 @@ import java.util.Objects;
  */
 public class LeacockChodorow extends RelatednessCalculator {
 
-    private static double min = 0.0D;
-    private static double max = Double.MAX_VALUE;
+    private static final double min = 0.0D;
+    private static final double max = Double.MAX_VALUE;
 
-    private static List<POS[]> POSPairs = new ArrayList<POS[]>() {{
+    private static final List<POS[]> POSPairs = new ArrayList<POS[]>() {{
         add(new POS[]{POS.NOUN, POS.NOUN});
         add(new POS[]{POS.VERB, POS.VERB});
     }};
@@ -63,7 +63,7 @@ public class LeacockChodorow extends RelatednessCalculator {
         double score = -Math.log((double) length / (double) (2 * maxDepth));
         if (WS4JConfiguration.getInstance().useTrace()) {
             tracer.append("LCH(").append(concept1).append(", ").append(concept2).append(")\n");
-            tracer.append(Objects.requireNonNull(subTracer).toString());
+            tracer.append(Objects.requireNonNull(subTracer));
             lcsList.forEach(lcs -> {
                 tracer.append("Lowest Common Subsumer(s): ");
                 tracer.append(lcs.getSubsumer().toString()).append(" (Length = ").append(lcs.getPathLength()).append(")\n");
