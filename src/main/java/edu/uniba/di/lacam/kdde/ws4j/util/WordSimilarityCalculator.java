@@ -107,7 +107,8 @@ public class WordSimilarityCalculator {
             } else if (WS4JConfiguration.getInstance().useMFS()) {
                 Concept concept1 = rc.getLexicalDB().getConcept(word1, POSPair[0], 1);
                 Concept concept2 = rc.getLexicalDB().getConcept(word2, POSPair[1], 1);
-                maxScore = rc.calcRelatednessOfSynsets(concept1, concept2).getScore();
+                double score = rc.calcRelatednessOfSynsets(concept1, concept2).getScore();
+                if (score > maxScore) maxScore = score;
             } else {
                 for (Concept concept1 : rc.getLexicalDB().getAllConcepts(word1, POSPair[0])) {
                     for (Concept concept2 : rc.getLexicalDB().getAllConcepts(word2, POSPair[1])) {
