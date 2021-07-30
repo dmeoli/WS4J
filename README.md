@@ -103,7 +103,7 @@ and a simple demo class:
 which can be run through jar-with-dependencies from root folder by typing into terminal:
 
 ```
-$ java -jar target/ws4j-1.0.1-jar-with-dependencies.jar
+$ java -jar target/ws4j-1.0.2-jar-with-dependencies.jar
 ```
 
 When using WS4J jar package from other projects add the [JitPack](https://jitpack.io/) repository to your POM file:
