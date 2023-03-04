@@ -1,4 +1,4 @@
-# WordNet Similarity for Java [![Build Status](https://travis-ci.org/dmeoli/WS4J.svg?branch=master)](https://travis-ci.org/dmeoli/WS4J) [![Release](https://jitpack.io/v/dmeoli/WS4J.svg)](https://jitpack.io/#dmeoli/WS4J)
+# WordNet Similarity for Java [![Build Status](https://api.travis-ci.com/dmeoli/WS4J.svg?branch=master)](https://app.travis-ci.com/github/dmeoli/WS4J) [![Release](https://jitpack.io/v/dmeoli/WS4J.svg)](https://jitpack.io/#dmeoli/WS4J)
 
 WS4J provides a pure Java API for several published semantic relatedness/similarity algorithms for, in theory, any 
 WordNet instance. You can immediately use WS4J on [Princeton's English WordNet 3.0](https://wordnet.princeton.edu/) 
