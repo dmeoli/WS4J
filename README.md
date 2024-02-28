@@ -3,11 +3,11 @@
 WS4J provides a pure Java API for several published semantic relatedness/similarity algorithms for, in theory, any 
 WordNet instance. You can immediately use WS4J on [Princeton's English WordNet 3.0](https://wordnet.princeton.edu/) 
 lexical database through [MIT Java WordNet Interface 2.4.0](https://projects.csail.mit.edu/jwi/), which is the fastest 
-Java library for interfacing to WordNet.
+Java library for interfacing with WordNet.
 
 The codebase is mostly a Java re-implementation of [WordNet::Similarity](http://wn-similarity.sourceforge.net/) 
 written in Perl, using the same data files as seen in src/main/resources, with some test cases for verifying the same 
-logic. WS4J designed to be thread safe.
+logic. WS4J is designed to be thread-safe.
 
 ## Relatedness/Similarity Algorithms 
 
@@ -15,7 +15,7 @@ The semantic relatedness/similarity metrics available are:
 
  - [HSO](http://search.cpan.org/dist/WordNet-Similarity/lib/WordNet/Similarity/hso.pm): 
  [Hirst & St-Onge, 1998](https://scholar.google.com/scholar?q=Lexical+chains+as+representations+of+context+for+the+detection+and+correction+of+malapropisms) - 
- The Hirst & St-Onge measure is based on an idea that two lexicalized concepts are semantically close if their WordNet 
+ The Hirst & St-Onge measure is based on the idea that two lexicalized concepts are semantically close if their WordNet 
  synsets are connected by a path that is not too long and that "does not change direction too often":
  
  HSO(s1, s2) = const_C - path_length(s1, s2) - const_k * num_of_changes_of_directions(s1, s2);
@@ -28,7 +28,7 @@ The semantic relatedness/similarity metrics available are:
  
  - [LESK](http://search.cpan.org/dist/WordNet-Similarity/lib/WordNet/Similarity/lesk.pm): 
  [Banerjee & Pedersen, 2002](https://scholar.google.com/scholar?q=An+Adapted+Lesk+Algorithm+for+Word+Sense+Disambiguation+Using+WordNet) - 
- Lesk (1985) proposed that the relatedness of two words is proportional to the extent of overlaps of their dictionary 
+ Lesk (1985) proposed that the relatedness of two words is proportional to the extent of overlaps in their dictionary 
  definitions. This Lesk measure is based on adapted Lesk from Banerjee and Pedersen (2002) extended this notion to use 
  WordNet as the dictionary for the word definitions:
  
@@ -57,8 +57,8 @@ The semantic relatedness/similarity metrics available are:
  
  - [JCN](http://search.cpan.org/dist/WordNet-Similarity/lib/WordNet/Similarity/jcn.pm): 
  [Jiang & Conrath, 1997](https://scholar.google.com/scholar?q=Semantic+similarity+based+on+corpus+statistics+and+lexical+taxonomy) - 
- The Jiang & Conrath measure uses the notion of information content, but in the form of the conditional probability of 
- encountering an instance of a child-synset given an instance of a parent synset: 
+ The Jiang & Conrath measure uses the notion of information content but in the form of the conditional probability of 
+ encountering an instance of a child synset given an instance of a parent synset: 
  
  JCN(s1, s2) = 1 / jcn_distance where jcn_distance(s1, s2) = IC(s1) + IC(s2) - 2 * IC(LCS(s1, s2)); when it's 0, 
  jcn_distance(s1, s2) = -Math.log_e((freq(LCS(s1, s2).root) - 0.01) / freq(LCS(s1, s2).root)) so that we can have a 
@@ -66,7 +66,7 @@ The semantic relatedness/similarity metrics available are:
  
  - [LIN](http://search.cpan.org/dist/WordNet-Similarity/lib/WordNet/Similarity/lin.pm): 
  [Lin, 1998](https://scholar.google.com/scholar?q=An+information-theoretic+definition+of+similarity) - The Lin measure 
- idea is similar to JCN with small modification:
+ idea is similar to JCN with a small modification:
  
  LIN(s1, s2) = 2 * IC(LCS(s1, s2) / (IC(s1) + IC(s2)).
 
@@ -75,7 +75,7 @@ The descriptions above are extracted either from each paper or from
 
 ## Prerequisites
 
-By default, requirement for compilation are:
+By default, the requirements for compilation are:
 
  - JDK 8+
  - Maven
@@ -100,7 +100,7 @@ and a simple demo class:
 
   `src/main/java/edu/uniba/di/lacam/kdde/ws4j/demo/SimilarityCalculationDemo.java`
   
-which can be run through jar-with-dependencies from root folder by typing into terminal:
+which can be run through jar-with-dependencies from the root folder by typing into the terminal:
 
 ```
 $ java -jar target/ws4j-1.0.2-jar-with-dependencies.jar
@@ -115,11 +115,11 @@ When using WS4J jar package from other projects add the [JitPack](https://jitpac
         </repository>
     </repositories>
     
-and declare this github repo as a dependency:
+and declare this GitHub repo as a dependency:
     
     <dependencies>
         <dependency>
-            <groupId>com.github.DonatoMeoli</groupId>
+            <groupId>com.github.dmeoli</groupId>
             <artifactId>WS4J</artifactId>
             <version>x.y.z</version>
         </dependency>
@@ -128,7 +128,7 @@ and declare this github repo as a dependency:
 ## Running the tests
 
 To run JUnit test cases:
-   
+
 ```
 $ mvn test
 ```
