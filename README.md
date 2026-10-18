@@ -1,4 +1,8 @@
-# WordNet Similarity for Java [![Build Status](https://api.travis-ci.com/dmeoli/WS4J.svg?branch=master)](https://app.travis-ci.com/github/dmeoli/WS4J) [![Release](https://jitpack.io/v/dmeoli/WS4J.svg)](https://jitpack.io/#dmeoli/WS4J)
+# WordNet Similarity for Java
+
+[![CI](https://github.com/dmeoli/WS4J/actions/workflows/ci.yml/badge.svg)](https://github.com/dmeoli/WS4J/actions/workflows/ci.yml)
+[![Release](https://jitpack.io/v/dmeoli/WS4J.svg)](https://jitpack.io/#dmeoli/WS4J)
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 WS4J provides a pure Java API for several published semantic relatedness/similarity algorithms for, in theory, any 
 WordNet instance. You can immediately use WS4J on [Princeton's English WordNet 3.0](https://wordnet.princeton.edu/) 
@@ -139,6 +143,6 @@ The expected results from the test cases are compatible with the original [WordN
 
 The original author is [Hideki Shima](http://www.cs.cmu.edu/~hideki/).
 
-## License [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+## License
 
 This software is released under GNU GPL v3 License. See the [LICENSE](LICENSE) file for details.
