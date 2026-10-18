@@ -81,7 +81,7 @@ The descriptions above are extracted either from each paper or from
 
 By default, the requirements for compilation are:
 
- - JDK 8+
+ - JDK 17+
  - Maven
 
 Any WordNet instance can be used in WS4J if it implements the ILexicalDatabase interface.
